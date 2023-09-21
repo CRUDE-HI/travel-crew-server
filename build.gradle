@@ -1,3 +1,9 @@
+buildscript{
+    ext{
+        queryDslVersion = "5.0.0"
+    }
+}
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.15'
@@ -63,4 +69,22 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+
+// query QClass 파일 생성 위치를 지정
+def generated = 'src/main/generated'
+
+tasks.withType(JavaCompile){
+    options.getGeneratedSourceOutputDirectory().set(file(generated))
+}
+
+// java source set에 querydsl QClass 위치 추가
+sourceSets{
+    main.java.srcDirs += [ generated ]
+}
+
+// gradle clean 시에 QClass 디렉토리 삭제
+clean {
+    delete file(generated)
 }
