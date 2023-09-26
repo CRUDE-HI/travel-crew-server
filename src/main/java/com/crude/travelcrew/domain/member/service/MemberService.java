@@ -65,8 +65,8 @@ public class MemberService {
 
 	public void logout() throws Exception {
 		String email = SecurityContextHolder.getContext().getAuthentication().getName();
-		if (redisTemplate.opsForValue().get("JWT_TOKEN:" + email) != null) {
-			redisTemplate.delete("JWT_TOKEN:" + email); //Token 삭제
+		if (redisTemplate.opsForValue().get("JWT_ACCESS_TOKEN:" + email) != null) {
+			redisTemplate.delete("JWT_ACCESS_TOKEN:" + email); //Token 삭제
 		}
 	}
 
