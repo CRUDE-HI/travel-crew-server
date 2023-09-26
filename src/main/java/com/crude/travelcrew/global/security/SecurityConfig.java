@@ -1,48 +1,52 @@
 package com.crude.travelcrew.global.security;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableMethodSecurity
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-	SecurityFilterChain filerChain(HttpSecurity http) throws Exception {
-		http
-.authorizeHttpRequests(
-			(authorizeHttpRequests) -> authorizeHttpRequests
-				.requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
-				// .requestMatchers(new AntPathRequestMatcher("/admin/**")).hasRole("ADMIN")
-				// .anyRequest().authenticated()
-		)
-			.csrf(
-				(csrf) -> csrf
-					.ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**"))
-			)
-			.headers(
-				(headers)-> headers
-					.addHeaderWriter(new XFrameOptionsHeaderWriter(
-						XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
-			)
-			.formLogin(
-				(formLogin) -> formLogin
-					.loginPage("/")
-					.usernameParameter("")
-					.defaultSuccessUrl("/")
-			)
-			.logout(
-				(logout) -> logout
-					.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
-					.logoutSuccessUrl("/")
-					.invalidateHttpSession(true)
-			)
-		;
-		return http.build();
+	private final JwtProvider jwtProvider;
+	private final RedisTemplate<String, String> redisTemplate;
+
+	@Bean
+	public BCryptPasswordEncoder encoder() {
+		return new BCryptPasswordEncoder();
 	}
 
+	@Bean
+	SecurityFilterChain filerChain(HttpSecurity http) throws Exception {
+		return http
+			.httpBasic().disable()
+			// disable csrf token
+			.csrf().disable()
+			// disable cors policy
+			.cors().disable()
+			// set permission of endpoints
+			.authorizeRequests()
+			.antMatchers("/**").permitAll()
+			.and()
+			.formLogin().disable()
+			// H2-console frameOption
+			.headers().frameOptions().sameOrigin()
+			.and()
+			// disable session (because we use jwt token)
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
+			// use custom jwtAuthFilter and CorsFilter
+			.addFilterBefore(new JwtAuthFilter(jwtProvider, redisTemplate), UsernamePasswordAuthenticationFilter.class)
+			.build();
+	}
 }
