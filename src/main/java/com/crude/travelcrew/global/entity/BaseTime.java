@@ -1,6 +1,6 @@
 package com.crude.travelcrew.global.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
@@ -13,15 +13,16 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import lombok.Getter;
 import lombok.Setter;
 
-@EntityListeners(value = {AuditingEntityListener.class})
+@EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
 @Getter
 @Setter
 public abstract class BaseTime {
+
 	@CreatedDate
 	@Column(updatable = false)
-	private LocalDate createdAt;
+	private LocalDateTime createdAt;
 
 	@LastModifiedDate
-	private LocalDate updatedAt;
+	private LocalDateTime updatedAt;
 }
