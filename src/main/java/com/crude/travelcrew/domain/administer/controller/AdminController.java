@@ -2,11 +2,16 @@ package com.crude.travelcrew.domain.administer.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.crude.travelcrew.domain.administer.dto.MemberListReq;
+import com.crude.travelcrew.domain.administer.dto.MemberListRes;
+import com.crude.travelcrew.domain.administer.service.AdminGetMemberListService;
 import com.crude.travelcrew.domain.administer.service.AdminMemberService;
 import com.crude.travelcrew.domain.member.dto.SignUpReq;
 import com.crude.travelcrew.domain.member.dto.SignUpRes;
@@ -22,6 +27,9 @@ public class AdminController {
 
 	@Autowired
 	AdminMemberService adminMemberService;
+
+	@Autowired
+	AdminGetMemberListService adminGetMemberListService;
 
 	@PostMapping("/sign-up")
 	public ResponseEntity<?> signUp(@RequestBody SignUpReq signUpReq) throws Exception {
@@ -51,6 +59,23 @@ public class AdminController {
 		System.out.println("logout");
 		adminMemberService.logout();
 		return ResponseEntity.ok().build();
+	}
+
+	@GetMapping("/member")
+	public ResponseEntity<MemberListRes> memberList(
+		@RequestParam(value = "page", defaultValue = "0") int page,
+		@RequestParam(value = "size", defaultValue = "10") int size,
+		@RequestParam(value = "search", required = false) String search
+	) throws Exception {
+
+		MemberListReq memberListReq = new MemberListReq();
+		memberListReq.setPage(page);
+		memberListReq.setSize(size);
+		memberListReq.setSearch(search);
+
+		MemberListRes memberListRes = adminGetMemberListService.getList(memberListReq);
+
+		return ResponseEntity.ok(memberListRes);
 	}
 
 }
