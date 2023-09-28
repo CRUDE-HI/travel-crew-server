@@ -69,6 +69,11 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 		return imageUrlList;
 	}
 
+	@Override
+	public void deleteImageFile(String imageUrl, String dir) {
+		amazonS3.deleteObject(bucket, dir + "/" + imageUrl.substring(imageUrl.lastIndexOf("/") + 1));
+		log.info("image delete success");
+	}
 
 	/**
 	 * 파일 업로드 시 파일명 생성
