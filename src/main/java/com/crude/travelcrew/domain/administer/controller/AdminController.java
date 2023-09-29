@@ -3,6 +3,7 @@ package com.crude.travelcrew.domain.administer.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.crude.travelcrew.domain.administer.dto.GetMemberRes;
 import com.crude.travelcrew.domain.administer.dto.MemberListReq;
 import com.crude.travelcrew.domain.administer.dto.MemberListRes;
+import com.crude.travelcrew.domain.administer.dto.UpdateMemberReq;
 import com.crude.travelcrew.domain.administer.service.AdminGetMemberService;
 import com.crude.travelcrew.domain.administer.service.AdminMemberService;
 import com.crude.travelcrew.domain.member.dto.SignUpReq;
@@ -85,4 +87,11 @@ public class AdminController {
 		GetMemberRes memberResponseDto = adminGetMemberService.getMember(id);
 		return ResponseEntity.ok(memberResponseDto);
 	}
+
+	@PatchMapping("/member/{id}")
+	public ResponseEntity<Void> updateMember(@PathVariable Long id, @RequestBody UpdateMemberReq updateMemberReq) {
+		adminGetMemberService.updateMember(id, updateMemberReq);
+		return ResponseEntity.noContent().build();
+	}
+
 }
