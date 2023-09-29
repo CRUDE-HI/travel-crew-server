@@ -3,15 +3,17 @@ package com.crude.travelcrew.domain.administer.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.crude.travelcrew.domain.administer.dto.GetMemberRes;
 import com.crude.travelcrew.domain.administer.dto.MemberListReq;
 import com.crude.travelcrew.domain.administer.dto.MemberListRes;
-import com.crude.travelcrew.domain.administer.service.AdminGetMemberListService;
+import com.crude.travelcrew.domain.administer.service.AdminGetMemberService;
 import com.crude.travelcrew.domain.administer.service.AdminMemberService;
 import com.crude.travelcrew.domain.member.dto.SignUpReq;
 import com.crude.travelcrew.domain.member.dto.SignUpRes;
@@ -29,7 +31,7 @@ public class AdminController {
 	AdminMemberService adminMemberService;
 
 	@Autowired
-	AdminGetMemberListService adminGetMemberListService;
+	AdminGetMemberService adminGetMemberService;
 
 	@PostMapping("/sign-up")
 	public ResponseEntity<?> signUp(@RequestBody SignUpReq signUpReq) throws Exception {
@@ -73,9 +75,14 @@ public class AdminController {
 		memberListReq.setSize(size);
 		memberListReq.setSearch(search);
 
-		MemberListRes memberListRes = adminGetMemberListService.getList(memberListReq);
+		MemberListRes memberListRes = adminGetMemberService.getList(memberListReq);
 
 		return ResponseEntity.ok(memberListRes);
 	}
 
+	@GetMapping("/member/{id}")
+	public ResponseEntity<GetMemberRes> getMember(@PathVariable Long id) {
+		GetMemberRes memberResponseDto = adminGetMemberService.getMember(id);
+		return ResponseEntity.ok(memberResponseDto);
+	}
 }
