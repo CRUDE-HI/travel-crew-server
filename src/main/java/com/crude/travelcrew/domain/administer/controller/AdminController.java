@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.crude.travelcrew.domain.administer.dto.GetMemberRes;
 import com.crude.travelcrew.domain.administer.dto.MemberListReq;
 import com.crude.travelcrew.domain.administer.dto.MemberListRes;
+import com.crude.travelcrew.domain.administer.dto.RecordListReq;
+import com.crude.travelcrew.domain.administer.dto.RecordListRes;
 import com.crude.travelcrew.domain.administer.dto.UpdateMemberReq;
 import com.crude.travelcrew.domain.administer.service.AdminGetMemberService;
+import com.crude.travelcrew.domain.administer.service.AdminGetRecordService;
 import com.crude.travelcrew.domain.administer.service.AdminMemberService;
 import com.crude.travelcrew.domain.member.dto.SignUpReq;
 import com.crude.travelcrew.domain.member.dto.SignUpRes;
@@ -34,6 +37,9 @@ public class AdminController {
 
 	@Autowired
 	AdminGetMemberService adminGetMemberService;
+
+	@Autowired
+	AdminGetRecordService adminGetRecordService;
 
 	@PostMapping("/sign-up")
 	public ResponseEntity<?> signUp(@RequestBody SignUpReq signUpReq) throws Exception {
@@ -92,6 +98,23 @@ public class AdminController {
 	public ResponseEntity<Void> updateMember(@PathVariable Long id, @RequestBody UpdateMemberReq updateMemberReq) {
 		adminGetMemberService.updateMember(id, updateMemberReq);
 		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping("/record")
+	public ResponseEntity<RecordListRes> recordList(
+		@RequestParam(value = "page", defaultValue = "0") int page,
+		@RequestParam(value = "size", defaultValue = "10") int size,
+		@RequestParam(value = "search", required = false) String search
+	) throws Exception {
+
+		RecordListReq recordListReq = new RecordListReq();
+		recordListReq.setPage(page);
+		recordListReq.setSize(size);
+		recordListReq.setSearch(search);
+
+		RecordListRes recordListRes = adminGetRecordService.getList(recordListReq);
+
+		return ResponseEntity.ok(recordListRes);
 	}
 
 }
