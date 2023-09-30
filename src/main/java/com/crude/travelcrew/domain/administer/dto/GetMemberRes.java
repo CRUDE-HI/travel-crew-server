@@ -1,6 +1,7 @@
 package com.crude.travelcrew.domain.administer.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.crude.travelcrew.domain.member.constants.Gender;
 import com.crude.travelcrew.domain.member.constants.MemberRole;
@@ -34,6 +35,6 @@ public class GetMemberRes {
 	private Double heartBeat;
 	private int reportCnt;
 
-	private LocalDate createdAt;
-	private LocalDate updatedAt;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 }

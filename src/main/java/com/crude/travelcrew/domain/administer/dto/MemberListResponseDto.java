@@ -1,6 +1,6 @@
 package com.crude.travelcrew.domain.administer.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.crude.travelcrew.domain.member.constants.MemberRole;
 import com.crude.travelcrew.domain.member.constants.MemberStatus;
@@ -26,7 +26,7 @@ public class MemberListResponseDto {
 	private double heartBeat;
 	private int reportCnt;
 
-	private LocalDate createdAt;
-	private LocalDate updatedAt;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 
 }

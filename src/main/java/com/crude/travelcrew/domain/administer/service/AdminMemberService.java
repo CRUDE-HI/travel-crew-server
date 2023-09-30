@@ -1,6 +1,6 @@
 package com.crude.travelcrew.domain.administer.service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.security.auth.login.LoginException;
 
@@ -79,7 +79,7 @@ public class AdminMemberService {
 	public Member signUp(Member member) {
 		String rawPw = member.getPassword();
 		member.setPassword(encoder.encode(rawPw));
-		member.setCreatedAt(LocalDate.now());
+		member.setCreatedAt(LocalDateTime.now());
 		member.setProviderType(ProviderType.DEFAULT);
 		member.setRole(MemberRole.ADMIN);
 		member.setMemberStatus(MemberStatus.DEFAULT);
