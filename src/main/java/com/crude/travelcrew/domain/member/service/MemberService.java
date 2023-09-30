@@ -1,7 +1,5 @@
 package com.crude.travelcrew.domain.member.service;
 
-import java.time.LocalDate;
-
 import javax.security.auth.login.LoginException;
 
 import org.springframework.data.redis.core.RedisTemplate;
@@ -73,7 +71,6 @@ public class MemberService {
 	public Member signUp(Member member) {
 		String rawPw = member.getPassword();
 		member.setPassword(encoder.encode(rawPw));
-		member.setCreatedAt(LocalDate.now());
 		member.setProviderType(ProviderType.DEFAULT);
 		member.setRole(MemberRole.USER);
 		member.setMemberStatus(MemberStatus.DEFAULT);
