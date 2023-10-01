@@ -9,8 +9,10 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,6 +52,17 @@ public class TravelRecordController {
 		Principal principal) {
 
 		Map<String, String> response = travelRecordService.deleteTravelRecord(travelRecordId, principal.getName());
+		return ResponseEntity.ok(response);
+	}
+
+	/**
+	 * 여행 기록 수정
+	 */
+	@PatchMapping("/{travelRecordId}")
+	public ResponseEntity<EditTravelRecordRes> updateTravelRecord(@PathVariable Long travelRecordId,
+		@RequestBody @Valid EditTravelRecordReq request, Principal principal) {
+
+		EditTravelRecordRes response = travelRecordService.updateTravelRecord(travelRecordId, request, principal.getName());
 		return ResponseEntity.ok(response);
 	}
 }

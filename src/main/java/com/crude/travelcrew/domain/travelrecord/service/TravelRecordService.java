@@ -19,4 +19,9 @@ public interface TravelRecordService {
 	 * 여행 기록 삭제
 	 */
 	Map<String, String> deleteTravelRecord(Long travelRecordId, String email);
+
+	/**
+	 * 여행 기록 수정
+	 */
+	EditTravelRecordRes updateTravelRecord(Long travelRecordId, EditTravelRecordReq request, String email);
 }
