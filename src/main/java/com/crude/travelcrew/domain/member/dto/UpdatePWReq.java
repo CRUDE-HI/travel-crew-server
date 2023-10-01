@@ -4,5 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class UpdatePWReq {
-	private String password;
+	private String currentPassword;
+	private String newPassword;
 }

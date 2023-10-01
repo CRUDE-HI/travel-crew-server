@@ -32,8 +32,12 @@ public class MyPageService {
 
 		Member member = memberRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
-		member.setPassword(encoder.encode(updatePWReq.getPassword()));
 
-		return memberRepository.save(member).getId();
+		if (encoder.matches(updatePWReq.getCurrentPassword(), member.getPassword())) {
+			member.setPassword(encoder.encode(updatePWReq.getNewPassword()));
+			return memberRepository.save(member).getId();
+		} else {
+			throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+		}
 	}
 }
