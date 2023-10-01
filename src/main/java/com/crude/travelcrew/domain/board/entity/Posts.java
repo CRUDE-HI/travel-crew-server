@@ -7,15 +7,21 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import org.springframework.data.annotation.LastModifiedDate;
 
 import com.crude.travelcrew.domain.board.contents.CrewGender;
 import com.crude.travelcrew.domain.board.contents.CrewStatus;
 import com.crude.travelcrew.domain.board.dto.PostsReq;
+import com.crude.travelcrew.domain.member.entity.Member;
 import com.crude.travelcrew.global.entity.BaseTime;
 
 import lombok.Getter;
@@ -33,9 +39,12 @@ public class Posts extends BaseTime {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long crewId;
 
-	//글제목
 	@Column(nullable = false, length = 30 )
 	private String title;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id", updatable = false)
+	private Member member;
 
 	@Column
 	private String thumbnailImgUrl;

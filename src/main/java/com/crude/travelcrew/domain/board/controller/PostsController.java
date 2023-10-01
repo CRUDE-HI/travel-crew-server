@@ -13,7 +13,7 @@ import com.crude.travelcrew.domain.board.dto.PostsRes;
 import com.crude.travelcrew.domain.board.service.PostsService;
 
 @RestController
-@RequestMapping("/crew/")
+@RequestMapping("/api/crew")
 public class PostsController {
 
 	private final PostsService postsService;
