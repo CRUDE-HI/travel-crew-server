@@ -18,6 +18,7 @@ import com.crude.travelcrew.domain.member.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.domain.travelrecord.model.dto.EditTravelRecordReq;
 import com.crude.travelcrew.domain.travelrecord.model.dto.EditTravelRecordRes;
+import com.crude.travelcrew.domain.travelrecord.model.dto.TravelRecordImageRes;
 import com.crude.travelcrew.domain.travelrecord.model.entity.TravelRecord;
 import com.crude.travelcrew.domain.travelrecord.model.entity.TravelRecordImage;
 import com.crude.travelcrew.domain.travelrecord.repository.TravelRecordImageRepository;
@@ -118,6 +119,23 @@ public class TravelRecordServiceImpl implements TravelRecordService {
 		// 제목과 내용 수정
 		travelRecord.update(request.getTitle(), request.getContent());
 		return EditTravelRecordRes.fromEntity(travelRecord, travelRecordImages);
+	}
+
+	@Override
+	public TravelRecordImageRes addTravelRecordImage(Long travelRecordId, MultipartFile image) {
+
+		TravelRecord travelRecord = travelRecordRepository.findById(travelRecordId)
+			.orElseThrow(() -> new TravelRecordException(TRAVEL_RECORD_NOT_FOUND));
+
+		String imageUrl = awsS3Service.uploadImageFile(image, DIR);
+
+		TravelRecordImage travelRecordImage = TravelRecordImage.builder()
+			.travelRecord(travelRecord)
+			.imageUrl(imageUrl)
+			.build();
+
+		travelRecordImageRepository.save(travelRecordImage);
+		return TravelRecordImageRes.fromEntity(travelRecordImage);
 	}
 
 	private static Map<String, String> getMessage(String message) {

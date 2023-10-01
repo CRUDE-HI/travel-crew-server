@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.crude.travelcrew.domain.travelrecord.model.dto.EditTravelRecordReq;
 import com.crude.travelcrew.domain.travelrecord.model.dto.EditTravelRecordRes;
+import com.crude.travelcrew.domain.travelrecord.model.dto.TravelRecordImageRes;
 
 public interface TravelRecordService {
 
@@ -24,4 +25,9 @@ public interface TravelRecordService {
 	 * 여행 기록 수정
 	 */
 	EditTravelRecordRes updateTravelRecord(Long travelRecordId, EditTravelRecordReq request, String email);
+
+	/**
+	 * 여행 기록 이미지 추가
+	 */
+	TravelRecordImageRes addTravelRecordImage(Long travelRecordId, MultipartFile image);
 }

@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.crude.travelcrew.domain.travelrecord.model.dto.EditTravelRecordReq;
 import com.crude.travelcrew.domain.travelrecord.model.dto.EditTravelRecordRes;
+import com.crude.travelcrew.domain.travelrecord.model.dto.TravelRecordImageRes;
 import com.crude.travelcrew.domain.travelrecord.service.TravelRecordService;
 
 import lombok.RequiredArgsConstructor;
@@ -62,7 +63,19 @@ public class TravelRecordController {
 	public ResponseEntity<EditTravelRecordRes> updateTravelRecord(@PathVariable Long travelRecordId,
 		@RequestBody @Valid EditTravelRecordReq request, Principal principal) {
 
-		EditTravelRecordRes response = travelRecordService.updateTravelRecord(travelRecordId, request, principal.getName());
+		EditTravelRecordRes response = travelRecordService.updateTravelRecord(travelRecordId, request,
+			principal.getName());
+		return ResponseEntity.ok(response);
+	}
+
+	/**
+	 * 여행 기록 이미지 추가
+	 */
+	@PostMapping("/{travelRecordId}/image")
+	public ResponseEntity<TravelRecordImageRes> addTravelRecordImage(@PathVariable Long travelRecordId,
+		@RequestPart MultipartFile image) {
+
+		TravelRecordImageRes response = travelRecordService.addTravelRecordImage(travelRecordId, image);
 		return ResponseEntity.ok(response);
 	}
 }
