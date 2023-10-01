@@ -33,11 +33,15 @@ public class MyPageService {
 		Member member = memberRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
 
-		if (encoder.matches(updatePWReq.getCurrentPassword(), member.getPassword())) {
-			member.setPassword(encoder.encode(updatePWReq.getNewPassword()));
-			return memberRepository.save(member).getId();
-		} else {
+		if (!encoder.matches(updatePWReq.getCurrentPassword(), member.getPassword())) {
 			throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+		} else {
+			if (!updatePWReq.getNewPassword().equals(updatePWReq.getValidPassword())) {
+				throw new IllegalArgumentException("새로운 비밀번호가 일치하지 않습니다.");
+			} else {
+				member.setPassword(encoder.encode(updatePWReq.getNewPassword()));
+				return memberRepository.save(member).getId();
+			}
 		}
 	}
 }
