@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.crude.travelcrew.domain.administer.dto.GetMemberRes;
+import com.crude.travelcrew.domain.administer.dto.GetRecordRes;
 import com.crude.travelcrew.domain.administer.dto.MemberListReq;
 import com.crude.travelcrew.domain.administer.dto.MemberListRes;
 import com.crude.travelcrew.domain.administer.dto.RecordListReq;
@@ -117,4 +118,9 @@ public class AdminController {
 		return ResponseEntity.ok(recordListRes);
 	}
 
+	@GetMapping("/record/{recordId}")
+	public ResponseEntity<GetRecordRes> getRecord(@PathVariable Long recordId) {
+		GetRecordRes recordRes = adminGetRecordService.getRecord(recordId);
+		return ResponseEntity.ok(recordRes);
+	}
 }

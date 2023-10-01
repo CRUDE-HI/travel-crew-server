@@ -9,11 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.crude.travelcrew.domain.administer.dto.GetRecordRes;
 import com.crude.travelcrew.domain.administer.dto.RecordListReq;
 import com.crude.travelcrew.domain.administer.dto.RecordListRes;
 import com.crude.travelcrew.domain.administer.dto.RecordListResponseDto;
 import com.crude.travelcrew.domain.member.entity.Member;
 import com.crude.travelcrew.domain.travelrecord.model.entity.TravelRecord;
+import com.crude.travelcrew.domain.travelrecord.model.entity.TravelRecordImage;
 import com.crude.travelcrew.domain.travelrecord.repository.TravelRecordRepository;
 
 @Service
@@ -43,9 +45,33 @@ public class AdminGetRecordService {
 
 		Page<TravelRecord> page = travelRecordRepository.findAll(recordListReq.pageable());
 
-		RecordListRes recordListRes = new RecordListRes(convertToDto(page.getContent()), (int) page.getTotalElements(),
+		RecordListRes recordListRes = new RecordListRes(convertToDto(page.getContent()), (int)page.getTotalElements(),
 			recordListReq.getPage());
 
 		return recordListRes;
+	}
+
+	@Transactional
+	public GetRecordRes getRecord(Long recordId) {
+		TravelRecord record = travelRecordRepository.findById(recordId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 글을 찾을 수 없습니다."));
+
+		List<String> imageUrls = record.getTravelRecordImages().stream()
+			.map(TravelRecordImage::getImageUrl)
+			.collect(Collectors.toList());
+
+		Member member = record.getMember();
+
+		return new GetRecordRes(
+			record.getId(),
+			record.getTitle(),
+			record.getContent(),
+			record.getCreatedAt(),
+			record.getUpdatedAt(),
+			imageUrls,
+			member.getEmail(),
+			member.getNickname(),
+			member.getProfileImgUrl()
+		);
 	}
 }
