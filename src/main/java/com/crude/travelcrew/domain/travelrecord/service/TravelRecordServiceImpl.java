@@ -122,6 +122,7 @@ public class TravelRecordServiceImpl implements TravelRecordService {
 	}
 
 	@Override
+	@Transactional
 	public TravelRecordImageRes addTravelRecordImage(Long travelRecordId, MultipartFile image) {
 
 		TravelRecord travelRecord = travelRecordRepository.findById(travelRecordId)
@@ -136,6 +137,23 @@ public class TravelRecordServiceImpl implements TravelRecordService {
 
 		travelRecordImageRepository.save(travelRecordImage);
 		return TravelRecordImageRes.fromEntity(travelRecordImage);
+	}
+
+	@Override
+	@Transactional
+	public Map<String, String> removeTravelRecordImage(Long travelRecordId, Long travelRecordImageId) {
+
+		if(!travelRecordRepository.existsById(travelRecordId)) {
+			throw new TravelRecordException(TRAVEL_RECORD_NOT_FOUND);
+		}
+
+		TravelRecordImage travelRecordImage = travelRecordImageRepository.findById(travelRecordImageId)
+			.orElseThrow(() -> new TravelRecordException(TRAVEL_RECORD_IMAGE_NOT_FOUND));
+
+		awsS3Service.deleteImageFile(travelRecordImage.getImageUrl(), DIR);
+		travelRecordImageRepository.deleteById(travelRecordId);
+
+		return getMessage("여행 기록 이미지가 삭제되었습니다.");
 	}
 
 	private static Map<String, String> getMessage(String message) {

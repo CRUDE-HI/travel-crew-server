@@ -30,4 +30,9 @@ public interface TravelRecordService {
 	 * 여행 기록 이미지 추가
 	 */
 	TravelRecordImageRes addTravelRecordImage(Long travelRecordId, MultipartFile image);
+
+	/**
+	 * 여행 기록 이미지 삭제
+	 */
+	Map<String, String> removeTravelRecordImage(Long travelRecordId, Long travelRecordImageId);
 }

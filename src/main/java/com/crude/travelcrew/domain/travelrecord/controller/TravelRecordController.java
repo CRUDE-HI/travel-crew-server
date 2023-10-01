@@ -78,4 +78,15 @@ public class TravelRecordController {
 		TravelRecordImageRes response = travelRecordService.addTravelRecordImage(travelRecordId, image);
 		return ResponseEntity.ok(response);
 	}
+
+	/**
+	 * 여행 기록 이미지 삭제
+	 */
+	@DeleteMapping("/{travelRecordId}/image/{travelRecordImageId}")
+	public ResponseEntity<Map<String, String>> removeTravelRecordImage(@PathVariable Long travelRecordId,
+		@PathVariable Long travelRecordImageId) {
+
+		Map<String, String> response = travelRecordService.removeTravelRecordImage(travelRecordId, travelRecordImageId);
+		return ResponseEntity.ok(response);
+	}
 }
