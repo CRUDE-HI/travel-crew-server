@@ -9,8 +9,10 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.crude.travelcrew.domain.travelrecord.model.dto.EditTravelRecordReq;
 import com.crude.travelcrew.domain.travelrecord.model.dto.EditTravelRecordRes;
+import com.crude.travelcrew.domain.travelrecord.model.dto.TravelRecordImageRes;
 import com.crude.travelcrew.domain.travelrecord.service.TravelRecordService;
 
 import lombok.RequiredArgsConstructor;
@@ -50,6 +53,40 @@ public class TravelRecordController {
 		Principal principal) {
 
 		Map<String, String> response = travelRecordService.deleteTravelRecord(travelRecordId, principal.getName());
+		return ResponseEntity.ok(response);
+	}
+
+	/**
+	 * 여행 기록 수정
+	 */
+	@PatchMapping("/{travelRecordId}")
+	public ResponseEntity<EditTravelRecordRes> updateTravelRecord(@PathVariable Long travelRecordId,
+		@RequestBody @Valid EditTravelRecordReq request, Principal principal) {
+
+		EditTravelRecordRes response = travelRecordService.updateTravelRecord(travelRecordId, request,
+			principal.getName());
+		return ResponseEntity.ok(response);
+	}
+
+	/**
+	 * 여행 기록 이미지 추가
+	 */
+	@PostMapping("/{travelRecordId}/image")
+	public ResponseEntity<TravelRecordImageRes> addTravelRecordImage(@PathVariable Long travelRecordId,
+		@RequestPart MultipartFile image) {
+
+		TravelRecordImageRes response = travelRecordService.addTravelRecordImage(travelRecordId, image);
+		return ResponseEntity.ok(response);
+	}
+
+	/**
+	 * 여행 기록 이미지 삭제
+	 */
+	@DeleteMapping("/{travelRecordId}/image/{travelRecordImageId}")
+	public ResponseEntity<Map<String, String>> removeTravelRecordImage(@PathVariable Long travelRecordId,
+		@PathVariable Long travelRecordImageId) {
+
+		Map<String, String> response = travelRecordService.removeTravelRecordImage(travelRecordId, travelRecordImageId);
 		return ResponseEntity.ok(response);
 	}
 }
