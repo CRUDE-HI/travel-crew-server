@@ -123,4 +123,10 @@ public class AdminController {
 		GetRecordRes recordRes = adminGetRecordService.getRecord(recordId);
 		return ResponseEntity.ok(recordRes);
 	}
+
+	@PatchMapping("/record/{recordId}")
+	public ResponseEntity<Void> blockRecord(@PathVariable Long recordId) {
+		adminGetRecordService.blockAndDeleteImages(recordId);
+		return ResponseEntity.noContent().build();
+	}
 }

@@ -16,6 +16,7 @@ import com.crude.travelcrew.domain.administer.dto.RecordListResponseDto;
 import com.crude.travelcrew.domain.member.entity.Member;
 import com.crude.travelcrew.domain.travelrecord.model.entity.TravelRecord;
 import com.crude.travelcrew.domain.travelrecord.model.entity.TravelRecordImage;
+import com.crude.travelcrew.domain.travelrecord.repository.TravelRecordImageRepository;
 import com.crude.travelcrew.domain.travelrecord.repository.TravelRecordRepository;
 
 @Service
@@ -23,6 +24,9 @@ public class AdminGetRecordService {
 
 	@Autowired
 	TravelRecordRepository travelRecordRepository;
+
+	@Autowired
+	private TravelRecordImageRepository travelRecordImageRepository;
 
 	public List<RecordListResponseDto> convertToDto(List<TravelRecord> records) {
 		return records.stream()
@@ -73,5 +77,17 @@ public class AdminGetRecordService {
 			member.getNickname(),
 			member.getProfileImgUrl()
 		);
+	}
+
+	@Transactional
+	public void blockAndDeleteImages(Long recordId) {
+		TravelRecord record = travelRecordRepository.findById(recordId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 글을 찾을 수 없습니다."));
+
+		record.blockContent();
+
+		travelRecordImageRepository.deleteAllByTravelRecordId(recordId);
+
+		travelRecordRepository.save(record);
 	}
 }
