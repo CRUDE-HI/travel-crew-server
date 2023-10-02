@@ -19,6 +19,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EditTravelRecordRes {
 
+	private Long id;
+
 	private String title;
 
 	private String content;
@@ -29,6 +31,7 @@ public class EditTravelRecordRes {
 
 	public static EditTravelRecordRes fromEntity(TravelRecord travelRecord, List<TravelRecordImage> images) {
 		return EditTravelRecordRes.builder()
+			.id(travelRecord.getId())
 			.title(travelRecord.getTitle())
 			.content(travelRecord.getContent())
 			.images(images.stream().map(TravelRecordImageRes::fromEntity).collect(Collectors.toList()))
@@ -38,6 +41,7 @@ public class EditTravelRecordRes {
 
 	public static EditTravelRecordRes fromEntity(TravelRecord travelRecord) {
 		return EditTravelRecordRes.builder()
+			.id(travelRecord.getId())
 			.title(travelRecord.getTitle())
 			.content(travelRecord.getContent())
 			.images(new ArrayList<>())

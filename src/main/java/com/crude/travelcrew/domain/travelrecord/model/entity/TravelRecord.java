@@ -47,4 +47,9 @@ public class TravelRecord extends BaseTime {
 	@Builder.Default
 	@OneToMany(mappedBy = "travelRecord")
 	private List<TravelRecordImage> travelRecordImages = new ArrayList<>();
+
+	public void update (String title, String content) {
+		this.title = title;
+		this.content = content;
+	}
 }

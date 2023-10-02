@@ -18,6 +18,7 @@ import com.crude.travelcrew.domain.member.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.domain.travelrecord.model.dto.EditTravelRecordReq;
 import com.crude.travelcrew.domain.travelrecord.model.dto.EditTravelRecordRes;
+import com.crude.travelcrew.domain.travelrecord.model.dto.TravelRecordImageRes;
 import com.crude.travelcrew.domain.travelrecord.model.entity.TravelRecord;
 import com.crude.travelcrew.domain.travelrecord.model.entity.TravelRecordImage;
 import com.crude.travelcrew.domain.travelrecord.repository.TravelRecordImageRepository;
@@ -80,12 +81,6 @@ public class TravelRecordServiceImpl implements TravelRecordService {
 	@Transactional
 	public Map<String, String> deleteTravelRecord(Long travelRecordId, String email) {
 
-		Member member = memberRepository.findByEmail(email);
-
-		if (Objects.isNull(member)) {
-			throw new MemberException(MEMBER_NOT_FOUND);
-		}
-
 		TravelRecord travelRecord = travelRecordRepository.findById(travelRecordId)
 			.orElseThrow(() -> new TravelRecordException(TRAVEL_RECORD_NOT_FOUND));
 
@@ -105,6 +100,60 @@ public class TravelRecordServiceImpl implements TravelRecordService {
 		// 여행 기록 삭제
 		travelRecordRepository.deleteById(travelRecordId);
 		return getMessage("여행 기록이 삭제되었습니다.");
+	}
+
+	@Override
+	@Transactional
+	public EditTravelRecordRes updateTravelRecord(Long travelRecordId, EditTravelRecordReq request, String email) {
+
+		TravelRecord travelRecord = travelRecordRepository.findById(travelRecordId)
+			.orElseThrow(() -> new TravelRecordException(TRAVEL_RECORD_NOT_FOUND));
+
+		if (!Objects.equals(travelRecord.getMember().getEmail(), email)) {
+			throw new TravelRecordException(FAIL_TO_UPDATE_TRAVEL_RECORD);
+		}
+
+		List<TravelRecordImage> travelRecordImages
+			= travelRecordImageRepository.findAllByTravelRecord(travelRecord);
+
+		// 제목과 내용 수정
+		travelRecord.update(request.getTitle(), request.getContent());
+		return EditTravelRecordRes.fromEntity(travelRecord, travelRecordImages);
+	}
+
+	@Override
+	@Transactional
+	public TravelRecordImageRes addTravelRecordImage(Long travelRecordId, MultipartFile image) {
+
+		TravelRecord travelRecord = travelRecordRepository.findById(travelRecordId)
+			.orElseThrow(() -> new TravelRecordException(TRAVEL_RECORD_NOT_FOUND));
+
+		String imageUrl = awsS3Service.uploadImageFile(image, DIR);
+
+		TravelRecordImage travelRecordImage = TravelRecordImage.builder()
+			.travelRecord(travelRecord)
+			.imageUrl(imageUrl)
+			.build();
+
+		travelRecordImageRepository.save(travelRecordImage);
+		return TravelRecordImageRes.fromEntity(travelRecordImage);
+	}
+
+	@Override
+	@Transactional
+	public Map<String, String> removeTravelRecordImage(Long travelRecordId, Long travelRecordImageId) {
+
+		if(!travelRecordRepository.existsById(travelRecordId)) {
+			throw new TravelRecordException(TRAVEL_RECORD_NOT_FOUND);
+		}
+
+		TravelRecordImage travelRecordImage = travelRecordImageRepository.findById(travelRecordImageId)
+			.orElseThrow(() -> new TravelRecordException(TRAVEL_RECORD_IMAGE_NOT_FOUND));
+
+		awsS3Service.deleteImageFile(travelRecordImage.getImageUrl(), DIR);
+		travelRecordImageRepository.deleteById(travelRecordId);
+
+		return getMessage("여행 기록 이미지가 삭제되었습니다.");
 	}
 
 	private static Map<String, String> getMessage(String message) {
