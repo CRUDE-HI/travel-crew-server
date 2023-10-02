@@ -55,15 +55,17 @@ public class JwtProvider {
 
 	public Authentication getAuthentication(String token) {
 		Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-		// DB 통해서 EMAIL을 가지고 권한을 가져오는 로직 수행
-		// EMAIL claims.getSubject()
-		// 권한 Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"))
+
 		return new UsernamePasswordAuthenticationToken(claims.getSubject(), "",
-			Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
+			Collections.singleton(new SimpleGrantedAuthority(getRole(token))));
 	}
 
 	public String getEmail(String token) {
 		return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
+	}
+
+	public String getRole(String token) {
+		return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().get("role", String.class);
 	}
 
 	public boolean validateToken(String token) {
@@ -91,4 +93,5 @@ public class JwtProvider {
 		// 아래 코드에 맞춰서 Postman 툴에서 Authorization Header 내에 "Bearer " 값을 삭제시키고 보내도록 수정.
 		return request.getHeader("Authorization");
 	}
+
 }
