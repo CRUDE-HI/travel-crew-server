@@ -2,7 +2,10 @@ package com.crude.travelcrew.domain.board.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -80,6 +83,11 @@ public class Posts extends BaseTime {
 
 	@Column(nullable = false)
 	private String crewContent;
+
+	// 동행 참가자 명단
+	@OneToMany(mappedBy = "posts", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Member> memberList = new ArrayList<>();
+
 
 
 	public Posts(PostsReq postsReq) {
