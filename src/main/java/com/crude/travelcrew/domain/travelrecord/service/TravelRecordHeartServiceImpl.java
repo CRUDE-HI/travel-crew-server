@@ -6,6 +6,7 @@ import static com.crude.travelcrew.global.error.type.TravelRecordErrorCode.*;
 import java.util.Objects;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.crude.travelcrew.domain.member.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
@@ -27,6 +28,7 @@ public class TravelRecordHeartServiceImpl implements TravelRecordHeartService {
 	private final TravelRecordHeartRepository travelRecordHeartRepository;
 
 	@Override
+	@Transactional
 	public void pushTravelRecordHeart(Long travelRecordId, String email) {
 
 		Member member = memberRepository.findByEmail(email);
@@ -49,5 +51,24 @@ public class TravelRecordHeartServiceImpl implements TravelRecordHeartService {
 			.build();
 
 		travelRecordHeartRepository.save(travelRecordHeart);
+	}
+
+	@Override
+	@Transactional
+	public void cancelTravelRecordHeart(Long travelRecordId, String email) {
+
+		Member member = memberRepository.findByEmail(email);
+
+		if(Objects.isNull(member)) {
+			throw new MemberException(MEMBER_NOT_FOUND);
+		}
+
+		TravelRecord travelRecord = travelRecordRepository.findById(travelRecordId)
+			.orElseThrow(() -> new TravelRecordException(TRAVEL_RECORD_NOT_FOUND));
+
+		TravelRecordHeart travelRecordHeart = travelRecordHeartRepository.findByTravelRecordAndMember(travelRecord, member)
+			.orElseThrow(() -> new TravelRecordException(TRAVEL_RECORD_HEART_NOT_FOUND));
+
+		travelRecordHeartRepository.delete(travelRecordHeart);
 	}
 }
