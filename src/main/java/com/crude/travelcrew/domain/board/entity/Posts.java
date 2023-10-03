@@ -30,11 +30,13 @@ import com.crude.travelcrew.global.entity.BaseTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity(name = "crew_post")
+@ToString
 public class Posts extends BaseTime {
 
 	@Id
@@ -55,6 +57,7 @@ public class Posts extends BaseTime {
 	@Enumerated(EnumType.STRING)
 	private CrewStatus crewStatus;
 
+	// 참가인원수
 	@Column
 	private Integer maxCrew;
 
@@ -87,6 +90,18 @@ public class Posts extends BaseTime {
 	// 동행 참가자 명단
 	@OneToMany(mappedBy = "posts", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Member> memberList = new ArrayList<>();
+
+	// 참가자 추가
+	public void addMemberList(Member participant) {
+		memberList.add(participant);
+		participant.setPosts(this);
+	}
+
+	// 참가자 제거
+	public void removeMemberList(Member participant) {
+		memberList.remove(participant);
+		participant.setPosts(null);
+	}
 
 
 
