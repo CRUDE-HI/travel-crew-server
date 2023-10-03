@@ -16,7 +16,8 @@ public enum TravelRecordErrorCode {
 	TRAVEL_RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "E201", "여행 기록이 존재하지 않습니다."),
 	FAIL_TO_DELETE_TRAVEL_RECORD(HttpStatus.UNAUTHORIZED, "E202", "여행 기록은 작성자만 삭제할 수 있습니다."),
 	FAIL_TO_UPDATE_TRAVEL_RECORD(HttpStatus.UNAUTHORIZED, "E203", "여행 기록은 작성자만 수정할 수 있습니다."),
-	TRAVEL_RECORD_IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "E204", "여행 기록 이미지가 존재하지 않습니다.");
+	TRAVEL_RECORD_IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "E204", "여행 기록 이미지가 존재하지 않습니다."),
+	ALREADY_PUSH_TRAVEL_RECORD_HEART(HttpStatus.BAD_REQUEST, "E205", "여행 기록에 이미 좋아요를 눌렀습니다.");
 
 	private final HttpStatus status;
 	private final String code;
