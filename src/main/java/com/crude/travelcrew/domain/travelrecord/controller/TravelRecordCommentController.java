@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,6 +49,19 @@ public class TravelRecordCommentController {
 
 		Map<String, String> response = travelRecordCommentService.removeTravelRecordComment(travelRecordId,
 			travelRecordCommentId, principal.getName());
+		return ResponseEntity.ok(response);
+	}
+
+	/**
+	 * 여행 기록 댓글 수정
+	 */
+	@PatchMapping("/{travelRecordId}/comment/{travelRecordCommentId}")
+	public ResponseEntity<TravelRecordCommentRes> updateTravelRecordComment(@PathVariable Long travelRecordId,
+		@PathVariable Long travelRecordCommentId, @RequestBody @Valid TravelRecordCommentReq request,
+		Principal principal) {
+
+		TravelRecordCommentRes response = travelRecordCommentService.updateTravelRecordComment(travelRecordId,
+			travelRecordCommentId, request, principal.getName());
 		return ResponseEntity.ok(response);
 	}
 }

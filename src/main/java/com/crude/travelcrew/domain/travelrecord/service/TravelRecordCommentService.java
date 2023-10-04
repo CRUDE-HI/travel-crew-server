@@ -15,5 +15,11 @@ public interface TravelRecordCommentService {
 	/**
 	 * 여행 기록 댓글 삭제
 	 */
-	Map<String, String> removeTravelRecordComment(Long travelRecordId, Long travelRecordCommentId ,String email);
+	Map<String, String> removeTravelRecordComment(Long travelRecordId, Long travelRecordCommentId, String email);
+
+	/**
+	 * 여행 기록 댓글 수정
+	 */
+	TravelRecordCommentRes updateTravelRecordComment(Long travelRecordId, Long travelRecordCommentId,
+		TravelRecordCommentReq request, String email);
 }

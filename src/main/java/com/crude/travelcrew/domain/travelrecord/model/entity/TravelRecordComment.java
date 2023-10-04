@@ -40,4 +40,8 @@ public class TravelRecordComment extends BaseTime {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "travel_record_id", updatable = false)
 	private TravelRecord travelRecord;
+
+	public void update (String content) {
+		this.content = content;
+	}
 }

@@ -75,6 +75,26 @@ public class TravelRecordCommentServiceImpl implements TravelRecordCommentServic
 		return getMessage("여행 기록 댓글이 삭제되었습니다.");
 	}
 
+	@Override
+	@Transactional
+	public TravelRecordCommentRes updateTravelRecordComment(Long travelRecordId, Long travelRecordCommentId,
+		TravelRecordCommentReq request, String email) {
+
+		TravelRecord travelRecord = travelRecordRepository.findById(travelRecordId)
+			.orElseThrow(() -> new TravelRecordException(TRAVEL_RECORD_NOT_FOUND));
+
+		TravelRecordComment travelRecordComment
+			= travelRecordCommentRepository.findByTravelRecordAndAndId(travelRecord, travelRecordCommentId)
+			.orElseThrow(() -> new TravelRecordException(TRAVEL_RECORD_COMMENT_NOT_FOUND));
+
+		if (!Objects.equals(travelRecordComment.getMember().getEmail(), email)) {
+			throw new TravelRecordException(FAIL_TO_UPDATE_TRAVEL_COMMENT);
+		}
+
+		travelRecordComment.update(request.getContent());
+		return TravelRecordCommentRes.fromEntity(travelRecordComment);
+	}
+
 	private static Map<String, String> getMessage(String message) {
 		Map<String, String> result = new HashMap<>();
 		result.put("result", message);
