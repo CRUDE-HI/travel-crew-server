@@ -1,13 +1,17 @@
 package com.crude.travelcrew.domain.member.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.crude.travelcrew.domain.member.dto.UpdateNickReq;
 import com.crude.travelcrew.domain.member.dto.UpdatePWReq;
+import com.crude.travelcrew.domain.member.entity.Member;
 import com.crude.travelcrew.domain.member.service.MyPageService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,4 +34,11 @@ public class MyPageController {
 
 		return myPageService.updatePW(id, updatePWReq);
 	}
+
+	@PatchMapping("/profile/{id}")
+	public Long updateProfile(@PathVariable("id") Long id, @RequestPart MultipartFile image) {
+
+		return myPageService.updateImg(id, image);
+	}
+
 }
