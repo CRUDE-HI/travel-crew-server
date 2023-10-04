@@ -52,4 +52,8 @@ public class MemberProfile {
 		this.name = signUpReq.getName();
 		this.gender = signUpReq.getGender();
 	}
+
+	public void increaseReportCnt() {
+		this.reportCnt += 1;
+	}
 }
