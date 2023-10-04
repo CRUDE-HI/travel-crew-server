@@ -1,11 +1,13 @@
 package com.crude.travelcrew.domain.travelrecord.controller;
 
 import java.security.Principal;
+import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,5 +37,17 @@ public class TravelRecordCommentController {
 		TravelRecordCommentRes response = travelRecordCommentService.addTravelRecordComment(travelRecordId, request,
 			principal.getName());
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}
+
+	/**
+	 * 여행 기록 댓글 삭제
+	 */
+	@DeleteMapping("/{travelRecordId}/comment/{travelRecordCommentId}")
+	public ResponseEntity<Map<String, String>> removeTravelRecordComment(@PathVariable Long travelRecordId,
+		@PathVariable Long travelRecordCommentId, Principal principal) {
+
+		Map<String, String> response = travelRecordCommentService.removeTravelRecordComment(travelRecordId,
+			travelRecordCommentId, principal.getName());
+		return ResponseEntity.ok(response);
 	}
 }
