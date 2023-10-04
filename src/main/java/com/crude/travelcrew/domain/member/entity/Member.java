@@ -8,9 +8,12 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.crude.travelcrew.domain.board.entity.Posts;
 import com.crude.travelcrew.domain.member.constants.MemberRole;
 import com.crude.travelcrew.domain.member.constants.MemberStatus;
 import com.crude.travelcrew.domain.member.constants.ProviderType;
@@ -62,5 +65,10 @@ public class Member extends BaseTime {
 		this.password = signUpReq.getPassword();
 		this.nickname = signUpReq.getNickname();
 	}
+
+	// 동행 게시판 참가자
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "crew_id", updatable = false)
+	private Posts posts;
 
 }
