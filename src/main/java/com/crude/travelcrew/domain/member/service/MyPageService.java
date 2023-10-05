@@ -31,7 +31,7 @@ public class MyPageService {
 		Member member = memberRepository.findByEmail(email);
 
 		if (Objects.isNull(member)) {
-			throw new IllegalArgumentException("사용자를 찾을수 없습니다.");
+			throw new IllegalArgumentException("해당 사용자를 찾을수 없습니다.");
 		}
 
 		member.setNickname(updateNickReq.getNickname());
@@ -45,7 +45,7 @@ public class MyPageService {
 		Member member = memberRepository.findByEmail(email);
 
 		if (Objects.isNull(member)) {
-			throw new IllegalArgumentException("사용자를 찾을수 없습니다.");
+			throw new IllegalArgumentException("해당 사용자를 찾을수 없습니다.");
 		}
 
 		if (!encoder.matches(updatePWReq.getCurrentPassword(), member.getPassword())) {
@@ -67,7 +67,7 @@ public class MyPageService {
 		Member member = memberRepository.findByEmail(email);
 
 		if (Objects.isNull(member)) {
-			throw new IllegalArgumentException("사용자를 찾을수 없습니다.");
+			throw new IllegalArgumentException("해당 사용자를 찾을수 없습니다.");
 		}
 
 		String imageUrl = awsS3Service.uploadImageFile(image, DIR);

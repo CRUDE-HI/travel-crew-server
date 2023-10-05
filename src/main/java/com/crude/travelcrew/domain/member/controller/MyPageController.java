@@ -27,21 +27,21 @@ public class MyPageController {
 	@PatchMapping("/nickname")
 	public ResponseEntity<Void> updateNick(@RequestBody UpdateNickReq updateNickReq, Principal principal) {
 		myPageService.updateNick(updateNickReq, principal.getName());
-		return new ResponseEntity<>(HttpStatus.CREATED);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	// 비밀번호 변경
 	@PatchMapping("/password")
 	public ResponseEntity<Void> updatePW(@RequestBody UpdatePWReq updatePWReq, Principal principal) {
 		myPageService.updatePW(updatePWReq, principal.getName());
-		return new ResponseEntity<>(HttpStatus.CREATED);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	// 프로필이미지 업로드
 	@PatchMapping("/profile")
 	public ResponseEntity<Void> updateProfile(@RequestBody MultipartFile image, Principal principal) {
 		myPageService.updateImg(image, principal.getName());
-		return new ResponseEntity<>(HttpStatus.CREATED);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 }
