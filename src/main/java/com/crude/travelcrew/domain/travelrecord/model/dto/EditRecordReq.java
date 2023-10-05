@@ -11,8 +11,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TravelRecordCommentReq {
+public class EditRecordReq {
 
-	@NotBlank(message = "댓글을 작성해주세요.")
+	@NotBlank(message = "제목을 입력해주세요.")
+	private String title;
+
+	@NotBlank(message = "내용을 입력해주세요.")
 	private String content;
 }

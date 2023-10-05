@@ -10,7 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.crude.travelcrew.domain.member.entity.Member;
-import com.crude.travelcrew.global.entity.BaseTime;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -23,25 +22,18 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TravelRecordComment extends BaseTime {
+public class RecordHeart {
 
 	@Id
-	@Column(name = "travel_record_comment_id")
+	@Column(name = "record_heart_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
-	@Column(nullable = false)
-	private String content;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id", updatable = false)
 	private Member member;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "travel_record_id", updatable = false)
-	private TravelRecord travelRecord;
-
-	public void update (String content) {
-		this.content = content;
-	}
+	@JoinColumn(name = "record_id", updatable = false)
+	private Record record;
 }

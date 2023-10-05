@@ -11,7 +11,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum TravelRecordErrorCode {
+public enum RecordErrorCode {
 
 	TRAVEL_RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "E201", "여행 기록이 존재하지 않습니다."),
 	FAIL_TO_DELETE_TRAVEL_RECORD(HttpStatus.UNAUTHORIZED, "E202", "여행 기록은 작성자만 삭제할 수 있습니다."),

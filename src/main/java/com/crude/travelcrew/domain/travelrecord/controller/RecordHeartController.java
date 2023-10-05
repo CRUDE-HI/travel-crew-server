@@ -10,27 +10,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crude.travelcrew.domain.travelrecord.service.TravelRecordHeartService;
+import com.crude.travelcrew.domain.travelrecord.service.RecordHeartService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/record")
 @RequiredArgsConstructor
-public class TravelRecordHeartController {
+public class RecordHeartController {
 
-	private final TravelRecordHeartService travelRecordHeartService;
+	private final RecordHeartService recordHeartService;
 
 	@PostMapping("/{travelRecordId}/heart")
-	public ResponseEntity<Void> pushTravelRecordHeart(@PathVariable Long travelRecordId, Principal principal) {
-		travelRecordHeartService.pushTravelRecordHeart(travelRecordId, principal.getName());
+	public ResponseEntity<Void> pushRecordHeart(@PathVariable Long travelRecordId, Principal principal) {
+		recordHeartService.pushRecordHeart(travelRecordId, principal.getName());
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 	@DeleteMapping("/{travelRecordId}/heart")
-	public ResponseEntity<Void> cancelTravelRecordHeart(@PathVariable Long travelRecordId, Principal principal) {
+	public ResponseEntity<Void> cancelRecordHeart(@PathVariable Long travelRecordId, Principal principal) {
 
-		travelRecordHeartService.cancelTravelRecordHeart(travelRecordId, principal.getName());
+		recordHeartService.cancelRecordHeart(travelRecordId, principal.getName());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

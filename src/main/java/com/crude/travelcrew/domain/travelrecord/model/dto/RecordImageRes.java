@@ -1,6 +1,6 @@
 package com.crude.travelcrew.domain.travelrecord.model.dto;
 
-import com.crude.travelcrew.domain.travelrecord.model.entity.TravelRecordImage;
+import com.crude.travelcrew.domain.travelrecord.model.entity.RecordImage;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,15 +11,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TravelRecordImageRes {
+public class RecordImageRes {
 
-	private Long travelRecordImageId;
+	private Long imageId;
 
 	private String imageUrl;
 
-	public static TravelRecordImageRes fromEntity (TravelRecordImage image) {
-		return TravelRecordImageRes.builder()
-			.travelRecordImageId(image.getId())
+	public static RecordImageRes fromEntity (RecordImage image) {
+		return RecordImageRes.builder()
+			.imageId(image.getId())
 			.imageUrl(image.getImageUrl())
 			.build();
 	}

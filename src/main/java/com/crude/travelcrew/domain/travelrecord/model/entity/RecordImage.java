@@ -9,8 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.crude.travelcrew.domain.member.entity.Member;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,18 +20,16 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TravelRecordHeart {
+public class RecordImage {
 
 	@Id
-	@Column(name = "travel_record_heart_id")
+	@Column(name = "record_image_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id", updatable = false)
-	private Member member;
+	private String imageUrl;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "travel_record_id", updatable = false)
-	private TravelRecord travelRecord;
+	@JoinColumn(name = "record_id", updatable = false)
+	private Record record;
 }
