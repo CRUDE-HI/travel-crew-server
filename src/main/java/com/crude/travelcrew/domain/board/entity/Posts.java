@@ -24,6 +24,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import com.crude.travelcrew.domain.board.contents.CrewGender;
 import com.crude.travelcrew.domain.board.contents.CrewStatus;
 import com.crude.travelcrew.domain.board.dto.PostsReq;
+import com.crude.travelcrew.domain.board.dto.PostsRes;
 import com.crude.travelcrew.domain.member.entity.Member;
 import com.crude.travelcrew.global.entity.BaseTime;
 
@@ -139,7 +140,23 @@ public class Posts extends BaseTime {
 
 
 
-
+	public PostsRes toPostsDTO () {
+		PostsRes toPostsDTO = new PostsRes();
+		toPostsDTO.setMemberId(this.getMember().getId());
+		toPostsDTO.setTitle(this.getTitle());
+		toPostsDTO.setThumbnailImgUrl(this.getThumbnailImgUrl());
+		toPostsDTO.setCrewStatus(this.getCrewStatus());
+		toPostsDTO.setMaxCrew(this.getMaxCrew());
+		toPostsDTO.setTravelStart(this.getTravelStart());
+		toPostsDTO.setTravelEnd(this.getTravelEnd());
+		toPostsDTO.setCrewAge(this.getCrewAge());
+		toPostsDTO.setCrewGender(this.getCrewGender());
+		toPostsDTO.setUpdateAt(this.getUpdateAt());
+		toPostsDTO.setLatitude(this.getLatitude());
+		toPostsDTO.setLongitude(this.getLongitude());
+		toPostsDTO.setCrewContent(this.getCrewContent());
+		return toPostsDTO;
+	}
 
 
 

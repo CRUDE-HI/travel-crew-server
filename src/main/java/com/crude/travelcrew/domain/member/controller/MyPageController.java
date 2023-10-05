@@ -1,15 +1,18 @@
 package com.crude.travelcrew.domain.member.controller;
 
 import java.security.Principal;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.crude.travelcrew.domain.board.dto.PostsRes;
 import com.crude.travelcrew.domain.member.dto.UpdateNickReq;
 import com.crude.travelcrew.domain.member.dto.UpdatePWReq;
 import com.crude.travelcrew.domain.member.service.MyPageService;
@@ -42,6 +45,12 @@ public class MyPageController {
 	public ResponseEntity<Void> updateProfile(@RequestBody MultipartFile image, Principal principal) {
 		myPageService.updateImg(image, principal.getName());
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	// 내가 쓴 동행 글 조회
+	@GetMapping("/post")
+	public ResponseEntity<List<PostsRes>> postsCreated() {
+		return ResponseEntity.ok(myPageService.postsCreated());
 	}
 
 }

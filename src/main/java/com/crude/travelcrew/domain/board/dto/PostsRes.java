@@ -11,13 +11,15 @@ import com.crude.travelcrew.domain.member.entity.Member;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @Getter
+@Setter
 public class PostsRes {
 
 	private String title;
-	private Long id;
+	private Long memberId;
 	private String thumbnailImgUrl;
 	private CrewStatus crewStatus;
 	private Integer maxCrew;
@@ -37,7 +39,7 @@ public class PostsRes {
 
 	public PostsRes (Posts posts){
 		this.title = posts.getTitle();
-		this.id = posts.getMember().getId();
+		this.memberId = posts.getMember().getId();
 		this.thumbnailImgUrl = posts.getThumbnailImgUrl();
 		this.crewStatus = posts.getCrewStatus();
 		this.maxCrew = posts.getMaxCrew();

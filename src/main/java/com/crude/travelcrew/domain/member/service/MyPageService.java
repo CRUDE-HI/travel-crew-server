@@ -1,13 +1,19 @@
 package com.crude.travelcrew.domain.member.service;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.crude.travelcrew.domain.awss3.service.AwsS3Service;
+import com.crude.travelcrew.domain.board.dto.PostsRes;
+import com.crude.travelcrew.domain.board.entity.Posts;
+import com.crude.travelcrew.domain.board.repository.PostsRepository;
 import com.crude.travelcrew.domain.member.dto.UpdateNickReq;
 import com.crude.travelcrew.domain.member.dto.UpdatePWReq;
 import com.crude.travelcrew.domain.member.entity.Member;
@@ -21,6 +27,7 @@ public class MyPageService {
 	private final static String DIR = "profile";
 
 	private final MemberRepository memberRepository;
+	private final PostsRepository postsRepository;
 	private final BCryptPasswordEncoder encoder;
 	private final AwsS3Service awsS3Service;
 
@@ -73,6 +80,17 @@ public class MyPageService {
 		String imageUrl = awsS3Service.uploadImageFile(image, DIR);
 		member.setProfileImgUrl(imageUrl);
 		memberRepository.save(member);
+	}
+
+	// 내가 쓴 동행 글 조회
+	public List<PostsRes> postsCreated() {
+		String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+		if (Objects.isNull(email)) {
+			return null;
+		}
+		Member member = memberRepository.findByEmail(email);
+		List<Posts> postsList = postsRepository.findAllByMember(member);
+		return postsList.stream().map(Posts::toPostsDTO).collect(Collectors.toList());
 	}
 
 }
