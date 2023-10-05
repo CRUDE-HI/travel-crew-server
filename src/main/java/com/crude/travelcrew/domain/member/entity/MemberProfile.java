@@ -15,6 +15,7 @@ import javax.persistence.Table;
 
 import com.crude.travelcrew.domain.member.constants.Gender;
 import com.crude.travelcrew.domain.member.dto.SignUpReq;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,6 +45,7 @@ public class MemberProfile {
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "memberId")
+	@JsonBackReference
 	private Member member;
 
 	public MemberProfile(SignUpReq signUpReq) {

@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.crude.travelcrew.domain.administer.dto.GetMemberRes;
@@ -16,6 +17,7 @@ import com.crude.travelcrew.domain.member.entity.Member;
 import com.crude.travelcrew.domain.member.entity.MemberProfile;
 import com.crude.travelcrew.domain.member.repository.MemberProfileRepository;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 
 @Service
 public class AdminGetMemberService {
@@ -25,6 +27,9 @@ public class AdminGetMemberService {
 
 	@Autowired
 	MemberProfileRepository memberProfileRepository;
+
+	@Autowired
+	private JPAQueryFactory queryFactory;
 
 	public List<MemberListResponseDto> convertToDto(List<Member> members) {
 		return members.stream()
@@ -125,5 +130,9 @@ public class AdminGetMemberService {
 			memberProfileRepository.save(profile);
 		}
 		memberRepository.save(member);
+	}
+
+	public Page<Member> getReportedMembers(Pageable pageable) {
+		return memberRepository.findReportedMembersWithQueryDsl(pageable);
 	}
 }

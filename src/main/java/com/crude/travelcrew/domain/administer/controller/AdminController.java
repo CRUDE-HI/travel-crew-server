@@ -1,6 +1,7 @@
 package com.crude.travelcrew.domain.administer.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,6 +18,7 @@ import com.crude.travelcrew.domain.administer.dto.MemberListReq;
 import com.crude.travelcrew.domain.administer.dto.MemberListRes;
 import com.crude.travelcrew.domain.administer.dto.RecordListReq;
 import com.crude.travelcrew.domain.administer.dto.RecordListRes;
+import com.crude.travelcrew.domain.administer.dto.ReportedMemberListReq;
 import com.crude.travelcrew.domain.administer.dto.UpdateMemberReq;
 import com.crude.travelcrew.domain.administer.service.AdminGetMemberService;
 import com.crude.travelcrew.domain.administer.service.AdminGetRecordService;
@@ -99,6 +101,22 @@ public class AdminController {
 	public ResponseEntity<Void> updateMember(@PathVariable Long id, @RequestBody UpdateMemberReq updateMemberReq) {
 		adminGetMemberService.updateMember(id, updateMemberReq);
 		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping("/reported-members")
+	public ResponseEntity<Page<Member>> getReportedMembers(
+		@RequestParam(value = "page", defaultValue = "0") int page,
+		@RequestParam(value = "size", defaultValue = "10") int size,
+		@RequestParam(value = "search", required = false) String search
+	) throws Exception {
+
+		ReportedMemberListReq memberListReq = new ReportedMemberListReq();
+		memberListReq.setPage(page);
+		memberListReq.setSize(size);
+		memberListReq.setSearch(search);
+
+		Page<Member> reportedMembers = adminGetMemberService.getReportedMembers(memberListReq.pageable());
+		return ResponseEntity.ok(reportedMembers);
 	}
 
 	@GetMapping("/record")
