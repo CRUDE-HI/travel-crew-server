@@ -18,10 +18,13 @@ import com.crude.travelcrew.domain.administer.dto.MemberListReq;
 import com.crude.travelcrew.domain.administer.dto.MemberListRes;
 import com.crude.travelcrew.domain.administer.dto.RecordListReq;
 import com.crude.travelcrew.domain.administer.dto.RecordListRes;
+import com.crude.travelcrew.domain.administer.dto.ReportListReq;
+import com.crude.travelcrew.domain.administer.dto.ReportListRes;
 import com.crude.travelcrew.domain.administer.dto.ReportedMemberListReq;
 import com.crude.travelcrew.domain.administer.dto.UpdateMemberReq;
 import com.crude.travelcrew.domain.administer.service.AdminGetMemberService;
 import com.crude.travelcrew.domain.administer.service.AdminGetRecordService;
+import com.crude.travelcrew.domain.administer.service.AdminGetReportService;
 import com.crude.travelcrew.domain.administer.service.AdminMemberService;
 import com.crude.travelcrew.domain.member.dto.SignUpReq;
 import com.crude.travelcrew.domain.member.dto.SignUpRes;
@@ -43,6 +46,9 @@ public class AdminController {
 
 	@Autowired
 	AdminGetRecordService adminGetRecordService;
+
+	@Autowired
+	AdminGetReportService adminGetReportService;
 
 	@PostMapping("/sign-up")
 	public ResponseEntity<?> signUp(@RequestBody SignUpReq signUpReq) throws Exception {
@@ -117,6 +123,25 @@ public class AdminController {
 
 		Page<Member> reportedMembers = adminGetMemberService.getReportedMembers(memberListReq.pageable());
 		return ResponseEntity.ok(reportedMembers);
+	}
+
+	@GetMapping("/reported-members/{memberId}")
+	public ResponseEntity<ReportListRes> getReports(
+		@RequestParam(value = "page", defaultValue = "0") int page,
+		@RequestParam(value = "size", defaultValue = "10") int size,
+		@RequestParam(value = "search", required = false) String search,
+		@PathVariable Long memberId
+	) throws Exception {
+
+		ReportListReq reportListReq = new ReportListReq();
+		reportListReq.setPage(page);
+		reportListReq.setSize(size);
+		reportListReq.setSearch(search);
+		reportListReq.getReportedId(memberId);
+
+		ReportListRes reportListRes = adminGetReportService.getList(reportListReq);
+
+		return ResponseEntity.ok(reportListRes);
 	}
 
 	@GetMapping("/record")
