@@ -82,6 +82,28 @@ public class MyPageService {
 		memberRepository.save(member);
 	}
 
+	// 프로필 이미지 삭제
+	public void deleteImg(String profileImgUrl, String email) {
+
+		Member member = memberRepository.findByEmail(email);
+
+		if (Objects.isNull(member)) {
+			throw new IllegalArgumentException("해당 사용자를 찾을수 없습니다.");
+		}
+
+		memberRepository.findByProfileImgUrl(member.getProfileImgUrl())
+			.orElseThrow(() -> new IllegalArgumentException("이미지 파일이 존재하지 않습니다."));
+
+		try {
+			awsS3Service.deleteImageFile(member.getProfileImgUrl(), DIR);
+			member.setProfileImgUrl("삭제성공!");
+			memberRepository.save(member);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	// 내가 쓴 동행 글 조회
 	public List<PostsRes> postsCreated() {
 		String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
@@ -92,5 +114,4 @@ public class MyPageService {
 		List<Posts> postsList = postsRepository.findAllByMember(member);
 		return postsList.stream().map(Posts::toPostsDTO).collect(Collectors.toList());
 	}
-
 }
