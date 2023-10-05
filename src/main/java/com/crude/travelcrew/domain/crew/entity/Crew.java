@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.board.entity;
+package com.crude.travelcrew.domain.crew.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,10 +20,10 @@ import javax.persistence.OneToMany;
 
 import org.springframework.data.annotation.LastModifiedDate;
 
-import com.crude.travelcrew.domain.board.contents.CrewGender;
-import com.crude.travelcrew.domain.board.contents.CrewStatus;
-import com.crude.travelcrew.domain.board.dto.CrewReq;
-import com.crude.travelcrew.domain.board.dto.CrewRes;
+import com.crude.travelcrew.domain.crew.constants.CrewGender;
+import com.crude.travelcrew.domain.crew.constants.CrewStatus;
+import com.crude.travelcrew.domain.crew.dto.CrewReq;
+import com.crude.travelcrew.domain.crew.dto.CrewRes;
 import com.crude.travelcrew.domain.member.entity.Member;
 import com.crude.travelcrew.global.entity.BaseTime;
 

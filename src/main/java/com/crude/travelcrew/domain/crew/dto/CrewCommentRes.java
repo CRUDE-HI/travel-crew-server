@@ -1,8 +1,8 @@
-package com.crude.travelcrew.domain.board.dto;
+package com.crude.travelcrew.domain.crew.dto;
 
 import java.time.LocalDateTime;
 
-import com.crude.travelcrew.domain.board.entity.CrewComment;
+import com.crude.travelcrew.domain.crew.entity.CrewComment;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

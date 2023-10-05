@@ -1,12 +1,12 @@
-package com.crude.travelcrew.domain.board.dto;
+package com.crude.travelcrew.domain.crew.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
-import com.crude.travelcrew.domain.board.contents.CrewGender;
-import com.crude.travelcrew.domain.board.contents.CrewStatus;
-import com.crude.travelcrew.domain.board.entity.Crew;
+import com.crude.travelcrew.domain.crew.constants.CrewGender;
+import com.crude.travelcrew.domain.crew.constants.CrewStatus;
+import com.crude.travelcrew.domain.crew.entity.Crew;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

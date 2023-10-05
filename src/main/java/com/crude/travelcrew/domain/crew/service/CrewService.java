@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.board.service;
+package com.crude.travelcrew.domain.crew.service;
 
 import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 
@@ -11,15 +11,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.crude.travelcrew.domain.board.dto.CrewCommentReq;
-import com.crude.travelcrew.domain.board.dto.CrewCommentRes;
-import com.crude.travelcrew.domain.board.dto.CrewListRes;
-import com.crude.travelcrew.domain.board.dto.CrewReq;
-import com.crude.travelcrew.domain.board.dto.CrewRes;
-import com.crude.travelcrew.domain.board.entity.CrewComment;
-import com.crude.travelcrew.domain.board.entity.Crew;
-import com.crude.travelcrew.domain.board.repository.CrewCommentRepository;
-import com.crude.travelcrew.domain.board.repository.CrewRepository;
+import com.crude.travelcrew.domain.crew.dto.CrewCommentReq;
+import com.crude.travelcrew.domain.crew.dto.CrewCommentRes;
+import com.crude.travelcrew.domain.crew.dto.CrewListRes;
+import com.crude.travelcrew.domain.crew.dto.CrewReq;
+import com.crude.travelcrew.domain.crew.dto.CrewRes;
+import com.crude.travelcrew.domain.crew.entity.CrewComment;
+import com.crude.travelcrew.domain.crew.entity.Crew;
+import com.crude.travelcrew.domain.crew.repository.CrewCommentRepository;
+import com.crude.travelcrew.domain.crew.repository.CrewRepository;
 import com.crude.travelcrew.domain.member.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.global.error.exception.CrewException;

@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.crude.travelcrew.domain.board.entity.Crew;
+import com.crude.travelcrew.domain.crew.entity.Crew;
 import com.crude.travelcrew.domain.member.constants.MemberRole;
 import com.crude.travelcrew.domain.member.constants.MemberStatus;
 import com.crude.travelcrew.domain.member.constants.ProviderType;

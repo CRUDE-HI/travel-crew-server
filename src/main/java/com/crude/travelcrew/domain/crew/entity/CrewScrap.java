@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.board.entity;
+package com.crude.travelcrew.domain.crew.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

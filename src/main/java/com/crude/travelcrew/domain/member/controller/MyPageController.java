@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.crude.travelcrew.domain.board.dto.CrewRes;
+import com.crude.travelcrew.domain.crew.dto.CrewRes;
 import com.crude.travelcrew.domain.member.dto.UpdateNickReq;
 import com.crude.travelcrew.domain.member.dto.UpdatePWReq;
 import com.crude.travelcrew.domain.member.service.MyPageService;

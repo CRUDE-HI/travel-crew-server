@@ -1,11 +1,11 @@
-package com.crude.travelcrew.domain.board.repository;
+package com.crude.travelcrew.domain.crew.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.crude.travelcrew.domain.board.entity.Crew;
-import com.crude.travelcrew.domain.board.entity.CrewScrap;
+import com.crude.travelcrew.domain.crew.entity.Crew;
+import com.crude.travelcrew.domain.crew.entity.CrewScrap;
 import com.crude.travelcrew.domain.member.entity.Member;
 
 public interface CrewScrapRepository extends JpaRepository<CrewScrap, Long> {

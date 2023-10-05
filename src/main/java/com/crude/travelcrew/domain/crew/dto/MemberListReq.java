@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.board.dto;
+package com.crude.travelcrew.domain.crew.dto;
 
 public class MemberListReq {
 	private Long memberId;

@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.board.controller;
+package com.crude.travelcrew.domain.crew.controller;
 
 import java.security.Principal;
 
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crude.travelcrew.domain.board.service.CrewScrapService;
+import com.crude.travelcrew.domain.crew.service.CrewScrapService;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.board.controller;
+package com.crude.travelcrew.domain.crew.controller;
 
 import java.util.List;
 
@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crude.travelcrew.domain.board.dto.CrewCommentReq;
-import com.crude.travelcrew.domain.board.dto.CrewCommentRes;
-import com.crude.travelcrew.domain.board.dto.CrewListRes;
-import com.crude.travelcrew.domain.board.dto.CrewReq;
-import com.crude.travelcrew.domain.board.dto.CrewRes;
-import com.crude.travelcrew.domain.board.service.CrewService;
+import com.crude.travelcrew.domain.crew.dto.CrewCommentReq;
+import com.crude.travelcrew.domain.crew.dto.CrewCommentRes;
+import com.crude.travelcrew.domain.crew.dto.CrewListRes;
+import com.crude.travelcrew.domain.crew.dto.CrewReq;
+import com.crude.travelcrew.domain.crew.dto.CrewRes;
+import com.crude.travelcrew.domain.crew.service.CrewService;
 
 @RestController
 @RequestMapping("/api/crew")
