@@ -39,6 +39,9 @@ public class PostsService {
 	//글 생성
 	public PostsRes createCrew(PostsReq requestDto) {
 		Posts posts = new Posts(requestDto);
+		String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+		Member member = memberRepository.findByEmail(email);
+		posts.setMember(member);
 		postsRepository.save(posts);
 		return new PostsRes(posts);
 	}
