@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crude.travelcrew.domain.crew.dto.CrewCommentReq;
-import com.crude.travelcrew.domain.crew.dto.CrewCommentRes;
-import com.crude.travelcrew.domain.crew.dto.CrewListRes;
-import com.crude.travelcrew.domain.crew.dto.CrewReq;
-import com.crude.travelcrew.domain.crew.dto.CrewRes;
+import com.crude.travelcrew.domain.crew.model.dto.CrewCommentReq;
+import com.crude.travelcrew.domain.crew.model.dto.CrewCommentRes;
+import com.crude.travelcrew.domain.crew.model.dto.CrewListRes;
+import com.crude.travelcrew.domain.crew.model.dto.CrewReq;
+import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
 import com.crude.travelcrew.domain.crew.service.CrewService;
 
 @RestController

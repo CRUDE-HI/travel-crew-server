@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.crew.entity;
+package com.crude.travelcrew.domain.crew.model.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

@@ -5,8 +5,8 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.crude.travelcrew.domain.crew.entity.Crew;
-import com.crude.travelcrew.domain.crew.entity.CrewScrap;
+import com.crude.travelcrew.domain.crew.model.entity.Crew;
+import com.crude.travelcrew.domain.crew.model.entity.CrewScrap;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
 import com.crude.travelcrew.domain.crew.repository.CrewScrapRepository;
 import com.crude.travelcrew.domain.member.entity.Member;

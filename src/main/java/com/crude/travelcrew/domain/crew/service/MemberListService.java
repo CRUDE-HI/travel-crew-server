@@ -5,8 +5,8 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.crude.travelcrew.domain.crew.dto.MemberListReq;
-import com.crude.travelcrew.domain.crew.entity.Crew;
+import com.crude.travelcrew.domain.crew.model.dto.MemberListReq;
+import com.crude.travelcrew.domain.crew.model.entity.Crew;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
 import com.crude.travelcrew.domain.member.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;

@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.crew.dto;
+package com.crude.travelcrew.domain.crew.model.dto;
 
 import javax.validation.constraints.NotBlank;
 

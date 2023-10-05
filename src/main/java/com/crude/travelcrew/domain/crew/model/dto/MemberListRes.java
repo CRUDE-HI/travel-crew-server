@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.crew.dto;
+package com.crude.travelcrew.domain.crew.model.dto;
 
 public class MemberListRes {
 	private Long memberId;
