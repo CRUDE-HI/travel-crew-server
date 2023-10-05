@@ -58,8 +58,9 @@ public class PostsService {
 	}
 
 	// 전체 조회
-	public List<PostListRes> listPosts(Pageable pageable) {
-		return postsRepository.findAllByOrderByCreatedAtDesc(pageable);
+	public List<PostListRes> listPosts(String keyword, Pageable pageable) {
+		List<Posts> list = postsRepository.findByKeyword(keyword, pageable);
+		return list.stream().map(PostListRes::getEntity).collect(Collectors.toList());
 	}
 
 	public long validateToken() {

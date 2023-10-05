@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.crude.travelcrew.domain.board.dto.CommentReq;
@@ -36,8 +37,10 @@ public class PostsController {
 
 	// 글 조회
 	@GetMapping
-	public ResponseEntity<List<PostListRes>> listAllCrew(Pageable pageable) {
-		return ResponseEntity.ok(postsService.listPosts(pageable));
+	public ResponseEntity<List<PostListRes>> listAllCrew(
+		@RequestParam(value = "keyword", defaultValue = "") String keyword,
+		Pageable pageable) {
+		return ResponseEntity.ok(postsService.listPosts(keyword, pageable));
 	}
 
 	// 글 등록
