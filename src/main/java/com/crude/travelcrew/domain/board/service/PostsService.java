@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.crude.travelcrew.domain.board.dto.CommentReq;
 import com.crude.travelcrew.domain.board.dto.CommentRes;
+import com.crude.travelcrew.domain.board.dto.PostListRes;
 import com.crude.travelcrew.domain.board.dto.PostsReq;
 import com.crude.travelcrew.domain.board.dto.PostsRes;
 import com.crude.travelcrew.domain.board.entity.Comment;
@@ -46,7 +47,7 @@ public class PostsService {
 	@Transactional
 	public Long updateCrew(Long crewId, PostsReq requestDto) {
 		Posts posts = postsRepository.findById(crewId).orElseThrow(
-			()->new IllegalArgumentException("해당 아이디가 존재하지 않습니다. ")
+			() -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다. ")
 		);
 		posts.update(requestDto);
 		return posts.getCrewId();
@@ -58,6 +59,11 @@ public class PostsService {
 		return crewId;
 	}
 
+	// 전체 조회
+	public List<PostListRes> listPosts(String keyword, Pageable pageable) {
+		List<Posts> list = postsRepository.findByKeyword(keyword, pageable);
+		return list.stream().map(PostListRes::getEntity).collect(Collectors.toList());
+	}
 
 	public long validateToken() {
 		// 토큰에 담긴 사용자 정보가 실제로 member 테이블에 존재하는지 여부를 검증
