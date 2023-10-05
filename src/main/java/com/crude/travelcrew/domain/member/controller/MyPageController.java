@@ -1,17 +1,17 @@
 package com.crude.travelcrew.domain.member.controller;
 
+import java.security.Principal;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.crude.travelcrew.domain.member.dto.UpdateNickReq;
 import com.crude.travelcrew.domain.member.dto.UpdatePWReq;
-import com.crude.travelcrew.domain.member.entity.Member;
 import com.crude.travelcrew.domain.member.service.MyPageService;
 
 import lombok.RequiredArgsConstructor;
@@ -20,25 +20,28 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/mypage")
 @RequiredArgsConstructor
 public class MyPageController {
+
 	private final MyPageService myPageService;
 
-	// 회원 정보수정
-	@PatchMapping("/nickname/{id}")
-	public Long updateNick(@PathVariable("id") Long id, @RequestBody UpdateNickReq updateNickReq) throws Exception {
-
-		return myPageService.updateNick(id, updateNickReq);
+	// 닉네임 변경
+	@PatchMapping("/nickname")
+	public ResponseEntity<Void> updateNick(@RequestBody UpdateNickReq updateNickReq, Principal principal) {
+		myPageService.updateNick(updateNickReq, principal.getName());
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
-	@PatchMapping("/password/{id}")
-	public Long updatePW(@PathVariable("id") Long id, @RequestBody UpdatePWReq updatePWReq) throws Exception {
-
-		return myPageService.updatePW(id, updatePWReq);
+	// 비밀번호 변경
+	@PatchMapping("/password")
+	public ResponseEntity<Void> updatePW(@RequestBody UpdatePWReq updatePWReq, Principal principal) {
+		myPageService.updatePW(updatePWReq, principal.getName());
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
-	@PatchMapping("/profile/{id}")
-	public Long updateProfile(@PathVariable("id") Long id, @RequestPart MultipartFile image) {
-
-		return myPageService.updateImg(id, image);
+	// 프로필이미지 업로드
+	@PatchMapping("/profile")
+	public ResponseEntity<Void> updateProfile(@RequestBody MultipartFile image, Principal principal) {
+		myPageService.updateImg(image, principal.getName());
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 }
