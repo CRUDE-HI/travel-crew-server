@@ -21,7 +21,9 @@ import com.crude.travelcrew.domain.board.repository.CommentRepository;
 import com.crude.travelcrew.domain.board.repository.PostsRepository;
 import com.crude.travelcrew.domain.member.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
+import com.crude.travelcrew.global.error.exception.CrewException;
 import com.crude.travelcrew.global.error.exception.MemberException;
+import com.crude.travelcrew.global.error.type.CrewErrorCode;
 
 import lombok.AllArgsConstructor;
 
@@ -89,9 +91,9 @@ public class PostsService {
 	public void modifyComment(long commentId, CommentReq commentReq) {
 		long memberId = validateToken();
 		Comment comment = commentRepository.findById(commentId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다"));
+			.orElseThrow(() -> new CrewException(CrewErrorCode.COMMENT_NOT_FOUND));
 		if (memberId != comment.getMemberId()) {
-			throw new IllegalArgumentException("댓글은 작성자만 수정할 수 있습니다");
+			throw new CrewException(CrewErrorCode.FAIL_TO_MODIFY_CREW_COMMENT);
 		}
 		comment.setContent(commentReq.getContent());
 		commentRepository.save(comment);
@@ -101,9 +103,9 @@ public class PostsService {
 	public void deleteComment(long commentId) {
 		long memberId = validateToken();
 		Comment comment = commentRepository.findById(commentId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다"));
+			.orElseThrow(() -> new CrewException(CrewErrorCode.COMMENT_NOT_FOUND));
 		if (memberId != comment.getMemberId()) {
-			throw new IllegalArgumentException("댓글은 작성자만 삭제할 수 있습니다");
+			throw new CrewException(CrewErrorCode.FAIL_TO_DELETE_CREW_COMMENT);
 		}
 		commentRepository.delete(comment);
 	}
