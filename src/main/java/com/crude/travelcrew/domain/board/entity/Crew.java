@@ -17,14 +17,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 import org.springframework.data.annotation.LastModifiedDate;
 
 import com.crude.travelcrew.domain.board.contents.CrewGender;
 import com.crude.travelcrew.domain.board.contents.CrewStatus;
-import com.crude.travelcrew.domain.board.dto.PostsReq;
-import com.crude.travelcrew.domain.board.dto.PostsRes;
+import com.crude.travelcrew.domain.board.dto.CrewReq;
+import com.crude.travelcrew.domain.board.dto.CrewRes;
 import com.crude.travelcrew.domain.member.entity.Member;
 import com.crude.travelcrew.global.entity.BaseTime;
 
@@ -36,9 +35,9 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity(name = "crew_post")
+@Entity(name = "crew")
 @ToString
-public class Posts extends BaseTime {
+public class Crew extends BaseTime {
 
 	@Id
 	@Column(name = "crew_id")
@@ -95,53 +94,53 @@ public class Posts extends BaseTime {
 	// 참가자 추가
 	public void addMemberList(Member participant) {
 		memberList.add(participant);
-		participant.setPosts(this);
+		participant.setCrew(this);
 	}
 
 	// 참가자 제거
 	public void removeMemberList(Member participant) {
 		memberList.remove(participant);
-		participant.setPosts(null);
+		participant.setCrew(null);
 	}
 
 
 
-	public Posts(PostsReq postsReq) {
+	public Crew(CrewReq crewReq) {
 		this();
-		this.title = postsReq.getTitle();
-		this.crewStatus = postsReq.getCrewStatus();
-		this.thumbnailImgUrl = postsReq.getThumbnailImgUrl();
-		this.maxCrew = postsReq.getMaxCrew();
-		this.travelStart = postsReq.getTravelStart();
-		this.travelEnd = postsReq.getTravelEnd();
-		this.crewAge = postsReq.getCrewAge();
-		this.crewGender = postsReq.getCrewGender();
+		this.title = crewReq.getTitle();
+		this.crewStatus = crewReq.getCrewStatus();
+		this.thumbnailImgUrl = crewReq.getThumbnailImgUrl();
+		this.maxCrew = crewReq.getMaxCrew();
+		this.travelStart = crewReq.getTravelStart();
+		this.travelEnd = crewReq.getTravelEnd();
+		this.crewAge = crewReq.getCrewAge();
+		this.crewGender = crewReq.getCrewGender();
 
-		this.latitude = postsReq.getLatitude();
-		this.longitude = postsReq.getLongitude();
-		this.crewContent = postsReq.getCrewContent();
+		this.latitude = crewReq.getLatitude();
+		this.longitude = crewReq.getLongitude();
+		this.crewContent = crewReq.getCrewContent();
 
 	}
 
-	public void update(PostsReq postsReq) {
-		this.title = postsReq.getTitle();
-		this.crewStatus = postsReq.getCrewStatus();
-		this.thumbnailImgUrl = postsReq.getThumbnailImgUrl();
-		this.maxCrew = postsReq.getMaxCrew();
-		this.travelStart = postsReq.getTravelStart();
-		this.travelEnd = postsReq.getTravelEnd();
-		this.crewAge = postsReq.getCrewAge();
-		this.crewGender = postsReq.getCrewGender();
+	public void update(CrewReq crewReq) {
+		this.title = crewReq.getTitle();
+		this.crewStatus = crewReq.getCrewStatus();
+		this.thumbnailImgUrl = crewReq.getThumbnailImgUrl();
+		this.maxCrew = crewReq.getMaxCrew();
+		this.travelStart = crewReq.getTravelStart();
+		this.travelEnd = crewReq.getTravelEnd();
+		this.crewAge = crewReq.getCrewAge();
+		this.crewGender = crewReq.getCrewGender();
 
-		this.latitude = postsReq.getLatitude();
-		this.longitude = postsReq.getLongitude();
-		this.crewContent = postsReq.getCrewContent();
+		this.latitude = crewReq.getLatitude();
+		this.longitude = crewReq.getLongitude();
+		this.crewContent = crewReq.getCrewContent();
 	}
 
 
 
-	public PostsRes toPostsDTO () {
-		PostsRes toPostsDTO = new PostsRes();
+	public CrewRes toCrewDTO () {
+		CrewRes toPostsDTO = new CrewRes();
 		toPostsDTO.setMemberId(this.getMember().getId());
 		toPostsDTO.setTitle(this.getTitle());
 		toPostsDTO.setThumbnailImgUrl(this.getThumbnailImgUrl());

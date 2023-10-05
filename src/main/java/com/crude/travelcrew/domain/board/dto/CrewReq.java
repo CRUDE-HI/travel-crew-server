@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class PostsReq {
+public class CrewReq {
 
 	private String title;
 	private String thumbnailImgUrl;

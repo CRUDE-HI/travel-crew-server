@@ -2,7 +2,7 @@ package com.crude.travelcrew.domain.board.dto;
 
 import java.time.LocalDateTime;
 
-import com.crude.travelcrew.domain.board.entity.Comment;
+import com.crude.travelcrew.domain.board.entity.CrewComment;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +17,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentRes {
+public class CrewCommentRes {
 	private long commentId;
 	private long crewId;
 	private long memberId;
@@ -25,14 +25,14 @@ public class CommentRes {
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 
-	public static CommentRes fromEntity(Comment comment) {
-		return CommentRes.builder()
-			.commentId(comment.getCommentId())
-			.crewId(comment.getCrewId())
-			.memberId(comment.getMemberId())
-			.content(comment.getContent())
-			.createdAt(comment.getCreatedAt())
-			.updatedAt(comment.getUpdatedAt())
+	public static CrewCommentRes fromEntity(CrewComment crewComment) {
+		return CrewCommentRes.builder()
+			.commentId(crewComment.getCommentId())
+			.crewId(crewComment.getCrewId())
+			.memberId(crewComment.getMemberId())
+			.content(crewComment.getContent())
+			.createdAt(crewComment.getCreatedAt())
+			.updatedAt(crewComment.getUpdatedAt())
 			.build();
 	}
 }

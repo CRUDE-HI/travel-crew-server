@@ -3,7 +3,7 @@ package com.crude.travelcrew.domain.board.dto;
 import java.time.LocalDate;
 
 import com.crude.travelcrew.domain.board.contents.CrewStatus;
-import com.crude.travelcrew.domain.board.entity.Posts;
+import com.crude.travelcrew.domain.board.entity.Crew;
 import com.crude.travelcrew.domain.member.entity.Member;
 
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class PostListRes {
+public class CrewListRes {
 
 	private Long crewId;
 	private String title;
@@ -27,8 +27,8 @@ public class PostListRes {
 	private LocalDate travelStart;
 	private LocalDate travelEnd;
 
-	public static PostListRes getEntity(Posts post) {
-		return PostListRes.builder()
+	public static CrewListRes getEntity(Crew post) {
+		return CrewListRes.builder()
 			.crewId(post.getCrewId())
 			.title(post.getTitle())
 			.crewContent(post.getCrewContent())

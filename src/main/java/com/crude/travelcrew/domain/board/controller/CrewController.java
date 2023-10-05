@@ -18,74 +18,74 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crude.travelcrew.domain.board.dto.CommentReq;
-import com.crude.travelcrew.domain.board.dto.CommentRes;
-import com.crude.travelcrew.domain.board.dto.PostListRes;
-import com.crude.travelcrew.domain.board.dto.PostsReq;
-import com.crude.travelcrew.domain.board.dto.PostsRes;
-import com.crude.travelcrew.domain.board.service.PostsService;
+import com.crude.travelcrew.domain.board.dto.CrewCommentReq;
+import com.crude.travelcrew.domain.board.dto.CrewCommentRes;
+import com.crude.travelcrew.domain.board.dto.CrewListRes;
+import com.crude.travelcrew.domain.board.dto.CrewReq;
+import com.crude.travelcrew.domain.board.dto.CrewRes;
+import com.crude.travelcrew.domain.board.service.CrewService;
 
 @RestController
 @RequestMapping("/api/crew")
-public class PostsController {
+public class CrewController {
 
-	private final PostsService postsService;
+	private final CrewService crewService;
 
-	public PostsController(PostsService postsService) {
-		this.postsService = postsService;
+	public CrewController(CrewService crewService) {
+		this.crewService = crewService;
 	}
 
 	// 글 조회
 	@GetMapping
-	public ResponseEntity<List<PostListRes>> listAllCrew(
+	public ResponseEntity<List<CrewListRes>> getAllCrewList(
 		@RequestParam(value = "keyword", defaultValue = "") String keyword,
 		Pageable pageable) {
-		return ResponseEntity.ok(postsService.listPosts(keyword, pageable));
+		return ResponseEntity.ok(crewService.getCrewList(keyword, pageable));
 	}
 
 	// 글 등록
 	@PostMapping("/post")
-	public PostsRes createCrew(@RequestBody PostsReq requestDto) {
-		PostsRes posts = postsService.createCrew(requestDto);
-		return posts;
+	public CrewRes createCrew(@RequestBody CrewReq requestDto) {
+		CrewRes response = crewService.createCrew(requestDto);
+		return response;
 	}
 
 	// 글 수정
 	@PutMapping("/{crewId}")
-	public Long updateCrew(@PathVariable Long crewId, @RequestBody PostsReq requestDto) {
-		return postsService.updateCrew(crewId, requestDto);
+	public Long updateCrew(@PathVariable Long crewId, @RequestBody CrewReq requestDto) {
+		return crewService.updateCrew(crewId, requestDto);
 	}
 
 	// 글 삭제
 	@DeleteMapping("/{crewId}")
 	public Long deleteCrew(@PathVariable Long crewId) {
-		return postsService.deleteCrew(crewId);
+		return crewService.deleteCrew(crewId);
 	}
 
 	// 댓글 조회
 	@GetMapping("/{crewId}/comment")
-	public ResponseEntity<List<CommentRes>> listComment(@PathVariable long crewId, Pageable pageable) {
-		return ResponseEntity.ok(postsService.listComment(crewId, pageable));
+	public ResponseEntity<List<CrewCommentRes>> getCommentList(@PathVariable long crewId, Pageable pageable) {
+		return ResponseEntity.ok(crewService.getCommentList(crewId, pageable));
 	}
 
 	// 댓글 등록
 	@PostMapping("/{crewId}/comment")
-	public ResponseEntity<Object> createComment(@PathVariable long crewId, @Valid CommentReq commentReq) {
-		postsService.createComment(crewId, commentReq);
+	public ResponseEntity<Object> createComment(@PathVariable long crewId, @Valid CrewCommentReq commentReq) {
+		crewService.createComment(crewId, commentReq);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
 	// 댓글 수정
 	@PatchMapping("/{crewId}/comment/{commentId}")
-	public ResponseEntity<Object> modifyComment(@PathVariable long commentId, @Valid CommentReq commentReq) {
-		postsService.modifyComment(commentId, commentReq);
+	public ResponseEntity<Object> modifyComment(@PathVariable long commentId, @Valid CrewCommentReq commentReq) {
+		crewService.modifyComment(commentId, commentReq);
 		return ResponseEntity.ok().build();
 	}
 
 	// 댓글 삭제
 	@DeleteMapping("/{crewId}/comment/{commentId}")
 	public ResponseEntity<Object> deleteComment(@PathVariable long commentId) {
-		postsService.deleteComment(commentId);
+		crewService.deleteComment(commentId);
 		return ResponseEntity.ok().build();
 	}
 

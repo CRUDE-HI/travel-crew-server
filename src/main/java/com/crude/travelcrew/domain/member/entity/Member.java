@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.crude.travelcrew.domain.board.entity.Posts;
+import com.crude.travelcrew.domain.board.entity.Crew;
 import com.crude.travelcrew.domain.member.constants.MemberRole;
 import com.crude.travelcrew.domain.member.constants.MemberStatus;
 import com.crude.travelcrew.domain.member.constants.ProviderType;
@@ -69,6 +69,6 @@ public class Member extends BaseTime {
 	// 동행 게시판 참가자
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "crew_id", updatable = false)
-	private Posts posts;
+	private Crew crew;
 
 }

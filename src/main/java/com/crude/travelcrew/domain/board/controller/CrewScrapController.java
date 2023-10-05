@@ -10,26 +10,26 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crude.travelcrew.domain.board.service.ScrapService;
+import com.crude.travelcrew.domain.board.service.CrewScrapService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("api/crew")
 @RequiredArgsConstructor
-public class ScrapController {
+public class CrewScrapController {
 
-	private final ScrapService scrapService;
+	private final CrewScrapService crewScrapService;
 
 	@PostMapping("/{crewId}/scrap")
-	public ResponseEntity<Void> scrapPost(@PathVariable Long crewId, Principal principal) {
-		scrapService.scrapPost(crewId, principal.getName());
+	public ResponseEntity<Void> scrapCrew(@PathVariable Long crewId, Principal principal) {
+		crewScrapService.scrapCrew(crewId, principal.getName());
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 	@DeleteMapping("/{crewId}/scrap")
-	public ResponseEntity<Void> deleteScrapPost(@PathVariable Long crewId, Principal principal) {
-		scrapService.deleteScrapPost(crewId, principal.getName());
+	public ResponseEntity<Void> deleteScrap(@PathVariable Long crewId, Principal principal) {
+		crewScrapService.deleteScrap(crewId, principal.getName());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

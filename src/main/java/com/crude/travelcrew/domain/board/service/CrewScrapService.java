@@ -5,10 +5,10 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.crude.travelcrew.domain.board.entity.Posts;
-import com.crude.travelcrew.domain.board.entity.Scraps;
-import com.crude.travelcrew.domain.board.repository.PostsRepository;
-import com.crude.travelcrew.domain.board.repository.ScrapRepository;
+import com.crude.travelcrew.domain.board.entity.Crew;
+import com.crude.travelcrew.domain.board.entity.CrewScrap;
+import com.crude.travelcrew.domain.board.repository.CrewRepository;
+import com.crude.travelcrew.domain.board.repository.CrewScrapRepository;
 import com.crude.travelcrew.domain.member.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 
@@ -16,13 +16,13 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ScrapService {
-	private final ScrapRepository scrapRepository;
+public class CrewScrapService {
+	private final CrewScrapRepository crewScrapRepository;
 	private final MemberRepository memberRepository;
-	private final PostsRepository postsRepository;
+	private final CrewRepository crewRepository;
 
 	@Transactional
-	public void scrapPost(Long crewId, String email) {
+	public void scrapCrew(Long crewId, String email) {
 
 		Member member = memberRepository.findByEmail(email);
 
@@ -30,23 +30,23 @@ public class ScrapService {
 			throw new IllegalArgumentException("사용자를 찾을수 없습니다.");
 		}
 
-		Posts posts = postsRepository.findById(crewId)
+		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new IllegalArgumentException("게시물을 찾을수 없습니다."));
 
-		if (scrapRepository.existsByMemberAndPosts(member, posts)) {
+		if (crewScrapRepository.existsByMemberAndCrew(member, crew)) {
 			throw new IllegalArgumentException("이미 스크랩하셨습니다.");
 		}
 
-		Scraps scraps = Scraps.builder()
+		CrewScrap scrap = CrewScrap.builder()
 			.member(member)
-			.posts(posts)
+			.crew(crew)
 			.build();
 
-		scrapRepository.save(scraps);
+		crewScrapRepository.save(scrap);
 	}
 
 	@Transactional
-	public void deleteScrapPost(Long crewId, String email) {
+	public void deleteScrap(Long crewId, String email) {
 
 		Member member = memberRepository.findByEmail(email);
 
@@ -54,12 +54,12 @@ public class ScrapService {
 			throw new IllegalArgumentException("사용자를 찾을수 없습니다.");
 		}
 
-		Posts posts = postsRepository.findById(crewId)
+		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new IllegalArgumentException("게시물을 찾을수 없습니다."));
 
-		Scraps scraps = scrapRepository.findByMemberAndPosts(member, posts)
+		CrewScrap scrap = crewScrapRepository.findByMemberAndCrew(member, crew)
 			.orElseThrow(() -> new IllegalArgumentException("스크랩 되어있지 않습니다."));
 
-		scrapRepository.delete(scraps);
+		crewScrapRepository.delete(scrap);
 	}
 }

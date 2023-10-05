@@ -21,15 +21,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Scraps {
+public class CrewScrap {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "scrap_id")
+	@Column(name = "crew_crap_id")
 	private Long id;
 
-	@JoinColumn(name = "posts_id", updatable = false)
+	@JoinColumn(name = "crew_id", updatable = false)
 	@ManyToOne(fetch = FetchType.LAZY)
-	private Posts posts;
+	private Crew crew;
 
 	@JoinColumn(name = "member_id", updatable = false)
 	@ManyToOne(fetch = FetchType.LAZY)

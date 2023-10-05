@@ -6,8 +6,7 @@ import java.time.LocalDateTime;
 
 import com.crude.travelcrew.domain.board.contents.CrewGender;
 import com.crude.travelcrew.domain.board.contents.CrewStatus;
-import com.crude.travelcrew.domain.board.entity.Posts;
-import com.crude.travelcrew.domain.member.entity.Member;
+import com.crude.travelcrew.domain.board.entity.Crew;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class PostsRes {
+public class CrewRes {
 
 	private String title;
 	private Long memberId;
@@ -37,21 +36,21 @@ public class PostsRes {
 
 
 
-	public PostsRes (Posts posts){
-		this.title = posts.getTitle();
-		this.memberId = posts.getMember().getId();
-		this.thumbnailImgUrl = posts.getThumbnailImgUrl();
-		this.crewStatus = posts.getCrewStatus();
-		this.maxCrew = posts.getMaxCrew();
-		this.travelStart = posts.getTravelStart();
-		this.travelEnd = posts.getTravelEnd();
-		this.crewAge = posts.getCrewAge();
-		this.crewGender = posts.getCrewGender();
-		this.updateAt = posts.getUpdateAt();
+	public CrewRes(Crew crew){
+		this.title = crew.getTitle();
+		this.memberId = crew.getMember().getId();
+		this.thumbnailImgUrl = crew.getThumbnailImgUrl();
+		this.crewStatus = crew.getCrewStatus();
+		this.maxCrew = crew.getMaxCrew();
+		this.travelStart = crew.getTravelStart();
+		this.travelEnd = crew.getTravelEnd();
+		this.crewAge = crew.getCrewAge();
+		this.crewGender = crew.getCrewGender();
+		this.updateAt = crew.getUpdateAt();
 
-		this.latitude = posts.getLatitude();
-		this.longitude = posts.getLongitude();
-		this.crewContent = posts.getCrewContent();
+		this.latitude = crew.getLatitude();
+		this.longitude = crew.getLongitude();
+		this.crewContent = crew.getCrewContent();
 
 	}
 

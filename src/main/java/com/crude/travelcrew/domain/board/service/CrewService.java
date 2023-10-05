@@ -11,15 +11,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.crude.travelcrew.domain.board.dto.CommentReq;
-import com.crude.travelcrew.domain.board.dto.CommentRes;
-import com.crude.travelcrew.domain.board.dto.PostListRes;
-import com.crude.travelcrew.domain.board.dto.PostsReq;
-import com.crude.travelcrew.domain.board.dto.PostsRes;
-import com.crude.travelcrew.domain.board.entity.Comment;
-import com.crude.travelcrew.domain.board.entity.Posts;
-import com.crude.travelcrew.domain.board.repository.CommentRepository;
-import com.crude.travelcrew.domain.board.repository.PostsRepository;
+import com.crude.travelcrew.domain.board.dto.CrewCommentReq;
+import com.crude.travelcrew.domain.board.dto.CrewCommentRes;
+import com.crude.travelcrew.domain.board.dto.CrewListRes;
+import com.crude.travelcrew.domain.board.dto.CrewReq;
+import com.crude.travelcrew.domain.board.dto.CrewRes;
+import com.crude.travelcrew.domain.board.entity.CrewComment;
+import com.crude.travelcrew.domain.board.entity.Crew;
+import com.crude.travelcrew.domain.board.repository.CrewCommentRepository;
+import com.crude.travelcrew.domain.board.repository.CrewRepository;
 import com.crude.travelcrew.domain.member.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.global.error.exception.CrewException;
@@ -30,42 +30,42 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class PostsService {
+public class CrewService {
 
-	private final PostsRepository postsRepository;
-	private final CommentRepository commentRepository;
+	private final CrewRepository crewRepository;
+	private final CrewCommentRepository crewCommentRepository;
 	private final MemberRepository memberRepository;
 
 	//글 생성
-	public PostsRes createCrew(PostsReq requestDto) {
-		Posts posts = new Posts(requestDto);
+	public CrewRes createCrew(CrewReq requestDto) {
+		Crew crew = new Crew(requestDto);
 		String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
 		Member member = memberRepository.findByEmail(email);
-		posts.setMember(member);
-		postsRepository.save(posts);
-		return new PostsRes(posts);
+		crew.setMember(member);
+		crewRepository.save(crew);
+		return new CrewRes(crew);
 	}
 
 	//수정
 	@Transactional
-	public Long updateCrew(Long crewId, PostsReq requestDto) {
-		Posts posts = postsRepository.findById(crewId).orElseThrow(
+	public Long updateCrew(Long crewId, CrewReq requestDto) {
+		Crew crew = crewRepository.findById(crewId).orElseThrow(
 			() -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다. ")
 		);
-		posts.update(requestDto);
-		return posts.getCrewId();
+		crew.update(requestDto);
+		return crew.getCrewId();
 	}
 
 	//삭제
 	public Long deleteCrew(Long crewId) {
-		postsRepository.deleteById(crewId);
+		crewRepository.deleteById(crewId);
 		return crewId;
 	}
 
 	// 전체 조회
-	public List<PostListRes> listPosts(String keyword, Pageable pageable) {
-		List<Posts> list = postsRepository.findByKeyword(keyword, pageable);
-		return list.stream().map(PostListRes::getEntity).collect(Collectors.toList());
+	public List<CrewListRes> getCrewList(String keyword, Pageable pageable) {
+		List<Crew> list = crewRepository.findByKeyword(keyword, pageable);
+		return list.stream().map(CrewListRes::getEntity).collect(Collectors.toList());
 	}
 
 	public long validateToken() {
@@ -79,44 +79,44 @@ public class PostsService {
 	}
 
 	// 댓글 조회
-	public List<CommentRes> listComment(long crewId, Pageable pageable) {
+	public List<CrewCommentRes> getCommentList(long crewId, Pageable pageable) {
 		// 무한 스크롤 추가 예정
-		List<Comment> list = commentRepository.findByCrewId(crewId, pageable);
-		return list.stream().map(CommentRes::fromEntity).collect(Collectors.toList());
+		List<CrewComment> list = crewCommentRepository.findByCrewId(crewId, pageable);
+		return list.stream().map(CrewCommentRes::fromEntity).collect(Collectors.toList());
 	}
 
 	// 댓글 등록
-	public void createComment(long crewId, CommentReq commentReq) {
+	public void createComment(long crewId, CrewCommentReq commentReq) {
 		long memberId = validateToken();
-		Comment comment = Comment.builder()
+		CrewComment comment = CrewComment.builder()
 			.crewId(crewId)
 			.memberId(memberId)
 			.content(commentReq.getContent())
 			.build();
-		commentRepository.save(comment);
+		crewCommentRepository.save(comment);
 	}
 
 	// 댓글 수정
-	public void modifyComment(long commentId, CommentReq commentReq) {
+	public void modifyComment(long commentId, CrewCommentReq commentReq) {
 		long memberId = validateToken();
-		Comment comment = commentRepository.findById(commentId)
+		CrewComment comment = crewCommentRepository.findById(commentId)
 			.orElseThrow(() -> new CrewException(CrewErrorCode.COMMENT_NOT_FOUND));
 		if (memberId != comment.getMemberId()) {
 			throw new CrewException(CrewErrorCode.FAIL_TO_MODIFY_CREW_COMMENT);
 		}
 		comment.setContent(commentReq.getContent());
-		commentRepository.save(comment);
+		crewCommentRepository.save(comment);
 	}
 
 	// 댓글 삭제
 	public void deleteComment(long commentId) {
 		long memberId = validateToken();
-		Comment comment = commentRepository.findById(commentId)
+		CrewComment comment = crewCommentRepository.findById(commentId)
 			.orElseThrow(() -> new CrewException(CrewErrorCode.COMMENT_NOT_FOUND));
 		if (memberId != comment.getMemberId()) {
 			throw new CrewException(CrewErrorCode.FAIL_TO_DELETE_CREW_COMMENT);
 		}
-		commentRepository.delete(comment);
+		crewCommentRepository.delete(comment);
 	}
 
 }
