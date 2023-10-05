@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.crude.travelcrew.domain.member.entity.Member;
+import com.crude.travelcrew.domain.member.model.entity.Member;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

@@ -8,7 +8,7 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.crude.travelcrew.domain.member.entity.Member;
+import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.domain.record.model.entity.Record;
 import com.crude.travelcrew.domain.record.model.entity.RecordHeart;

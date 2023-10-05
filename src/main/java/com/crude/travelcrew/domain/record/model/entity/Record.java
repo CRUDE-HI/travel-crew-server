@@ -13,7 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import com.crude.travelcrew.domain.member.entity.Member;
+import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.global.entity.BaseTime;
 
 import lombok.AccessLevel;

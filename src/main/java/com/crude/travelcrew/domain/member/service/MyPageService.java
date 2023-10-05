@@ -14,9 +14,9 @@ import com.crude.travelcrew.global.awss3.service.AwsS3Service;
 import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
-import com.crude.travelcrew.domain.member.dto.UpdateNickReq;
-import com.crude.travelcrew.domain.member.dto.UpdatePWReq;
-import com.crude.travelcrew.domain.member.entity.Member;
+import com.crude.travelcrew.domain.member.model.dto.UpdateNickReq;
+import com.crude.travelcrew.domain.member.model.dto.UpdatePWReq;
+import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;

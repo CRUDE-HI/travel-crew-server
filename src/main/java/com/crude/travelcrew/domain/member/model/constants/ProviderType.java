@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.member.constants;
+package com.crude.travelcrew.domain.member.model.constants;
 
 import lombok.Getter;
 

@@ -1,6 +1,6 @@
-package com.crude.travelcrew.domain.member.dto;
+package com.crude.travelcrew.domain.member.model.dto;
 
-import com.crude.travelcrew.domain.member.entity.Member;
+import com.crude.travelcrew.domain.member.model.entity.Member;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

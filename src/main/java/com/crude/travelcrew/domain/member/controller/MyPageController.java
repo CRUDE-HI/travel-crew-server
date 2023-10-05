@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
-import com.crude.travelcrew.domain.member.dto.UpdateNickReq;
-import com.crude.travelcrew.domain.member.dto.UpdatePWReq;
+import com.crude.travelcrew.domain.member.model.dto.UpdateNickReq;
+import com.crude.travelcrew.domain.member.model.dto.UpdatePWReq;
 import com.crude.travelcrew.domain.member.service.MyPageService;
 
 import lombok.RequiredArgsConstructor;

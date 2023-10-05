@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.crude.travelcrew.domain.member.entity.Member;
+import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.record.model.entity.Record;
 import com.crude.travelcrew.domain.record.model.entity.RecordHeart;
 

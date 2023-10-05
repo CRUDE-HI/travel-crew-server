@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.member.entity;
+package com.crude.travelcrew.domain.member.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,10 +14,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
-import com.crude.travelcrew.domain.member.constants.MemberRole;
-import com.crude.travelcrew.domain.member.constants.MemberStatus;
-import com.crude.travelcrew.domain.member.constants.ProviderType;
-import com.crude.travelcrew.domain.member.dto.SignUpReq;
+import com.crude.travelcrew.domain.member.model.constants.MemberRole;
+import com.crude.travelcrew.domain.member.model.constants.MemberStatus;
+import com.crude.travelcrew.domain.member.model.constants.ProviderType;
+import com.crude.travelcrew.domain.member.model.dto.SignUpReq;
 import com.crude.travelcrew.global.entity.BaseTime;
 
 import lombok.Getter;

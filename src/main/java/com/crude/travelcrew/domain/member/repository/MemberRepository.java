@@ -2,7 +2,7 @@ package com.crude.travelcrew.domain.member.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.crude.travelcrew.domain.member.entity.Member;
+import com.crude.travelcrew.domain.member.model.entity.Member;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 

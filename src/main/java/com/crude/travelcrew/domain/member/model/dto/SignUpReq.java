@@ -1,8 +1,8 @@
-package com.crude.travelcrew.domain.member.dto;
+package com.crude.travelcrew.domain.member.model.dto;
 
 import java.time.LocalDate;
 
-import com.crude.travelcrew.domain.member.constants.Gender;
+import com.crude.travelcrew.domain.member.model.constants.Gender;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

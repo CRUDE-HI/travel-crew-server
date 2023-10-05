@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.member.entity;
+package com.crude.travelcrew.domain.member.model.entity;
 
 import java.time.LocalDate;
 
@@ -13,8 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.crude.travelcrew.domain.member.constants.Gender;
-import com.crude.travelcrew.domain.member.dto.SignUpReq;
+import com.crude.travelcrew.domain.member.model.constants.Gender;
+import com.crude.travelcrew.domain.member.model.dto.SignUpReq;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

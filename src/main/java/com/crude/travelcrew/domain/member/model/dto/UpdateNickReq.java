@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.member.dto;
+package com.crude.travelcrew.domain.member.model.dto;
 
 import lombok.Getter;
 
