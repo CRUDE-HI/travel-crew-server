@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import com.crude.travelcrew.domain.board.contents.CrewGender;
 import com.crude.travelcrew.domain.board.contents.CrewStatus;
 import com.crude.travelcrew.domain.board.entity.Posts;
+import com.crude.travelcrew.domain.member.entity.Member;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import lombok.NoArgsConstructor;
 public class PostsRes {
 
 	private String title;
+	private Long id;
 	private String thumbnailImgUrl;
 	private CrewStatus crewStatus;
 	private Integer maxCrew;
@@ -35,6 +37,7 @@ public class PostsRes {
 
 	public PostsRes (Posts posts){
 		this.title = posts.getTitle();
+		this.id = posts.getMember().getId();
 		this.thumbnailImgUrl = posts.getThumbnailImgUrl();
 		this.crewStatus = posts.getCrewStatus();
 		this.maxCrew = posts.getMaxCrew();

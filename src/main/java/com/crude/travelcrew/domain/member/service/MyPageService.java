@@ -3,7 +3,9 @@ package com.crude.travelcrew.domain.member.service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.crude.travelcrew.domain.awss3.service.AwsS3Service;
 import com.crude.travelcrew.domain.member.dto.UpdateNickReq;
 import com.crude.travelcrew.domain.member.dto.UpdatePWReq;
 import com.crude.travelcrew.domain.member.entity.Member;
@@ -14,8 +16,11 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class MyPageService {
+	private final static String DIR = "profile";
+
 	private final MemberRepository memberRepository;
 	private final BCryptPasswordEncoder encoder;
+	private final AwsS3Service awsS3Service;
 
 	@Transactional
 	public Long updateNick(Long id, UpdateNickReq updateNickReq) {
@@ -43,5 +48,17 @@ public class MyPageService {
 				return memberRepository.save(member).getId();
 			}
 		}
+	}
+
+	@Transactional
+	public Long updateImg(Long id, MultipartFile image) {
+		Member member = memberRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다"));
+
+		String imageUrl = awsS3Service.uploadImageFile(image, DIR);
+
+		member.setProfileImgUrl(imageUrl);
+
+		return memberRepository.save(member).getId();
 	}
 }

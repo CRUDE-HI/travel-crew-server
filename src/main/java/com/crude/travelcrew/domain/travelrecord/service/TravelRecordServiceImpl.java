@@ -21,6 +21,7 @@ import com.crude.travelcrew.domain.travelrecord.model.dto.EditTravelRecordRes;
 import com.crude.travelcrew.domain.travelrecord.model.dto.TravelRecordImageRes;
 import com.crude.travelcrew.domain.travelrecord.model.entity.TravelRecord;
 import com.crude.travelcrew.domain.travelrecord.model.entity.TravelRecordImage;
+import com.crude.travelcrew.domain.travelrecord.repository.TravelRecordCommentRepository;
 import com.crude.travelcrew.domain.travelrecord.repository.TravelRecordImageRepository;
 import com.crude.travelcrew.domain.travelrecord.repository.TravelRecordRepository;
 import com.crude.travelcrew.global.error.exception.MemberException;
@@ -37,6 +38,7 @@ public class TravelRecordServiceImpl implements TravelRecordService {
 	private final MemberRepository memberRepository;
 	private final TravelRecordRepository travelRecordRepository;
 	private final TravelRecordImageRepository travelRecordImageRepository;
+	private final TravelRecordCommentRepository travelRecordCommentRepository;
 	private final AwsS3Service awsS3Service;
 
 	@Override
@@ -97,6 +99,8 @@ public class TravelRecordServiceImpl implements TravelRecordService {
 			// 여행 기록 이미지 일괄 삭제
 			travelRecordImageRepository.deleteAllByTravelRecordId(travelRecordId);
 		}
+		// 여행 기록 댓글 삭제
+		travelRecordCommentRepository.deleteAllByTravelRecordId(travelRecordId);
 		// 여행 기록 삭제
 		travelRecordRepository.deleteById(travelRecordId);
 		return getMessage("여행 기록이 삭제되었습니다.");
