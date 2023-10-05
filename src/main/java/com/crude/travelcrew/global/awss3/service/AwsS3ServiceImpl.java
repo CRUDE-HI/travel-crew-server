@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.awss3.service;
+package com.crude.travelcrew.global.awss3.service;
 
 import static com.crude.travelcrew.global.error.type.CommonErrorCode.*;
 
@@ -21,7 +21,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.crude.travelcrew.domain.awss3.constants.FileExtension;
+import com.crude.travelcrew.global.awss3.constants.FileExtension;
 import com.crude.travelcrew.global.error.exception.CommonException;
 
 import lombok.RequiredArgsConstructor;

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.crude.travelcrew.domain.awss3.service.AwsS3Service;
+import com.crude.travelcrew.global.awss3.service.AwsS3Service;
 import com.crude.travelcrew.domain.member.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.domain.record.model.dto.EditRecordReq;

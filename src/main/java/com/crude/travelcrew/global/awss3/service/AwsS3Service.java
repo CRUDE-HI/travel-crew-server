@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.awss3.service;
+package com.crude.travelcrew.global.awss3.service;
 
 import java.util.List;
 
