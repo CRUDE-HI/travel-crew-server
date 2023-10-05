@@ -26,14 +26,14 @@ public class ScrapService {
 
 		Member member = memberRepository.findByEmail(email);
 
-		if (Objects.isNull(member)){
+		if (Objects.isNull(member)) {
 			throw new IllegalArgumentException("사용자를 찾을수 없습니다.");
 		}
 
 		Posts posts = postsRepository.findById(crewId)
 			.orElseThrow(() -> new IllegalArgumentException("게시물을 찾을수 없습니다."));
 
-		if (scrapRepository.existsByMemberAndPosts(member,posts)){
+		if (scrapRepository.existsByMemberAndPosts(member, posts)) {
 			throw new IllegalArgumentException("이미 스크랩하셨습니다.");
 		}
 
@@ -50,7 +50,7 @@ public class ScrapService {
 
 		Member member = memberRepository.findByEmail(email);
 
-		if (Objects.isNull(member)){
+		if (Objects.isNull(member)) {
 			throw new IllegalArgumentException("사용자를 찾을수 없습니다.");
 		}
 
