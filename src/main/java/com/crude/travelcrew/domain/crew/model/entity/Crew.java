@@ -2,10 +2,7 @@ package com.crude.travelcrew.domain.crew.model.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -16,7 +13,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -86,23 +82,6 @@ public class Crew extends BaseTime {
 
 	@Column(nullable = false)
 	private String crewContent;
-
-	// 동행 참가자 명단
-	@OneToMany(mappedBy = "posts", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Member> memberList = new ArrayList<>();
-
-	// 참가자 추가
-	public void addMemberList(Member participant) {
-		memberList.add(participant);
-		participant.setCrew(this);
-	}
-
-	// 참가자 제거
-	public void removeMemberList(Member participant) {
-		memberList.remove(participant);
-		participant.setCrew(null);
-	}
-
 
 
 	public Crew(CrewReq crewReq) {
