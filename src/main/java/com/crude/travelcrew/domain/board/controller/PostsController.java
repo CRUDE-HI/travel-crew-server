@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.crude.travelcrew.domain.board.dto.CommentReq;
 import com.crude.travelcrew.domain.board.dto.CommentRes;
+import com.crude.travelcrew.domain.board.dto.PostListRes;
 import com.crude.travelcrew.domain.board.dto.PostsReq;
 import com.crude.travelcrew.domain.board.dto.PostsRes;
 import com.crude.travelcrew.domain.board.service.PostsService;
@@ -33,6 +34,12 @@ public class PostsController {
 		this.postsService = postsService;
 	}
 
+	// 글 조회
+	@GetMapping
+	public ResponseEntity<List<PostListRes>> listAllCrew(Pageable pageable) {
+		return ResponseEntity.ok(postsService.listPosts(pageable));
+	}
+
 	// 글 등록
 	@PostMapping("/post")
 	public PostsRes createCrew(@RequestBody PostsReq requestDto) {
@@ -43,7 +50,7 @@ public class PostsController {
 	// 글 수정
 	@PutMapping("/{crewId}")
 	public Long updateCrew(@PathVariable Long crewId, @RequestBody PostsReq requestDto) {
-		return postsService.updateCrew(crewId,requestDto);
+		return postsService.updateCrew(crewId, requestDto);
 	}
 
 	// 글 삭제
