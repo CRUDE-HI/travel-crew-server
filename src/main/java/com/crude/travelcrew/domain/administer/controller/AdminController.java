@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.crude.travelcrew.domain.administer.dto.GetMemberRes;
 import com.crude.travelcrew.domain.administer.dto.GetRecordRes;
+import com.crude.travelcrew.domain.administer.dto.GetReportRes;
 import com.crude.travelcrew.domain.administer.dto.MemberListReq;
 import com.crude.travelcrew.domain.administer.dto.MemberListRes;
 import com.crude.travelcrew.domain.administer.dto.RecordListReq;
@@ -142,6 +143,12 @@ public class AdminController {
 		ReportListRes reportListRes = adminGetReportService.getList(reportListReq);
 
 		return ResponseEntity.ok(reportListRes);
+	}
+
+	@GetMapping("/report/{reportId}")
+	public ResponseEntity<GetReportRes> getReport(@PathVariable Long reportId) {
+		GetReportRes reportRes = adminGetReportService.getReport(reportId);
+		return ResponseEntity.ok(reportRes);
 	}
 
 	@GetMapping("/record")
