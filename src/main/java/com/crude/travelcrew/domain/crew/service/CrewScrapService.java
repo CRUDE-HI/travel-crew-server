@@ -37,12 +37,12 @@ public class CrewScrapService {
 			throw new IllegalArgumentException("이미 스크랩하셨습니다.");
 		}
 
-		CrewScrap scrap = CrewScrap.builder()
+		CrewScrap crewScrap = CrewScrap.builder()
 			.member(member)
 			.crew(crew)
 			.build();
 
-		crewScrapRepository.save(scrap);
+		crewScrapRepository.save(crewScrap);
 	}
 
 	@Transactional
