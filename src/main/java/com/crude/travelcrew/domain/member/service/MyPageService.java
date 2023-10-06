@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.crude.travelcrew.domain.awss3.service.AwsS3Service;
-import com.crude.travelcrew.domain.board.dto.PostsRes;
-import com.crude.travelcrew.domain.board.entity.Posts;
-import com.crude.travelcrew.domain.board.repository.PostsRepository;
-import com.crude.travelcrew.domain.member.dto.UpdateNickReq;
-import com.crude.travelcrew.domain.member.dto.UpdatePWReq;
-import com.crude.travelcrew.domain.member.entity.Member;
+import com.crude.travelcrew.global.awss3.service.AwsS3Service;
+import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
+import com.crude.travelcrew.domain.crew.model.entity.Crew;
+import com.crude.travelcrew.domain.crew.repository.CrewRepository;
+import com.crude.travelcrew.domain.member.model.dto.UpdateNickReq;
+import com.crude.travelcrew.domain.member.model.dto.UpdatePWReq;
+import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class MyPageService {
 	private final static String DIR = "profile";
 
 	private final MemberRepository memberRepository;
-	private final PostsRepository postsRepository;
+	private final CrewRepository crewRepository;
 	private final BCryptPasswordEncoder encoder;
 	private final AwsS3Service awsS3Service;
 
@@ -83,14 +83,14 @@ public class MyPageService {
 	}
 
 	// 내가 쓴 동행 글 조회
-	public List<PostsRes> postsCreated() {
+	public List<CrewRes> getMyCrewList() {
 		String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
 		if (Objects.isNull(email)) {
 			return null;
 		}
 		Member member = memberRepository.findByEmail(email);
-		List<Posts> postsList = postsRepository.findAllByMember(member);
-		return postsList.stream().map(Posts::toPostsDTO).collect(Collectors.toList());
+		List<Crew> crewList = crewRepository.findAllByMember(member);
+		return crewList.stream().map(Crew::toCrewDTO).collect(Collectors.toList());
 	}
 
 }

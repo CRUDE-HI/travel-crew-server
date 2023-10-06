@@ -12,15 +12,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.crude.travelcrew.domain.board.dto.PostsRes;
-import com.crude.travelcrew.domain.member.dto.UpdateNickReq;
-import com.crude.travelcrew.domain.member.dto.UpdatePWReq;
+import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
+import com.crude.travelcrew.domain.member.model.dto.UpdateNickReq;
+import com.crude.travelcrew.domain.member.model.dto.UpdatePWReq;
 import com.crude.travelcrew.domain.member.service.MyPageService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/mypage")
+@RequestMapping("/api/my-page")
 @RequiredArgsConstructor
 public class MyPageController {
 
@@ -49,8 +49,8 @@ public class MyPageController {
 
 	// 내가 쓴 동행 글 조회
 	@GetMapping("/post")
-	public ResponseEntity<List<PostsRes>> postsCreated() {
-		return ResponseEntity.ok(myPageService.postsCreated());
+	public ResponseEntity<List<CrewRes>> getMyCrewList() {
+		return ResponseEntity.ok(myPageService.getMyCrewList());
 	}
 
 }

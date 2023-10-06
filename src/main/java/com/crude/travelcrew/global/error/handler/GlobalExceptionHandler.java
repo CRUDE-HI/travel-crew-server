@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import com.crude.travelcrew.global.error.exception.CommonException;
 import com.crude.travelcrew.global.error.exception.MemberException;
-import com.crude.travelcrew.global.error.exception.TravelRecordException;
+import com.crude.travelcrew.global.error.exception.RecordException;
 import com.crude.travelcrew.global.error.model.ErrorResponse;
 import com.crude.travelcrew.global.error.model.FieldErrorResponse;
 
@@ -29,8 +29,8 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(e.getErrorCode().getStatus()).body(response);
 	}
 
-	@ExceptionHandler(TravelRecordException.class)
-	public ResponseEntity<ErrorResponse> handleTravelRecordException(TravelRecordException e) {
+	@ExceptionHandler(RecordException.class)
+	public ResponseEntity<ErrorResponse> handleTravelRecordException(RecordException e) {
 
 		ErrorResponse response = ErrorResponse.builder()
 			.status(e.getErrorCode().getStatus().value())

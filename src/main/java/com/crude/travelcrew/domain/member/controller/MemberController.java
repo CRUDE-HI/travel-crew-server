@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crude.travelcrew.domain.member.dto.SignUpReq;
-import com.crude.travelcrew.domain.member.dto.SignUpRes;
-import com.crude.travelcrew.domain.member.entity.Member;
-import com.crude.travelcrew.domain.member.entity.MemberProfile;
+import com.crude.travelcrew.domain.member.model.dto.SignUpReq;
+import com.crude.travelcrew.domain.member.model.dto.SignUpRes;
+import com.crude.travelcrew.domain.member.model.entity.Member;
+import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
 import com.crude.travelcrew.domain.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
