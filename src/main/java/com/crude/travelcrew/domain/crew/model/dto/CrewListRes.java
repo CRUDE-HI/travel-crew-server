@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import com.crude.travelcrew.domain.crew.model.constants.CrewStatus;
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
-import com.crude.travelcrew.domain.member.model.entity.Member;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +19,8 @@ public class CrewListRes {
 	private Long crewId;
 	private String title;
 	private String crewContent;
-	private Member member;
+	private String memberName;
+	private String memberEmail;
 	private String thumbnailImgUrl;
 	private Integer maxCrew;
 	private CrewStatus crewStatus;
@@ -32,7 +32,8 @@ public class CrewListRes {
 			.crewId(post.getCrewId())
 			.title(post.getTitle())
 			.crewContent(post.getCrewContent())
-			.member(post.getMember())
+			.memberName(post.getMember().getNickname())
+			.memberEmail(post.getMember().getEmail())
 			.thumbnailImgUrl(post.getThumbnailImgUrl())
 			.maxCrew(post.getMaxCrew())
 			.crewStatus(post.getCrewStatus())
