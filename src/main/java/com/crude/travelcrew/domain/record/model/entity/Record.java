@@ -52,4 +52,9 @@ public class Record extends BaseTime {
 		this.title = title;
 		this.content = content;
 	}
+
+	public void blockContent() {
+		this.title = "차단된 글입니다.";
+		this.content = "차단된 글입니다.";
+	}
 }

@@ -19,6 +19,7 @@ import com.crude.travelcrew.domain.member.model.constants.MemberStatus;
 import com.crude.travelcrew.domain.member.model.constants.ProviderType;
 import com.crude.travelcrew.domain.member.model.dto.SignUpReq;
 import com.crude.travelcrew.global.entity.BaseTime;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -57,6 +58,7 @@ public class Member extends BaseTime {
 	private MemberRole role;
 
 	@OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+	@JsonManagedReference
 	private MemberProfile memberProfile;
 
 	public Member(SignUpReq signUpReq) {
