@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.administer.dto;
+package com.crude.travelcrew.domain.administer.dto.getMember;
 
 import java.util.List;
 
@@ -13,8 +13,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class MemberListRes {
-	private List<MemberListResponseDto> memberList;
+public class ADMemberListRes {
+	private List<ADMemberListResponseDto> memberList;
 	private int totalMembers;
 	private int currentPage;
 }

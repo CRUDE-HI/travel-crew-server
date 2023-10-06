@@ -9,31 +9,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import com.crude.travelcrew.domain.administer.dto.GetRecordRes;
-import com.crude.travelcrew.domain.administer.dto.RecordListReq;
-import com.crude.travelcrew.domain.administer.dto.RecordListRes;
-import com.crude.travelcrew.domain.administer.dto.RecordListResponseDto;
-import com.crude.travelcrew.domain.member.entity.Member;
-import com.crude.travelcrew.domain.travelrecord.model.entity.TravelRecord;
-import com.crude.travelcrew.domain.travelrecord.model.entity.TravelRecordImage;
-import com.crude.travelcrew.domain.travelrecord.repository.TravelRecordImageRepository;
-import com.crude.travelcrew.domain.travelrecord.repository.TravelRecordRepository;
+import com.crude.travelcrew.domain.administer.dto.getMember.ADGetRecordRes;
+import com.crude.travelcrew.domain.administer.dto.getRecord.ADRecordListReq;
+import com.crude.travelcrew.domain.administer.dto.getRecord.ADRecordListRes;
+import com.crude.travelcrew.domain.administer.dto.getRecord.ADRecordListResponseDto;
+import com.crude.travelcrew.domain.member.model.entity.Member;
+import com.crude.travelcrew.domain.record.model.entity.Record;
+import com.crude.travelcrew.domain.record.model.entity.RecordImage;
+import com.crude.travelcrew.domain.record.repository.RecordImageRepository;
+import com.crude.travelcrew.domain.record.repository.RecordRepository;
 
 @Service
 public class AdminGetRecordService {
 
 	@Autowired
-	TravelRecordRepository travelRecordRepository;
+	RecordRepository recordRepository;
 
 	@Autowired
-	private TravelRecordImageRepository travelRecordImageRepository;
+	private RecordImageRepository recordImageRepository;
 
-	public List<RecordListResponseDto> convertToDto(List<TravelRecord> records) {
+	public List<ADRecordListResponseDto> convertToDto(List<Record> records) {
 		return records.stream()
 			.map(
 				record -> {
 					Member member = record.getMember();
-					return new RecordListResponseDto(
+					return new ADRecordListResponseDto(
 						record.getId(),
 						record.getTitle(),
 						member.getNickname(),
@@ -45,28 +45,28 @@ public class AdminGetRecordService {
 	}
 
 	@Transactional
-	public RecordListRes getList(RecordListReq recordListReq) {
+	public ADRecordListRes getList(ADRecordListReq ADRecordListReq) {
 
-		Page<TravelRecord> page = travelRecordRepository.findAll(recordListReq.pageable());
+		Page<Record> page = recordRepository.findAll(ADRecordListReq.pageable());
 
-		RecordListRes recordListRes = new RecordListRes(convertToDto(page.getContent()), (int)page.getTotalElements(),
-			recordListReq.getPage());
+		ADRecordListRes ADRecordListRes = new ADRecordListRes(convertToDto(page.getContent()), (int)page.getTotalElements(),
+			ADRecordListReq.getPage());
 
-		return recordListRes;
+		return ADRecordListRes;
 	}
 
 	@Transactional
-	public GetRecordRes getRecord(Long recordId) {
-		TravelRecord record = travelRecordRepository.findById(recordId)
+	public ADGetRecordRes getRecord(Long recordId) {
+		Record record = recordRepository.findById(recordId)
 			.orElseThrow(() -> new IllegalArgumentException("해당 글을 찾을 수 없습니다."));
 
-		List<String> imageUrls = record.getTravelRecordImages().stream()
-			.map(TravelRecordImage::getImageUrl)
+		List<String> imageUrls = record.getRecordImages().stream()
+			.map(RecordImage::getImageUrl)
 			.collect(Collectors.toList());
 
 		Member member = record.getMember();
 
-		return new GetRecordRes(
+		return new ADGetRecordRes(
 			record.getId(),
 			record.getTitle(),
 			record.getContent(),
@@ -81,13 +81,13 @@ public class AdminGetRecordService {
 
 	@Transactional
 	public void blockAndDeleteImages(Long recordId) {
-		TravelRecord record = travelRecordRepository.findById(recordId)
+		Record record = recordRepository.findById(recordId)
 			.orElseThrow(() -> new IllegalArgumentException("해당 글을 찾을 수 없습니다."));
 
 		record.blockContent();
 
-		travelRecordImageRepository.deleteAllByTravelRecordId(recordId);
+		recordImageRepository.deleteAllByRecordId(recordId);
 
-		travelRecordRepository.save(record);
+		recordRepository.save(record);
 	}
 }

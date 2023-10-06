@@ -12,25 +12,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crude.travelcrew.domain.administer.dto.GetMemberRes;
-import com.crude.travelcrew.domain.administer.dto.GetRecordRes;
-import com.crude.travelcrew.domain.administer.dto.GetReportRes;
-import com.crude.travelcrew.domain.administer.dto.MemberListReq;
-import com.crude.travelcrew.domain.administer.dto.MemberListRes;
-import com.crude.travelcrew.domain.administer.dto.RecordListReq;
-import com.crude.travelcrew.domain.administer.dto.RecordListRes;
-import com.crude.travelcrew.domain.administer.dto.ReportListReq;
-import com.crude.travelcrew.domain.administer.dto.ReportListRes;
-import com.crude.travelcrew.domain.administer.dto.ReportedMemberListReq;
-import com.crude.travelcrew.domain.administer.dto.UpdateMemberReq;
+import com.crude.travelcrew.domain.administer.dto.getCrew.CrewListReq;
+import com.crude.travelcrew.domain.administer.dto.getMember.ADGetMemberRes;
+import com.crude.travelcrew.domain.administer.dto.getMember.ADGetRecordRes;
+import com.crude.travelcrew.domain.administer.dto.getMember.ADGetReportRes;
+import com.crude.travelcrew.domain.administer.dto.getMember.ADMemberListReq;
+import com.crude.travelcrew.domain.administer.dto.getMember.ADMemberListRes;
+import com.crude.travelcrew.domain.administer.dto.getRecord.ADRecordListReq;
+import com.crude.travelcrew.domain.administer.dto.getRecord.ADRecordListRes;
+import com.crude.travelcrew.domain.administer.dto.getReport.ADReportListReq;
+import com.crude.travelcrew.domain.administer.dto.getReport.ADReportListRes;
+import com.crude.travelcrew.domain.administer.dto.getReport.ADReportedMemberListReq;
+import com.crude.travelcrew.domain.administer.dto.adminMember.ADUpdateMemberReq;
 import com.crude.travelcrew.domain.administer.service.AdminGetMemberService;
 import com.crude.travelcrew.domain.administer.service.AdminGetRecordService;
 import com.crude.travelcrew.domain.administer.service.AdminGetReportService;
 import com.crude.travelcrew.domain.administer.service.AdminMemberService;
-import com.crude.travelcrew.domain.member.dto.SignUpReq;
-import com.crude.travelcrew.domain.member.dto.SignUpRes;
-import com.crude.travelcrew.domain.member.entity.Member;
-import com.crude.travelcrew.domain.member.entity.MemberProfile;
+import com.crude.travelcrew.domain.member.model.dto.SignUpReq;
+import com.crude.travelcrew.domain.member.model.dto.SignUpRes;
+import com.crude.travelcrew.domain.member.model.entity.Member;
+import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -82,30 +83,30 @@ public class AdminController {
 	}
 
 	@GetMapping("/member")
-	public ResponseEntity<MemberListRes> memberList(
+	public ResponseEntity<ADMemberListRes> memberList(
 		@RequestParam(value = "page", defaultValue = "0") int page,
 		@RequestParam(value = "size", defaultValue = "10") int size,
 		@RequestParam(value = "search", required = false) String search
 	) throws Exception {
 
-		MemberListReq memberListReq = new MemberListReq();
-		memberListReq.setPage(page);
-		memberListReq.setSize(size);
-		memberListReq.setSearch(search);
+		ADMemberListReq ADMemberListReq = new ADMemberListReq();
+		ADMemberListReq.setPage(page);
+		ADMemberListReq.setSize(size);
+		ADMemberListReq.setSearch(search);
 
-		MemberListRes memberListRes = adminGetMemberService.getList(memberListReq);
+		ADMemberListRes ADMemberListRes = adminGetMemberService.getList(ADMemberListReq);
 
-		return ResponseEntity.ok(memberListRes);
+		return ResponseEntity.ok(ADMemberListRes);
 	}
 
 	@GetMapping("/member/{id}")
-	public ResponseEntity<GetMemberRes> getMember(@PathVariable Long id) {
-		GetMemberRes memberResponseDto = adminGetMemberService.getMember(id);
+	public ResponseEntity<ADGetMemberRes> getMember(@PathVariable Long id) {
+		ADGetMemberRes memberResponseDto = adminGetMemberService.getMember(id);
 		return ResponseEntity.ok(memberResponseDto);
 	}
 
 	@PatchMapping("/member/{id}")
-	public ResponseEntity<Void> updateMember(@PathVariable Long id, @RequestBody UpdateMemberReq updateMemberReq) {
+	public ResponseEntity<Void> updateMember(@PathVariable Long id, @RequestBody ADUpdateMemberReq updateMemberReq) {
 		adminGetMemberService.updateMember(id, updateMemberReq);
 		return ResponseEntity.noContent().build();
 	}
@@ -117,7 +118,7 @@ public class AdminController {
 		@RequestParam(value = "search", required = false) String search
 	) throws Exception {
 
-		ReportedMemberListReq memberListReq = new ReportedMemberListReq();
+		ADReportedMemberListReq memberListReq = new ADReportedMemberListReq();
 		memberListReq.setPage(page);
 		memberListReq.setSize(size);
 		memberListReq.setSearch(search);
@@ -127,50 +128,50 @@ public class AdminController {
 	}
 
 	@GetMapping("/reported-members/{memberId}")
-	public ResponseEntity<ReportListRes> getReports(
+	public ResponseEntity<ADReportListRes> getReports(
 		@RequestParam(value = "page", defaultValue = "0") int page,
 		@RequestParam(value = "size", defaultValue = "10") int size,
 		@RequestParam(value = "search", required = false) String search,
 		@PathVariable Long memberId
 	) throws Exception {
 
-		ReportListReq reportListReq = new ReportListReq();
-		reportListReq.setPage(page);
-		reportListReq.setSize(size);
-		reportListReq.setSearch(search);
-		reportListReq.getReportedId(memberId);
+		ADReportListReq ADReportListReq = new ADReportListReq();
+		ADReportListReq.setPage(page);
+		ADReportListReq.setSize(size);
+		ADReportListReq.setSearch(search);
+		ADReportListReq.getReportedId(memberId);
 
-		ReportListRes reportListRes = adminGetReportService.getList(reportListReq);
+		ADReportListRes ADReportListRes = adminGetReportService.getList(ADReportListReq);
 
-		return ResponseEntity.ok(reportListRes);
+		return ResponseEntity.ok(ADReportListRes);
 	}
 
 	@GetMapping("/report/{reportId}")
-	public ResponseEntity<GetReportRes> getReport(@PathVariable Long reportId) {
-		GetReportRes reportRes = adminGetReportService.getReport(reportId);
+	public ResponseEntity<ADGetReportRes> getReport(@PathVariable Long reportId) {
+		ADGetReportRes reportRes = adminGetReportService.getReport(reportId);
 		return ResponseEntity.ok(reportRes);
 	}
 
 	@GetMapping("/record")
-	public ResponseEntity<RecordListRes> recordList(
+	public ResponseEntity<ADRecordListRes> recordList(
 		@RequestParam(value = "page", defaultValue = "0") int page,
 		@RequestParam(value = "size", defaultValue = "10") int size,
 		@RequestParam(value = "search", required = false) String search
 	) throws Exception {
 
-		RecordListReq recordListReq = new RecordListReq();
-		recordListReq.setPage(page);
-		recordListReq.setSize(size);
-		recordListReq.setSearch(search);
+		ADRecordListReq ADRecordListReq = new ADRecordListReq();
+		ADRecordListReq.setPage(page);
+		ADRecordListReq.setSize(size);
+		ADRecordListReq.setSearch(search);
 
-		RecordListRes recordListRes = adminGetRecordService.getList(recordListReq);
+		ADRecordListRes ADRecordListRes = adminGetRecordService.getList(ADRecordListReq);
 
-		return ResponseEntity.ok(recordListRes);
+		return ResponseEntity.ok(ADRecordListRes);
 	}
 
 	@GetMapping("/record/{recordId}")
-	public ResponseEntity<GetRecordRes> getRecord(@PathVariable Long recordId) {
-		GetRecordRes recordRes = adminGetRecordService.getRecord(recordId);
+	public ResponseEntity<ADGetRecordRes> getRecord(@PathVariable Long recordId) {
+		ADGetRecordRes recordRes = adminGetRecordService.getRecord(recordId);
 		return ResponseEntity.ok(recordRes);
 	}
 

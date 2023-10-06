@@ -1,7 +1,6 @@
-package com.crude.travelcrew.domain.administer.dto;
+package com.crude.travelcrew.domain.administer.dto.getReport;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,17 +13,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class GetRecordRes {
+public class ADReportListResponseDto {
 
-	private Long recordId;
-	private String title;
+	private Long id;
 	private String content;
+	private String reporterNickname;
+
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
-
-	private List<String> imageUrls;
-
-	private String email;
-	private String nickname;
-	private String profileImgUrl;
 }

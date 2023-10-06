@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.administer.dto;
+package com.crude.travelcrew.domain.administer.dto.getRecord;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +13,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class RecordListResponseDto {
+public class ADRecordListResponseDto {
 
 	private Long id;
 	private String title;

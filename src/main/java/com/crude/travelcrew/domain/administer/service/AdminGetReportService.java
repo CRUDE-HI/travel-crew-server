@@ -9,11 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import com.crude.travelcrew.domain.administer.dto.GetReportRes;
-import com.crude.travelcrew.domain.administer.dto.ReportListReq;
-import com.crude.travelcrew.domain.administer.dto.ReportListRes;
-import com.crude.travelcrew.domain.administer.dto.ReportListResponseDto;
-import com.crude.travelcrew.domain.member.entity.Member;
+import com.crude.travelcrew.domain.administer.dto.getMember.ADGetReportRes;
+import com.crude.travelcrew.domain.administer.dto.getReport.ADReportListReq;
+import com.crude.travelcrew.domain.administer.dto.getReport.ADReportListRes;
+import com.crude.travelcrew.domain.administer.dto.getReport.ADReportListResponseDto;
+import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.domain.report.model.entity.Report;
 import com.crude.travelcrew.domain.report.repository.ReportRepository;
@@ -27,12 +27,12 @@ public class AdminGetReportService {
 	@Autowired
 	MemberRepository memberRepository;
 
-	public List<ReportListResponseDto> convertToDto(List<Report> reports) {
+	public List<ADReportListResponseDto> convertToDto(List<Report> reports) {
 		return reports.stream()
 			.map(
 				report -> {
 					Member member = report.getReporter();
-					return new ReportListResponseDto(
+					return new ADReportListResponseDto(
 						report.getReportId(),
 						report.getContent(),
 						member.getNickname(),
@@ -44,27 +44,27 @@ public class AdminGetReportService {
 	}
 
 	@Transactional
-	public ReportListRes getList(ReportListReq reportListReq) {
+	public ADReportListRes getList(ADReportListReq ADReportListReq) {
 
-		Page<Report> page = reportRepository.findReportsByReportedId(reportListReq.getReportedId(),
-			reportListReq.pageable());
+		Page<Report> page = reportRepository.findReportsByReportedId(ADReportListReq.getReportedId(),
+			ADReportListReq.pageable());
 
-		ReportListRes reportListRes = new ReportListRes(
-			convertToDto(page.getContent()), (int)page.getTotalElements(), reportListReq.getPage()
+		ADReportListRes ADReportListRes = new ADReportListRes(
+			convertToDto(page.getContent()), (int)page.getTotalElements(), ADReportListReq.getPage()
 		);
 
-		return reportListRes;
+		return ADReportListRes;
 	}
 
 	@Transactional
-	public GetReportRes getReport(Long reportId) {
+	public ADGetReportRes getReport(Long reportId) {
 		Report report = reportRepository.findById(reportId)
 			.orElseThrow(() -> new IllegalArgumentException("해당 신고를 찾을 수 없습니다."));
 
 		Member reported = report.getReported();
 		Member reporter = report.getReporter();
 
-		return new GetReportRes(
+		return new ADGetReportRes(
 			report.getReportId(),
 			reported.getNickname(),
 			report.getContent(),

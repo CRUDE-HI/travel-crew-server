@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.administer.dto;
+package com.crude.travelcrew.domain.administer.dto.getReport;
 
 import java.util.List;
 
@@ -13,8 +13,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ReportListRes {
-	private List<ReportListResponseDto> reportList;
+public class ADReportListRes {
+	private List<ADReportListResponseDto> reportList;
 	private int totalReports;
 	private int currentPage;
 }

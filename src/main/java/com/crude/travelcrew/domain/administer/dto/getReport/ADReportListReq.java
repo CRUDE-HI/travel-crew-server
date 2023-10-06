@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.administer.dto;
+package com.crude.travelcrew.domain.administer.dto.getReport;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,13 +15,18 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class RecordListReq {
+public class ADReportListReq {
 	private int page;
 	private int size;
 	private String search;
 
+	private Long reportedId;
+
 	public Pageable pageable() {
-		Sort.by("createdAt").descending();
-		return PageRequest.of(page, size);
+		return PageRequest.of(page, size, Sort.by("createdAt").descending());
+	}
+
+	public void getReportedId(Long memberId) {
+		this.reportedId = memberId;
 	}
 }

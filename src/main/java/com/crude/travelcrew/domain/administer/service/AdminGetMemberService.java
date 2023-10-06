@@ -8,13 +8,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.crude.travelcrew.domain.administer.dto.GetMemberRes;
-import com.crude.travelcrew.domain.administer.dto.MemberListReq;
-import com.crude.travelcrew.domain.administer.dto.MemberListRes;
-import com.crude.travelcrew.domain.administer.dto.MemberListResponseDto;
-import com.crude.travelcrew.domain.administer.dto.UpdateMemberReq;
-import com.crude.travelcrew.domain.member.entity.Member;
-import com.crude.travelcrew.domain.member.entity.MemberProfile;
+import com.crude.travelcrew.domain.administer.dto.getMember.ADGetMemberRes;
+import com.crude.travelcrew.domain.administer.dto.getMember.ADMemberListReq;
+import com.crude.travelcrew.domain.administer.dto.getMember.ADMemberListRes;
+import com.crude.travelcrew.domain.administer.dto.getMember.ADMemberListResponseDto;
+import com.crude.travelcrew.domain.administer.dto.adminMember.ADUpdateMemberReq;
+import com.crude.travelcrew.domain.member.model.entity.Member;
+import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
 import com.crude.travelcrew.domain.member.repository.MemberProfileRepository;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -31,12 +31,12 @@ public class AdminGetMemberService {
 	@Autowired
 	private JPAQueryFactory queryFactory;
 
-	public List<MemberListResponseDto> convertToDto(List<Member> members) {
+	public List<ADMemberListResponseDto> convertToDto(List<Member> members) {
 		return members.stream()
 			.map(
 				member -> {
 					MemberProfile profile = member.getMemberProfile();
-					return new MemberListResponseDto(
+					return new ADMemberListResponseDto(
 						member.getId(),
 						member.getEmail(),
 						member.getNickname(),
@@ -51,24 +51,24 @@ public class AdminGetMemberService {
 			).collect(Collectors.toList());
 	}
 
-	public MemberListRes getList(MemberListReq memberListReq) {
+	public ADMemberListRes getList(ADMemberListReq ADMemberListReq) {
 
-		Page<Member> page = memberRepository.findAll(memberListReq.pageable());
+		Page<Member> page = memberRepository.findAll(ADMemberListReq.pageable());
 
-		MemberListRes memberListRes = new MemberListRes(convertToDto(page.getContent()), (int)page.getTotalElements(),
-			memberListReq.getPage());
+		ADMemberListRes ADMemberListRes = new ADMemberListRes(convertToDto(page.getContent()), (int)page.getTotalElements(),
+			ADMemberListReq.getPage());
 
-		return memberListRes;
+		return ADMemberListRes;
 	}
 
-	public GetMemberRes getMember(Long memberId) {
+	public ADGetMemberRes getMember(Long memberId) {
 
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다."));
 
 		MemberProfile profile = member.getMemberProfile();
 
-		return new GetMemberRes(
+		return new ADGetMemberRes(
 			member.getId(),
 			member.getEmail(),
 			member.getNickname(),
@@ -86,7 +86,7 @@ public class AdminGetMemberService {
 		);
 	}
 
-	public void updateMember(Long id, UpdateMemberReq updateMemberReq) {
+	public void updateMember(Long id, ADUpdateMemberReq updateMemberReq) {
 		Member member = memberRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다."));
 

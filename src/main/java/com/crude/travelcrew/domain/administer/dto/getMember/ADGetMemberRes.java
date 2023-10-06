@@ -1,12 +1,12 @@
-package com.crude.travelcrew.domain.administer.dto;
+package com.crude.travelcrew.domain.administer.dto.getMember;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.crude.travelcrew.domain.member.constants.Gender;
-import com.crude.travelcrew.domain.member.constants.MemberRole;
-import com.crude.travelcrew.domain.member.constants.MemberStatus;
-import com.crude.travelcrew.domain.member.constants.ProviderType;
+import com.crude.travelcrew.domain.member.model.constants.Gender;
+import com.crude.travelcrew.domain.member.model.constants.MemberRole;
+import com.crude.travelcrew.domain.member.model.constants.MemberStatus;
+import com.crude.travelcrew.domain.member.model.constants.ProviderType;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,7 +19,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class GetMemberRes {
+public class ADGetMemberRes {
 
 	private Long Id;
 	private String email;

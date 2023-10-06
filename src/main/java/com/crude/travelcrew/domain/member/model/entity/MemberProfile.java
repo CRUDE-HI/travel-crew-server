@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.member.entity;
+package com.crude.travelcrew.domain.member.model.entity;
 
 import java.time.LocalDate;
 

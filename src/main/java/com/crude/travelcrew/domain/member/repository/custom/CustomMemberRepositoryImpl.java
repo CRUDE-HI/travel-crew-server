@@ -7,9 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import com.crude.travelcrew.domain.member.entity.Member;
-import com.crude.travelcrew.domain.member.entity.QMember;
-import com.crude.travelcrew.domain.member.entity.QMemberProfile;
+import com.crude.travelcrew.domain.member.model.entity.Member;
+import com.crude.travelcrew.domain.member.model.entity.QMember;
+import com.crude.travelcrew.domain.member.model.entity.QMemberProfile;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
