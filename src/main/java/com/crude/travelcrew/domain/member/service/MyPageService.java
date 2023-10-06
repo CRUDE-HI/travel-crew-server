@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.crude.travelcrew.global.awss3.service.AwsS3Service;
 import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
@@ -18,6 +17,7 @@ import com.crude.travelcrew.domain.member.model.dto.UpdateNickReq;
 import com.crude.travelcrew.domain.member.model.dto.UpdatePWReq;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
+import com.crude.travelcrew.global.awss3.service.AwsS3Service;
 
 import lombok.RequiredArgsConstructor;
 
@@ -80,6 +80,27 @@ public class MyPageService {
 		String imageUrl = awsS3Service.uploadImageFile(image, DIR);
 		member.setProfileImgUrl(imageUrl);
 		memberRepository.save(member);
+	}
+
+	// 프로필 이미지 삭제
+	public void deleteImg(String profileImgUrl, String email) {
+
+		Member member = memberRepository.findByEmail(email);
+
+		if (Objects.isNull(member)) {
+			throw new IllegalArgumentException("해당 사용자를 찾을수 없습니다.");
+		}
+
+		memberRepository.findByProfileImgUrl(member.getProfileImgUrl())
+			.orElseThrow(() -> new IllegalArgumentException("이미지 파일이 존재하지 않습니다."));
+
+		try {
+			awsS3Service.deleteImageFile(member.getProfileImgUrl(), DIR);
+			member.setProfileImgUrl("삭제성공!");
+			memberRepository.save(member);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	// 내가 쓴 동행 글 조회
