@@ -1,5 +1,6 @@
 package com.crude.travelcrew.domain.member.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,17 +15,16 @@ import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
 import com.crude.travelcrew.domain.member.service.MemberService;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/member")
-@RequiredArgsConstructor
 @CrossOrigin
 @Slf4j
 public class MemberController {
 
-	private final MemberService memberService;
+	@Autowired
+	MemberService memberService;
 
 	@PostMapping("/login")
 	public ResponseEntity<SignUpRes> login(@RequestBody SignUpReq signUpReq) throws Exception {

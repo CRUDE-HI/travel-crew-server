@@ -44,10 +44,9 @@ public class CrewController {
 	}
 
 	// 글 등록
-	@PostMapping("/post")
+	@PostMapping
 	public CrewRes createCrew(@RequestBody CrewReq requestDto) {
-		CrewRes response = crewService.createCrew(requestDto);
-		return response;
+		return crewService.createCrew(requestDto);
 	}
 
 	// 글 수정

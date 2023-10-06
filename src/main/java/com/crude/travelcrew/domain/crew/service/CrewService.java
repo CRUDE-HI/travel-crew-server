@@ -16,8 +16,8 @@ import com.crude.travelcrew.domain.crew.model.dto.CrewCommentRes;
 import com.crude.travelcrew.domain.crew.model.dto.CrewListRes;
 import com.crude.travelcrew.domain.crew.model.dto.CrewReq;
 import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
-import com.crude.travelcrew.domain.crew.model.entity.CrewComment;
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
+import com.crude.travelcrew.domain.crew.model.entity.CrewComment;
 import com.crude.travelcrew.domain.crew.repository.CrewCommentRepository;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
 import com.crude.travelcrew.domain.member.model.entity.Member;
@@ -63,6 +63,7 @@ public class CrewService {
 	}
 
 	// 전체 조회
+	@Transactional
 	public List<CrewListRes> getCrewList(String keyword, Pageable pageable) {
 		List<Crew> list = crewRepository.findByKeyword(keyword, pageable);
 		return list.stream().map(CrewListRes::getEntity).collect(Collectors.toList());
