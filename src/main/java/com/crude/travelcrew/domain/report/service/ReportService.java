@@ -6,11 +6,9 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.crude.travelcrew.domain.member.entity.Member;
-import com.crude.travelcrew.domain.member.entity.MemberProfile;
+import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.domain.report.model.dto.ReportReq;
-import com.crude.travelcrew.domain.report.model.dto.ReportRes;
 import com.crude.travelcrew.domain.report.model.entity.Report;
 import com.crude.travelcrew.domain.report.repository.ReportRepository;
 
