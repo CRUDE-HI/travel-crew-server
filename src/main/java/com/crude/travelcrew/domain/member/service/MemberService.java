@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.crude.travelcrew.domain.member.model.constants.MemberRole;
 import com.crude.travelcrew.domain.member.model.constants.MemberStatus;
 import com.crude.travelcrew.domain.member.model.constants.ProviderType;
+import com.crude.travelcrew.domain.member.model.dto.MemberRes;
 import com.crude.travelcrew.domain.member.model.dto.SignUpReq;
 import com.crude.travelcrew.domain.member.model.dto.SignUpRes;
 import com.crude.travelcrew.domain.member.model.entity.Member;
@@ -86,5 +87,10 @@ public class MemberService {
 		memberProfile.setReportCnt(0);
 		memberProfile.setHeartBeat(60D);
 		return memberProfileRepository.save(memberProfile);
+	}
+
+	public MemberRes opInfo(String nickname) {
+		Member member = memberRepository.findByNickname(nickname);
+		return member.toMemberDTO();
 	}
 }
