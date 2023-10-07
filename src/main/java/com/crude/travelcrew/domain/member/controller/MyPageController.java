@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,6 +45,13 @@ public class MyPageController {
 	@PatchMapping("/profile")
 	public ResponseEntity<Void> updateProfile(@RequestBody MultipartFile image, Principal principal) {
 		myPageService.updateImg(image, principal.getName());
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	// 프로필이미지 삭제
+	@DeleteMapping("/profile")
+	public ResponseEntity<Void> deleteProfile(String profileImgUrl, Principal principal) {
+		myPageService.deleteImg(profileImgUrl, principal.getName());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
