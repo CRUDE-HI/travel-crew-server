@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.crude.travelcrew.domain.crew.model.dto.CrewCommentReq;
 import com.crude.travelcrew.domain.crew.model.dto.CrewCommentRes;
@@ -22,6 +23,7 @@ import com.crude.travelcrew.domain.crew.repository.CrewCommentRepository;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
+import com.crude.travelcrew.global.awss3.service.AwsS3Service;
 import com.crude.travelcrew.global.error.exception.CrewException;
 import com.crude.travelcrew.global.error.exception.MemberException;
 import com.crude.travelcrew.global.error.type.CrewErrorCode;
@@ -32,18 +34,47 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class CrewService {
 
+	private final static String DIR = "crew";
+
 	private final CrewRepository crewRepository;
 	private final CrewCommentRepository crewCommentRepository;
 	private final MemberRepository memberRepository;
+	private final AwsS3Service awsS3Service;
 
-	//글 생성
-	public CrewRes createCrew(CrewReq requestDto) {
-		Crew crew = new Crew(requestDto);
-		String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+	@Transactional
+	public CrewRes createCrew(CrewReq requestDto, MultipartFile image, String email) {
+
 		Member member = memberRepository.findByEmail(email);
+
+		if(Objects.isNull(member)){
+			throw new MemberException(MEMBER_NOT_FOUND);
+		}
+
+		Crew crew = Crew.builder()
+			.title(requestDto.getTitle())
+			.crewPlace(requestDto.getCrewPlace())
+			.crewStatus(requestDto.getCrewStatus())
+			.maxCrew(requestDto.getMaxCrew())
+			.travelStart(requestDto.getTravelStart())
+			.travelEnd(requestDto.getTravelEnd())
+			.latitude(requestDto.getLatitude())
+			.longitude(requestDto.getLongitude())
+			.crewContent(requestDto.getCrewContent())
+			.build();
+
 		crew.setMember(member);
 		crewRepository.save(crew);
-		return new CrewRes(crew);
+
+		if (Objects.isNull(image)) {
+			throw new IllegalArgumentException("미리보기 이미지가 null입니다. ");
+		}
+
+		String imageUrl = awsS3Service.uploadImageFile(image, DIR);
+
+		crew.setThumbnailImgUrl(imageUrl);
+
+
+		return CrewRes.fromEntity(crew, imageUrl);
 	}
 
 	//수정
