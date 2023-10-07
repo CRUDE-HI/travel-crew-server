@@ -17,6 +17,7 @@ import com.crude.travelcrew.domain.crew.model.entity.Crew;
 import com.crude.travelcrew.domain.member.model.constants.MemberRole;
 import com.crude.travelcrew.domain.member.model.constants.MemberStatus;
 import com.crude.travelcrew.domain.member.model.constants.ProviderType;
+import com.crude.travelcrew.domain.member.model.dto.MemberRes;
 import com.crude.travelcrew.domain.member.model.dto.SignUpReq;
 import com.crude.travelcrew.global.entity.BaseTime;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -73,4 +74,18 @@ public class Member extends BaseTime {
 	@JoinColumn(name = "crew_id", updatable = false)
 	private Crew crew;
 
+	public MemberRes toMemberDTO() {
+		MemberRes toMemberDTO = new MemberRes();
+		toMemberDTO.setEmail(this.getEmail());
+		toMemberDTO.setNickname(this.getNickname());
+		toMemberDTO.setProfileImgUrl(this.getProfileImgUrl());
+		toMemberDTO.setMemberStatus(this.getMemberStatus());
+		toMemberDTO.setProviderType(this.getProviderType());
+		MemberProfile memberProfile = this.getMemberProfile();
+		toMemberDTO.setBirth(memberProfile.getBirth());
+		toMemberDTO.setGender(memberProfile.getGender());
+		toMemberDTO.setHeartBeat(memberProfile.getHeartBeat());
+		toMemberDTO.setReportCnt(memberProfile.getReportCnt());
+		return toMemberDTO;
+	}
 }
