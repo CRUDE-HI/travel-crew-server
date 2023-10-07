@@ -66,6 +66,30 @@ public class CrewMemberServiceImpl implements CrewMemberService {
 		return getMessage(String.format("%s님 신청이 완료되었습니다.", member.getNickname()));
 	}
 
+	@Override
+	public Map<String, String> cancelCrewMember(Long crewId, String email) {
+
+		Member member = memberRepository.findByEmail(email);
+
+		if(Objects.isNull(member)) {
+			throw new MemberException(MEMBER_NOT_FOUND);
+		}
+
+		Crew crew = crewRepository.findById(crewId)
+			.orElseThrow(() -> new CrewException(CREW_NOT_FOUND));
+
+		CrewMember crewMember = crewMemberRepository.findByCrewAndMember(crew, member)
+			.orElseThrow(() -> new CrewException(CREW_MEMBER_NOT_FOUND));
+
+		// 신청자가 아니면 취소할 수 없음
+		if(!Objects.equals(crewMember.getMember().getEmail(), email)) {
+			throw new CrewException(FAIL_TO_CANCEL_CREW_MEMBER);
+		}
+
+		crewMemberRepository.delete(crewMember);
+		return getMessage(String.format("%s님 신청이 취소되었습니다.", member.getNickname()));
+	}
+
 	private static Map<String, String> getMessage(String message) {
 		Map<String, String> result = new HashMap<>();
 		result.put("result", message);

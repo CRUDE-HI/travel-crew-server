@@ -10,4 +10,9 @@ public interface CrewMemberService {
 	 * 동행 신청
 	 */
 	Map<String, String> applyForCrewMember(Long crewId, ApplyForCrewReq request, String email);
+
+	/**
+	 * 동행 신청 취소
+	 */
+	Map<String, String> cancelCrewMember(Long crewId, String email);
 }
