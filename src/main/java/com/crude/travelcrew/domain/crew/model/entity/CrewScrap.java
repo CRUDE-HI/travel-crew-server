@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 public class CrewScrap {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "crew_crap_id")
+	@Column(name = "crew_scrap_id")
 	private Long id;
 
 	@JoinColumn(name = "crew_id", updatable = false)
