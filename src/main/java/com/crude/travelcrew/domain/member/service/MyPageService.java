@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.crude.travelcrew.global.awss3.service.AwsS3Service;
 import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
@@ -18,6 +17,10 @@ import com.crude.travelcrew.domain.member.model.dto.UpdateNickReq;
 import com.crude.travelcrew.domain.member.model.dto.UpdatePWReq;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
+import com.crude.travelcrew.domain.record.model.dto.EditRecordRes;
+import com.crude.travelcrew.domain.record.model.entity.Record;
+import com.crude.travelcrew.domain.record.repository.RecordRepository;
+import com.crude.travelcrew.global.awss3.service.AwsS3Service;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +31,7 @@ public class MyPageService {
 
 	private final MemberRepository memberRepository;
 	private final CrewRepository crewRepository;
+	private final RecordRepository recordRepository;
 	private final BCryptPasswordEncoder encoder;
 	private final AwsS3Service awsS3Service;
 
@@ -93,4 +97,14 @@ public class MyPageService {
 		return crewList.stream().map(Crew::toCrewDTO).collect(Collectors.toList());
 	}
 
+	// 내가 쓴 여행기록 글 조회
+	public List<EditRecordRes> getMyRecordList() {
+		String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+		if (Objects.isNull(email)) {
+			return null;
+		}
+		Member member = memberRepository.findByEmail(email);
+		List<Record> recordList = recordRepository.findAllByMember(member);
+		return recordList.stream().map(Record::toRecordDTO).collect(Collectors.toList());
+	}
 }
