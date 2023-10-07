@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crude.travelcrew.domain.administer.dto.getCrew.CrewListReq;
 import com.crude.travelcrew.domain.administer.dto.getMember.ADGetMemberRes;
 import com.crude.travelcrew.domain.administer.dto.getMember.ADGetRecordRes;
 import com.crude.travelcrew.domain.administer.dto.getMember.ADGetReportRes;
