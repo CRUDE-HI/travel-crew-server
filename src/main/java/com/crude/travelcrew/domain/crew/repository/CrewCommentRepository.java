@@ -9,4 +9,6 @@ import com.crude.travelcrew.domain.crew.model.entity.CrewComment;
 
 public interface CrewCommentRepository extends JpaRepository<CrewComment, Long> {
 	List<CrewComment> findByCrewId(long crewId, Pageable pageable);
+
+	List<CrewComment> findAllByCrewId(Long crewId);
 }
