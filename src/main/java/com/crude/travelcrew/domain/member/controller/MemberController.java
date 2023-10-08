@@ -1,35 +1,35 @@
 package com.crude.travelcrew.domain.member.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.crude.travelcrew.domain.member.model.dto.LoginReq;
+import com.crude.travelcrew.domain.member.model.dto.LoginRes;
 import com.crude.travelcrew.domain.member.model.dto.SignUpReq;
 import com.crude.travelcrew.domain.member.model.dto.SignUpRes;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
 import com.crude.travelcrew.domain.member.service.MemberService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@RestController
-@RequestMapping("/api/member")
-@CrossOrigin
 @Slf4j
+@RequestMapping("/api/member")
+@RestController
+@RequiredArgsConstructor
 public class MemberController {
 
-	@Autowired
-	MemberService memberService;
+	private final MemberService memberService;
 
 	@PostMapping("/login")
-	public ResponseEntity<SignUpRes> login(@RequestBody SignUpReq signUpReq) throws Exception {
-		System.out.println("login: " + signUpReq);
-		return ResponseEntity.ok(memberService.login(signUpReq));
+	public ResponseEntity<LoginRes> login(@RequestBody LoginReq request) {
+		LoginRes response = memberService.login(request);
+		return ResponseEntity.ok(response);
 	}
 
 	@PostMapping("/logout")
