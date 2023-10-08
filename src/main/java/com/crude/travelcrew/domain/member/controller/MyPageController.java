@@ -67,4 +67,11 @@ public class MyPageController {
 		return ResponseEntity.ok(myPageService.getMyCrewList(principal.getName()));
 	}
 
+	// 내가 스크랩한 글 조회
+	@GetMapping("/scrap")
+	public ResponseEntity<List<CrewRes>> prtcpCrew(Principal principal) {
+		List<CrewRes> postsList = myPageService.prtcpCrew(principal.getName());
+		return ResponseEntity.ok(postsList);
+	}
+
 }

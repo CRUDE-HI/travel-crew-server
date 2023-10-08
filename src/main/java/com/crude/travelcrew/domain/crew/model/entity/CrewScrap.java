@@ -28,7 +28,7 @@ public class CrewScrap {
 	private Long id;
 
 	@JoinColumn(name = "crew_id", updatable = false)
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	private Crew crew;
 
 	@JoinColumn(name = "member_id", updatable = false)
