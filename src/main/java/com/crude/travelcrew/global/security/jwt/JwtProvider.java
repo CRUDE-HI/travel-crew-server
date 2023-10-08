@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 
 import com.crude.travelcrew.global.security.CustomUserDetails;
 import com.crude.travelcrew.global.security.jwt.model.RefreshToken;
+import com.crude.travelcrew.global.security.jwt.repository.BlockAccessTokenRepository;
 import com.crude.travelcrew.global.security.jwt.repository.RefreshTokenRepository;
 import com.crude.travelcrew.global.security.service.CustomUserDetailsService;
 
@@ -48,6 +49,7 @@ public class JwtProvider {
 	private Key key;
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final CustomUserDetailsService userDetailsService;
+	private final BlockAccessTokenRepository blockAccessTokenRepository;
 
 
 	@PostConstruct
@@ -101,6 +103,10 @@ public class JwtProvider {
 
 	public boolean validateToken(String token) {
 		try {
+			if (blockAccessTokenRepository.existsById(token)) {
+				log.error("already logout access token");
+				return false;
+			}
 			Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 			return !claims.getBody().getExpiration().before(new Date());
 		} catch (SecurityException | MalformedJwtException | SignatureException e) {
@@ -116,7 +122,7 @@ public class JwtProvider {
 	}
 
 
-	public long getExpiration(String token) {
+	public Long getExpiration(String token) {
 		return Jwts.parserBuilder()
 			.setSigningKey(key)
 			.build()
@@ -124,6 +130,11 @@ public class JwtProvider {
 			.getBody()
 			.getExpiration()
 			.getTime();
+	}
+
+	public Long getRemainingTime(String token) {
+		Date now = new Date();
+		return now.getTime() - getExpiration(token);
 	}
 
 	public String resolveToken(HttpServletRequest request) {

@@ -2,8 +2,6 @@ package com.crude.travelcrew.domain.member.service;
 
 import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +16,9 @@ import com.crude.travelcrew.domain.member.repository.MemberProfileRepository;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.global.error.exception.MemberException;
 import com.crude.travelcrew.global.security.jwt.JwtProvider;
+import com.crude.travelcrew.global.security.jwt.model.BlockAccessToken;
+import com.crude.travelcrew.global.security.jwt.repository.BlockAccessTokenRepository;
+import com.crude.travelcrew.global.security.jwt.repository.RefreshTokenRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,11 +27,11 @@ import lombok.RequiredArgsConstructor;
 public class MemberService {
 
 	private final JwtProvider jwtProvider;
-	private final RedisTemplate<String, String> redisTemplate;
-
 	private final MemberRepository memberRepository;
 	private final MemberProfileRepository memberProfileRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
+	private final BlockAccessTokenRepository blockAccessTokenRepository;
+	private final RefreshTokenRepository refreshTokenRepository;
 
 	public Member getByCredential(String email) {
 		return memberRepository.findByEmail(email)
@@ -55,11 +56,19 @@ public class MemberService {
 			.build();
 	}
 
-	public void logout() throws Exception {
-		String email = SecurityContextHolder.getContext().getAuthentication().getName();
-		if (redisTemplate.opsForValue().get("JWT_ACCESS_TOKEN:" + email) != null) {
-			redisTemplate.delete("JWT_ACCESS_TOKEN:" + email); //Token 삭제
-		}
+	public void logout(String request) {
+
+		String accessToken = request.substring(7);
+		String email = jwtProvider.getEmail(accessToken);
+
+		BlockAccessToken blockAccessToken = BlockAccessToken.builder()
+			.id(accessToken)
+			.email(email)
+			.expiration(jwtProvider.getRemainingTime(accessToken))
+			.build();
+
+		refreshTokenRepository.deleteById(email);
+		blockAccessTokenRepository.save(blockAccessToken);
 	}
 
 	public Member signUp(Member member) {

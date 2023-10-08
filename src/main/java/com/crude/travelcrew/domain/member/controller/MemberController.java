@@ -1,9 +1,9 @@
 package com.crude.travelcrew.domain.member.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,20 +33,13 @@ public class MemberController {
 	}
 
 	@PostMapping("/logout")
-	public ResponseEntity<String> logout() throws Exception {
-		System.out.println("logout");
-		memberService.logout();
+	public ResponseEntity<Void> logout(@RequestHeader("Authorization") String request) {
+		memberService.logout(request);
 		return ResponseEntity.ok().build();
 	}
 
-	@PostMapping("/test")
-	public ResponseEntity<String> test() throws Exception {
-		System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
-		return ResponseEntity.ok().body(SecurityContextHolder.getContext().getAuthentication().getName());
-	}
-
 	@PostMapping("/sign-up")
-	public ResponseEntity<?> signUp(@RequestBody SignUpReq signUpReq) throws Exception {
+	public ResponseEntity<?> signUp(@RequestBody SignUpReq signUpReq) {
 		try {
 			Member memberEntity = new Member(signUpReq);
 			MemberProfile memberProfileEntity = new MemberProfile(signUpReq);
