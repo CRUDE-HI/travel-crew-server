@@ -46,11 +46,8 @@ public class RecordServiceImpl implements RecordService {
 	public EditRecordRes addRecord(EditRecordReq request, List<MultipartFile> images,
 		String email) {
 
-		Member member = memberRepository.findByEmail(email);
-
-		if (Objects.isNull(member)) {
-			throw new MemberException(MEMBER_NOT_FOUND);
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		Record record = Record.builder()
 			.title(request.getTitle())

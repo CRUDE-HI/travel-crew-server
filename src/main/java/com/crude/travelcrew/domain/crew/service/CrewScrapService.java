@@ -1,6 +1,6 @@
 package com.crude.travelcrew.domain.crew.service;
 
-import java.util.Objects;
+import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +11,7 @@ import com.crude.travelcrew.domain.crew.repository.CrewRepository;
 import com.crude.travelcrew.domain.crew.repository.CrewScrapRepository;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
+import com.crude.travelcrew.global.error.exception.MemberException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,11 +25,8 @@ public class CrewScrapService {
 	@Transactional
 	public void scrapCrew(Long crewId, String email) {
 
-		Member member = memberRepository.findByEmail(email);
-
-		if (Objects.isNull(member)) {
-			throw new IllegalArgumentException("사용자를 찾을수 없습니다.");
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new IllegalArgumentException("게시물을 찾을수 없습니다."));
@@ -48,11 +46,8 @@ public class CrewScrapService {
 	@Transactional
 	public void deleteScrap(Long crewId, String email) {
 
-		Member member = memberRepository.findByEmail(email);
-
-		if (Objects.isNull(member)) {
-			throw new IllegalArgumentException("사용자를 찾을수 없습니다.");
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new IllegalArgumentException("게시물을 찾을수 없습니다."));

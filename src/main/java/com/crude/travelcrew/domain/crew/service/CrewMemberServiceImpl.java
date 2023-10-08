@@ -35,11 +35,8 @@ public class CrewMemberServiceImpl implements CrewMemberService {
 	@Transactional
 	public Map<String, String> applyForCrewMember(Long crewId, ApplyForCrewReq request, String email) {
 
-		Member member = memberRepository.findByEmail(email);
-
-		if(Objects.isNull(member)) {
-			throw new MemberException(MEMBER_NOT_FOUND);
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new CrewException(CREW_NOT_FOUND));
@@ -69,11 +66,8 @@ public class CrewMemberServiceImpl implements CrewMemberService {
 	@Override
 	public Map<String, String> cancelCrewMember(Long crewId, String email) {
 
-		Member member = memberRepository.findByEmail(email);
-
-		if(Objects.isNull(member)) {
-			throw new MemberException(MEMBER_NOT_FOUND);
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new CrewException(CREW_NOT_FOUND));

@@ -1,5 +1,7 @@
 package com.crude.travelcrew.domain.member.service;
 
+import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
+
 import javax.security.auth.login.LoginException;
 
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,6 +18,7 @@ import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
 import com.crude.travelcrew.domain.member.repository.MemberProfileRepository;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
+import com.crude.travelcrew.global.error.exception.MemberException;
 import com.crude.travelcrew.global.security.JwtProvider;
 
 import lombok.RequiredArgsConstructor;
@@ -32,7 +35,8 @@ public class MemberService {
 	private final BCryptPasswordEncoder encoder;
 
 	public Member getByCredential(String email) {
-		return memberRepository.findByEmail(email);
+		return memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 	}
 
 	public SignUpRes login(SignUpReq signUpReq) throws LoginException {

@@ -40,7 +40,8 @@ public class CrewService {
 	public CrewRes createCrew(CrewReq requestDto) {
 		Crew crew = new Crew(requestDto);
 		String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-		Member member = memberRepository.findByEmail(email);
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 		crew.setMember(member);
 		crewRepository.save(crew);
 		return new CrewRes(crew);
@@ -72,7 +73,8 @@ public class CrewService {
 	public long validateToken() {
 		// 토큰에 담긴 사용자 정보가 실제로 member 테이블에 존재하는지 여부를 검증
 		String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-		Member member = memberRepository.findByEmail(email);
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 		if (Objects.isNull(member)) {
 			throw new MemberException(MEMBER_NOT_FOUND);
 		}

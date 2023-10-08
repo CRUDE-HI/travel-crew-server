@@ -1,5 +1,7 @@
 package com.crude.travelcrew.domain.member.service;
 
+import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -18,6 +20,7 @@ import com.crude.travelcrew.domain.member.model.dto.UpdatePWReq;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.global.awss3.service.AwsS3Service;
+import com.crude.travelcrew.global.error.exception.MemberException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,7 +38,8 @@ public class MyPageService {
 	@Transactional
 	public void updateNick(UpdateNickReq updateNickReq, String email) {
 
-		Member member = memberRepository.findByEmail(email);
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		if (Objects.isNull(member)) {
 			throw new IllegalArgumentException("해당 사용자를 찾을수 없습니다.");
@@ -49,11 +53,8 @@ public class MyPageService {
 	@Transactional
 	public void updatePW(UpdatePWReq updatePWReq, String email) {
 
-		Member member = memberRepository.findByEmail(email);
-
-		if (Objects.isNull(member)) {
-			throw new IllegalArgumentException("해당 사용자를 찾을수 없습니다.");
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		if (!encoder.matches(updatePWReq.getCurrentPassword(), member.getPassword())) {
 			throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
@@ -71,11 +72,8 @@ public class MyPageService {
 	@Transactional
 	public void updateImg(MultipartFile image, String email) {
 
-		Member member = memberRepository.findByEmail(email);
-
-		if (Objects.isNull(member)) {
-			throw new IllegalArgumentException("해당 사용자를 찾을수 없습니다.");
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		String imageUrl = awsS3Service.uploadImageFile(image, DIR);
 		member.setProfileImgUrl(imageUrl);
@@ -85,11 +83,8 @@ public class MyPageService {
 	// 프로필 이미지 삭제
 	public void deleteImg(String profileImgUrl, String email) {
 
-		Member member = memberRepository.findByEmail(email);
-
-		if (Objects.isNull(member)) {
-			throw new IllegalArgumentException("해당 사용자를 찾을수 없습니다.");
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		memberRepository.findByProfileImgUrl(member.getProfileImgUrl())
 			.orElseThrow(() -> new IllegalArgumentException("이미지 파일이 존재하지 않습니다."));
@@ -109,7 +104,9 @@ public class MyPageService {
 		if (Objects.isNull(email)) {
 			return null;
 		}
-		Member member = memberRepository.findByEmail(email);
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+
 		List<Crew> crewList = crewRepository.findAllByMember(member);
 		return crewList.stream().map(Crew::toCrewDTO).collect(Collectors.toList());
 	}

@@ -35,11 +35,8 @@ public class RecordCommentServiceImpl implements RecordCommentService {
 	@Transactional
 	public RecordCommentRes addRecordComment(Long recordId, RecordCommentReq request, String email) {
 
-		Member member = memberRepository.findByEmail(email);
-
-		if (Objects.isNull(member)) {
-			throw new MemberException(MEMBER_NOT_FOUND);
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		Record record = recordRepository.findById(recordId)
 			.orElseThrow(() -> new RecordException(TRAVEL_RECORD_NOT_FOUND));
