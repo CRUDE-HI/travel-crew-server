@@ -18,7 +18,6 @@ import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
 import com.crude.travelcrew.domain.member.model.dto.UpdateNickReq;
 import com.crude.travelcrew.domain.member.model.dto.UpdatePWReq;
 import com.crude.travelcrew.domain.member.model.dto.WithDrawPW;
-import com.crude.travelcrew.domain.member.service.MemberService;
 import com.crude.travelcrew.domain.member.service.MyPageService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 public class MyPageController {
 
 	private final MyPageService myPageService;
-	private final MemberService memberService;
 
 	// 닉네임 변경
 	@PatchMapping("/nickname")
@@ -68,7 +66,7 @@ public class MyPageController {
 	// 회원 비활성화
 	@PutMapping
 	public ResponseEntity<Void> withDraw(@RequestBody WithDrawPW withDrawPW, Principal principal) {
-		memberService.withDraw(withDrawPW, principal.getName());
+		myPageService.withDraw(withDrawPW, principal.getName());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

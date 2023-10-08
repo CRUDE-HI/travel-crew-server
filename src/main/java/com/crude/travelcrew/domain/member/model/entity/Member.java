@@ -39,7 +39,7 @@ public class Member extends BaseTime {
 	@Column(name = "member_id")
 	private Long id;
 
-	@Column(nullable = false, length = 30, unique = true)
+	@Column(nullable = false, length = 80, unique = true)
 	private String email;
 
 	private String password;
