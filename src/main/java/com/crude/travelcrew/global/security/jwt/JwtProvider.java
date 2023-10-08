@@ -1,7 +1,6 @@
 package com.crude.travelcrew.global.security.jwt;
 
 import java.security.Key;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,18 +11,24 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
+import com.crude.travelcrew.global.security.CustomUserDetails;
 import com.crude.travelcrew.global.security.jwt.model.RefreshToken;
 import com.crude.travelcrew.global.security.jwt.repository.RefreshTokenRepository;
+import com.crude.travelcrew.global.security.service.CustomUserDetailsService;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,6 +37,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class JwtProvider {
 
+
+	private static final String AUTHORIZATION_HEADER = "Authorization";
+	private static final String BEARER_PREFIX = "Bearer ";
 	private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30L;            // 30분
 	private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60L * 24 * 5;      // 5일
 
@@ -39,6 +47,7 @@ public class JwtProvider {
 	private String secretKey;
 	private Key key;
 	private final RefreshTokenRepository refreshTokenRepository;
+	private final CustomUserDetailsService userDetailsService;
 
 
 	@PostConstruct
@@ -82,12 +91,8 @@ public class JwtProvider {
 	}
 
 	public Authentication getAuthentication(String token) {
-		Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-		// DB 통해서 EMAIL을 가지고 권한을 가져오는 로직 수행
-		// EMAIL claims.getSubject()
-		// 권한 Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"))
-		return new UsernamePasswordAuthenticationToken(claims.getSubject(), "",
-			Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
+		CustomUserDetails userDetails = userDetailsService.loadUserByUsername(getEmail(token));
+		return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 	}
 
 	public String getEmail(String token) {
@@ -98,11 +103,18 @@ public class JwtProvider {
 		try {
 			Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 			return !claims.getBody().getExpiration().before(new Date());
-		} catch (Exception e) {
-			log.debug(e.getMessage());
-			return false;
+		} catch (SecurityException | MalformedJwtException | SignatureException e) {
+			log.error("Invalid JWT signature");
+		} catch (ExpiredJwtException e) {
+			log.error("Expired JWT token");
+		} catch (UnsupportedJwtException e) {
+			log.error("Unsupported JWT token");
+		} catch (IllegalArgumentException e) {
+			log.error("JWT claims is empty");
 		}
+		return false;
 	}
+
 
 	public long getExpiration(String token) {
 		return Jwts.parserBuilder()
@@ -115,11 +127,12 @@ public class JwtProvider {
 	}
 
 	public String resolveToken(HttpServletRequest request) {
-		// 수정사항 2. Postman에서 요청 시에 Authorization Header 내 Value에 "Bearer " 값을 prepend하여 보냄.
-		// 아래 코드에 맞춰서 Postman 툴에서 Authorization Header 내에 "Bearer " 값을 삭제시키고 보내도록 수정.
-		return request.getHeader("Authorization");
+		String authHeader = request.getHeader(AUTHORIZATION_HEADER);
+		if (StringUtils.hasText(authHeader) && authHeader.startsWith(BEARER_PREFIX)) {
+			return authHeader.substring(BEARER_PREFIX.length());
+		}
+		return null;
 	}
-
 	public void saveRefreshTokenInRedis(String token, String email) {
 		RefreshToken refreshToken = RefreshToken.builder()
 			.id(email)
