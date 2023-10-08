@@ -1,5 +1,7 @@
 package com.crude.travelcrew.domain.member.service;
 
+import java.util.Objects;
+
 import javax.security.auth.login.LoginException;
 
 import org.springframework.data.redis.core.RedisTemplate;
@@ -12,6 +14,7 @@ import com.crude.travelcrew.domain.member.model.constants.MemberStatus;
 import com.crude.travelcrew.domain.member.model.constants.ProviderType;
 import com.crude.travelcrew.domain.member.model.dto.SignUpReq;
 import com.crude.travelcrew.domain.member.model.dto.SignUpRes;
+import com.crude.travelcrew.domain.member.model.dto.WithDrawPW;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
 import com.crude.travelcrew.domain.member.repository.MemberProfileRepository;
@@ -86,5 +89,27 @@ public class MemberService {
 		memberProfile.setReportCnt(0);
 		memberProfile.setHeartBeat(60D);
 		return memberProfileRepository.save(memberProfile);
+	}
+
+	public void withDraw(WithDrawPW withDrawPW, String email) {
+
+		Member member = memberRepository.findByEmail(email);
+
+		if (Objects.isNull(member)) {
+			throw new IllegalArgumentException("해당 사용자를 찾을수 없습니다.");
+		}
+
+		if (!encoder.matches(withDrawPW.getCurrentPassword(), member.getPassword())) {
+			throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+		} else {
+			member.setMemberStatus(MemberStatus.DROP);
+			member.setRole(MemberRole.DROP);
+			member.setProviderType(ProviderType.DROP);
+			member.setEmail("");
+			member.setPassword("");
+			member.setNickname("탈퇴회원");
+			member.setProfileImgUrl("");
+			memberRepository.save(member);
+		}
 	}
 }
