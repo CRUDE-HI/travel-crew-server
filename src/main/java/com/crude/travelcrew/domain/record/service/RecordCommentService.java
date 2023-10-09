@@ -2,10 +2,18 @@ package com.crude.travelcrew.domain.record.service;
 
 import java.util.Map;
 
+import org.springframework.data.domain.Pageable;
+
+import com.crude.travelcrew.domain.record.model.dto.RecordCommentListRes;
 import com.crude.travelcrew.domain.record.model.dto.RecordCommentReq;
 import com.crude.travelcrew.domain.record.model.dto.RecordCommentRes;
 
 public interface RecordCommentService {
+
+	/**
+	 * 여핵 기록 댓글 조회
+	 */
+	RecordCommentListRes getCommentList(Long recordId, Pageable pageable);
 
 	/**
 	 * 여행 기록 댓글 작성
