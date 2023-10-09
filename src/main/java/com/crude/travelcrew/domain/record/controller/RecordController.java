@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.crude.travelcrew.domain.record.model.dto.EditRecordReq;
 import com.crude.travelcrew.domain.record.model.dto.EditRecordRes;
+import com.crude.travelcrew.domain.record.model.dto.MyRecordRes;
 import com.crude.travelcrew.domain.record.model.dto.RecordImageRes;
 import com.crude.travelcrew.domain.record.service.RecordService;
 
@@ -31,6 +33,14 @@ import lombok.RequiredArgsConstructor;
 public class RecordController {
 
 	private final RecordService recordService;
+
+	/**
+	 * 여행 기록 상세 조회
+	 */
+	@GetMapping("/{id}")
+	public ResponseEntity<MyRecordRes> opInfo(@PathVariable Long id) {
+		return ResponseEntity.ok(recordService.opInfo(id));
+	}
 
 	/**
 	 * 여행 기록 작성

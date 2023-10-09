@@ -7,9 +7,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.crude.travelcrew.domain.record.model.dto.EditRecordReq;
 import com.crude.travelcrew.domain.record.model.dto.EditRecordRes;
+import com.crude.travelcrew.domain.record.model.dto.MyRecordRes;
 import com.crude.travelcrew.domain.record.model.dto.RecordImageRes;
 
 public interface RecordService {
+
+	/**
+	 * 여행 기록 상세 조회
+	 */
+	MyRecordRes opInfo(Long id);
 
 	/**
 	 * 여행 기록 작성

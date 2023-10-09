@@ -13,17 +13,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.crude.travelcrew.global.awss3.service.AwsS3Service;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.domain.record.model.dto.EditRecordReq;
 import com.crude.travelcrew.domain.record.model.dto.EditRecordRes;
+import com.crude.travelcrew.domain.record.model.dto.MyRecordRes;
 import com.crude.travelcrew.domain.record.model.dto.RecordImageRes;
 import com.crude.travelcrew.domain.record.model.entity.Record;
 import com.crude.travelcrew.domain.record.model.entity.RecordImage;
 import com.crude.travelcrew.domain.record.repository.RecordCommentRepository;
 import com.crude.travelcrew.domain.record.repository.RecordImageRepository;
 import com.crude.travelcrew.domain.record.repository.RecordRepository;
+import com.crude.travelcrew.global.awss3.service.AwsS3Service;
 import com.crude.travelcrew.global.error.exception.MemberException;
 import com.crude.travelcrew.global.error.exception.RecordException;
 
@@ -40,6 +41,14 @@ public class RecordServiceImpl implements RecordService {
 	private final RecordImageRepository recordImageRepository;
 	private final RecordCommentRepository recordCommentRepository;
 	private final AwsS3Service awsS3Service;
+
+	@Override
+	@Transactional
+	public MyRecordRes opInfo(Long id) {
+		Record record = recordRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+		return record.toRecordDTO();
+	}
 
 	@Override
 	@Transactional
@@ -147,7 +156,7 @@ public class RecordServiceImpl implements RecordService {
 	@Transactional
 	public Map<String, String> removeRecordImage(Long recordId, Long recordImageId) {
 
-		if(!recordRepository.existsById(recordId)) {
+		if (!recordRepository.existsById(recordId)) {
 			throw new RecordException(TRAVEL_RECORD_NOT_FOUND);
 		}
 
