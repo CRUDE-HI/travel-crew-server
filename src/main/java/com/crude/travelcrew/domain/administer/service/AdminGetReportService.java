@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import com.crude.travelcrew.domain.administer.dto.getMember.ADGetReportRes;
+import com.crude.travelcrew.domain.administer.dto.getReport.ADGetReportRes;
 import com.crude.travelcrew.domain.administer.dto.getReport.ADReportListReq;
 import com.crude.travelcrew.domain.administer.dto.getReport.ADReportListRes;
 import com.crude.travelcrew.domain.administer.dto.getReport.ADReportListResponseDto;

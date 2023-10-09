@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.administer.dto.getMember;
+package com.crude.travelcrew.domain.administer.dto.getReport;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

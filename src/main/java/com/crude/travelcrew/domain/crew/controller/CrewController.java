@@ -86,14 +86,14 @@ public class CrewController {
 
 	// 댓글 등록
 	@PostMapping("/{crewId}/comment")
-	public ResponseEntity<Object> createComment(@PathVariable long crewId, @Valid CrewCommentReq commentReq) {
+	public ResponseEntity<Object> createComment(@PathVariable long crewId, @RequestBody @Valid CrewCommentReq commentReq) {
 		crewService.createComment(crewId, commentReq);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
 	// 댓글 수정
 	@PatchMapping("/{crewId}/comment/{commentId}")
-	public ResponseEntity<Object> modifyComment(@PathVariable long commentId, @Valid CrewCommentReq commentReq) {
+	public ResponseEntity<Object> modifyComment(@PathVariable long commentId, @RequestBody @Valid CrewCommentReq commentReq) {
 		crewService.modifyComment(commentId, commentReq);
 		return ResponseEntity.ok().build();
 	}
