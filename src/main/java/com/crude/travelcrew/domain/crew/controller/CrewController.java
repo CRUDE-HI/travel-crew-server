@@ -1,6 +1,8 @@
 package com.crude.travelcrew.domain.crew.controller;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -16,7 +18,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.crude.travelcrew.domain.crew.model.dto.CrewCommentReq;
 import com.crude.travelcrew.domain.crew.model.dto.CrewCommentRes;
@@ -45,20 +49,33 @@ public class CrewController {
 
 	// 글 등록
 	@PostMapping
-	public CrewRes createCrew(@RequestBody CrewReq requestDto) {
-		return crewService.createCrew(requestDto);
+	public ResponseEntity<CrewRes> createCrew(
+		@RequestPart(value = "image", required = false) MultipartFile image,
+		@RequestPart @Valid CrewReq request, Principal principal) {
+
+		CrewRes response = crewService.createCrew(request, image, principal.getName());
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
+
 	// 글 수정
-	@PutMapping("/{crewId}")
-	public Long updateCrew(@PathVariable Long crewId, @RequestBody CrewReq requestDto) {
-		return crewService.updateCrew(crewId, requestDto);
+	@PatchMapping(value = "/{crewId}")
+	public ResponseEntity<CrewRes> updateCrew(
+		@PathVariable Long crewId,
+		@RequestPart(value = "image", required = true) MultipartFile image,
+		@RequestPart(value = "request") @Valid CrewReq request,
+		Principal principal ){
+
+		CrewRes response = crewService.updateCrew(crewId, request, image, principal.getName());
+		return ResponseEntity.ok(response);
 	}
 
 	// 글 삭제
 	@DeleteMapping("/{crewId}")
-	public Long deleteCrew(@PathVariable Long crewId) {
-		return crewService.deleteCrew(crewId);
+	public ResponseEntity<Map<String, String>> deleteRecord(@PathVariable Long crewId, Principal principal) {
+
+		Map<String, String> response = crewService.deleteCrew(crewId, principal.getName());
+		return ResponseEntity.ok(response);
 	}
 
 	// 댓글 조회

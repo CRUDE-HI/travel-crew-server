@@ -16,13 +16,15 @@ import javax.persistence.ManyToOne;
 
 import org.springframework.data.annotation.LastModifiedDate;
 
-import com.crude.travelcrew.domain.crew.model.constants.CrewGender;
+import com.crude.travelcrew.domain.crew.model.constants.CrewPlace;
 import com.crude.travelcrew.domain.crew.model.constants.CrewStatus;
 import com.crude.travelcrew.domain.crew.model.dto.CrewReq;
 import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.global.entity.BaseTime;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,6 +32,8 @@ import lombok.ToString;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "crew")
 @ToString
@@ -51,6 +55,9 @@ public class Crew extends BaseTime {
 	private String thumbnailImgUrl;
 
 	@Enumerated(EnumType.STRING)
+	private CrewPlace crewPlace;
+
+	@Enumerated(EnumType.STRING)
 	private CrewStatus crewStatus;
 
 	// 참가인원수
@@ -62,12 +69,6 @@ public class Crew extends BaseTime {
 
 	@Column
 	private LocalDate travelEnd;
-
-	@Column
-	private Integer crewAge;
-
-	@Enumerated(EnumType.STRING)
-	private CrewGender crewGender;
 
 	@Column
 	@LastModifiedDate
@@ -89,11 +90,10 @@ public class Crew extends BaseTime {
 		this.title = crewReq.getTitle();
 		this.crewStatus = crewReq.getCrewStatus();
 		this.thumbnailImgUrl = crewReq.getThumbnailImgUrl();
+		this.crewPlace = crewReq.getCrewPlace();
 		this.maxCrew = crewReq.getMaxCrew();
 		this.travelStart = crewReq.getTravelStart();
 		this.travelEnd = crewReq.getTravelEnd();
-		this.crewAge = crewReq.getCrewAge();
-		this.crewGender = crewReq.getCrewGender();
 
 		this.latitude = crewReq.getLatitude();
 		this.longitude = crewReq.getLongitude();
@@ -105,11 +105,10 @@ public class Crew extends BaseTime {
 		this.title = crewReq.getTitle();
 		this.crewStatus = crewReq.getCrewStatus();
 		this.thumbnailImgUrl = crewReq.getThumbnailImgUrl();
+		this.crewPlace = crewReq.getCrewPlace();
 		this.maxCrew = crewReq.getMaxCrew();
 		this.travelStart = crewReq.getTravelStart();
 		this.travelEnd = crewReq.getTravelEnd();
-		this.crewAge = crewReq.getCrewAge();
-		this.crewGender = crewReq.getCrewGender();
 
 		this.latitude = crewReq.getLatitude();
 		this.longitude = crewReq.getLongitude();
@@ -127,8 +126,6 @@ public class Crew extends BaseTime {
 		toPostsDTO.setMaxCrew(this.getMaxCrew());
 		toPostsDTO.setTravelStart(this.getTravelStart());
 		toPostsDTO.setTravelEnd(this.getTravelEnd());
-		toPostsDTO.setCrewAge(this.getCrewAge());
-		toPostsDTO.setCrewGender(this.getCrewGender());
 		toPostsDTO.setUpdateAt(this.getUpdateAt());
 		toPostsDTO.setLatitude(this.getLatitude());
 		toPostsDTO.setLongitude(this.getLongitude());

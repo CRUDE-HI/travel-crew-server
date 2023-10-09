@@ -1,6 +1,7 @@
 package com.crude.travelcrew.domain.member.controller;
 
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.crude.travelcrew.domain.member.model.dto.LoginReq;
 import com.crude.travelcrew.domain.member.model.dto.LoginRes;
 import com.crude.travelcrew.domain.member.model.dto.ReissueRes;
+import com.crude.travelcrew.domain.member.model.dto.MemberRes;
+
 import com.crude.travelcrew.domain.member.model.dto.SignUpReq;
 import com.crude.travelcrew.domain.member.model.dto.SignUpRes;
 import com.crude.travelcrew.domain.member.model.entity.Member;
@@ -60,5 +63,11 @@ public class MemberController {
 			log.info(e.getMessage());
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
+	}
+
+	// 다른 회원 정보 조회
+	@GetMapping("/info/{nickname}")
+	public ResponseEntity<MemberRes> opInfo(@PathVariable String nickname) {
+		return ResponseEntity.ok(memberService.opInfo(nickname));
 	}
 }

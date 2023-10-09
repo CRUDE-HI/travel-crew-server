@@ -5,6 +5,7 @@ import static com.crude.travelcrew.global.error.type.CrewErrorCode.*;
 import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.crude.travelcrew.domain.crew.model.dto.ApplyForCrewReq;
+import com.crude.travelcrew.domain.crew.model.dto.CrewMemberRes;
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
 import com.crude.travelcrew.domain.crew.model.entity.CrewMember;
 import com.crude.travelcrew.domain.crew.repository.CrewMemberRepository;
@@ -82,6 +84,16 @@ public class CrewMemberServiceImpl implements CrewMemberService {
 
 		crewMemberRepository.delete(crewMember);
 		return getMessage(String.format("%s님 신청이 취소되었습니다.", member.getNickname()));
+	}
+
+	@Override
+	public List<CrewMemberRes> getCrewMemberList(Long crewId) {
+
+		if(!crewRepository.existsById(crewId)) {
+			throw new CrewException(CREW_NOT_FOUND);
+		}
+
+		return crewMemberRepository.findAllCrewMemberByCrewId(crewId);
 	}
 
 	private static Map<String, String> getMessage(String message) {

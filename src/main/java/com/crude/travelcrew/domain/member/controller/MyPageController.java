@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
+import com.crude.travelcrew.domain.member.model.dto.MemberRes;
 import com.crude.travelcrew.domain.member.model.dto.UpdateNickReq;
 import com.crude.travelcrew.domain.member.model.dto.UpdatePWReq;
 import com.crude.travelcrew.domain.member.service.MyPageService;
@@ -26,6 +27,11 @@ import lombok.RequiredArgsConstructor;
 public class MyPageController {
 
 	private final MyPageService myPageService;
+
+	@GetMapping
+	public ResponseEntity<MemberRes> myInfo(Principal principal) {
+		return ResponseEntity.ok(myPageService.myInfo(principal.getName()));
+	}
 
 	// 닉네임 변경
 	@PatchMapping("/nickname")
@@ -57,8 +63,15 @@ public class MyPageController {
 
 	// 내가 쓴 동행 글 조회
 	@GetMapping("/post")
-	public ResponseEntity<List<CrewRes>> getMyCrewList() {
-		return ResponseEntity.ok(myPageService.getMyCrewList());
+	public ResponseEntity<List<CrewRes>> getMyCrewList(Principal principal) {
+		return ResponseEntity.ok(myPageService.getMyCrewList(principal.getName()));
+	}
+
+	// 내가 스크랩한 글 조회
+	@GetMapping("/scrap")
+	public ResponseEntity<List<CrewRes>> prtcpCrew(Principal principal) {
+		List<CrewRes> postsList = myPageService.prtcpCrew(principal.getName());
+		return ResponseEntity.ok(postsList);
 	}
 
 }

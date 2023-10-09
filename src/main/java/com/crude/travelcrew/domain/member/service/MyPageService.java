@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,13 +13,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
+import com.crude.travelcrew.domain.crew.model.entity.CrewScrap;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
+import com.crude.travelcrew.domain.crew.repository.CrewScrapRepository;
+import com.crude.travelcrew.domain.member.model.dto.MemberRes;
 import com.crude.travelcrew.domain.member.model.dto.UpdateNickReq;
 import com.crude.travelcrew.domain.member.model.dto.UpdatePWReq;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.global.awss3.service.AwsS3Service;
 import com.crude.travelcrew.global.error.exception.MemberException;
+import com.crude.travelcrew.global.error.type.MemberErrorCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,8 +34,18 @@ public class MyPageService {
 
 	private final MemberRepository memberRepository;
 	private final CrewRepository crewRepository;
+	private final CrewScrapRepository crewScrapRepository;
 	private final BCryptPasswordEncoder encoder;
 	private final AwsS3Service awsS3Service;
+
+	// 내 정보 상세 조회
+	public MemberRes myInfo(String email) {
+		Member member = memberRepository.findByEmail(email);
+		if (Objects.isNull(member)) {
+			throw new MemberException(MemberErrorCode.MEMBER_NOT_FOUND);
+		}
+		return member.toMemberDTO();
+	}
 
 	// 닉네임 변경
 	@Transactional
@@ -97,7 +110,7 @@ public class MyPageService {
 			e.printStackTrace();
 		}
 	}
-
+  
 	// 내가 쓴 동행 글 조회
 	public List<CrewRes> getMyCrewList() {
 		String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
@@ -107,8 +120,27 @@ public class MyPageService {
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
+	// 내가 작성한 동행글 조회
+	public List<CrewRes> getMyCrewList(String email) {
+		Member member = memberRepository.findByEmail(email);
+		if (Objects.isNull(member)) {
+			throw new MemberException(MemberErrorCode.MEMBER_NOT_FOUND);
+		}
+
 		List<Crew> crewList = crewRepository.findAllByMember(member);
 		return crewList.stream().map(Crew::toCrewDTO).collect(Collectors.toList());
 	}
 
+	// 내가 스크랩한 동행글 조회
+	public List<CrewRes> prtcpCrew(String email) {
+		Member member = memberRepository.findByEmail(email);
+		if (Objects.isNull(member)) {
+			throw new MemberException(MemberErrorCode.MEMBER_NOT_FOUND);
+		}
+		List<CrewScrap> scrapList = crewScrapRepository.findAllByMember(member);
+		return scrapList
+			.stream()
+			.map(scraps -> scraps.getCrew().toCrewDTO())
+			.collect(Collectors.toList());
+	}
 }
