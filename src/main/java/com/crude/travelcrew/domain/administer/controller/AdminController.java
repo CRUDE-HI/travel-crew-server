@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.crude.travelcrew.domain.administer.dto.adminMember.ADUpdateMemberReq;
+import com.crude.travelcrew.domain.administer.dto.getCrew.ADCrewListReq;
+import com.crude.travelcrew.domain.administer.dto.getCrew.ADCrewListRes;
 import com.crude.travelcrew.domain.administer.dto.getMember.ADGetMemberRes;
 import com.crude.travelcrew.domain.administer.dto.getMember.ADGetRecordRes;
 import com.crude.travelcrew.domain.administer.dto.getMember.ADGetReportRes;
@@ -22,7 +25,7 @@ import com.crude.travelcrew.domain.administer.dto.getRecord.ADRecordListRes;
 import com.crude.travelcrew.domain.administer.dto.getReport.ADReportListReq;
 import com.crude.travelcrew.domain.administer.dto.getReport.ADReportListRes;
 import com.crude.travelcrew.domain.administer.dto.getReport.ADReportedMemberListReq;
-import com.crude.travelcrew.domain.administer.dto.adminMember.ADUpdateMemberReq;
+import com.crude.travelcrew.domain.administer.service.AdminGetCrewService;
 import com.crude.travelcrew.domain.administer.service.AdminGetMemberService;
 import com.crude.travelcrew.domain.administer.service.AdminGetRecordService;
 import com.crude.travelcrew.domain.administer.service.AdminGetReportService;
@@ -44,6 +47,9 @@ public class AdminController {
 
 	@Autowired
 	AdminGetMemberService adminGetMemberService;
+
+	@Autowired
+	AdminGetCrewService adminGetCrewService;
 
 	@Autowired
 	AdminGetRecordService adminGetRecordService;
@@ -149,6 +155,23 @@ public class AdminController {
 	public ResponseEntity<ADGetReportRes> getReport(@PathVariable Long reportId) {
 		ADGetReportRes reportRes = adminGetReportService.getReport(reportId);
 		return ResponseEntity.ok(reportRes);
+	}
+
+	@GetMapping("/crew")
+	public ResponseEntity<ADCrewListRes> getCrew(
+		@RequestParam(value = "page", defaultValue = "0") int page,
+		@RequestParam(value = "size", defaultValue = "10") int size,
+		@RequestParam(value = "search", required = false) String search
+	) throws Exception {
+
+		ADCrewListReq ADCrewListReq = new ADCrewListReq();
+		ADCrewListReq.setPage(page);
+		ADCrewListReq.setSize(size);
+		ADCrewListReq.setSearch(search);
+
+		ADCrewListRes ADCrewListRes = adminGetCrewService.getList(ADCrewListReq);
+
+		return ResponseEntity.ok(ADCrewListRes);
 	}
 
 	@GetMapping("/record")
