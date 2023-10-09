@@ -44,12 +44,12 @@ public class CrewMemberServiceImpl implements CrewMemberService {
 			.orElseThrow(() -> new CrewException(CREW_NOT_FOUND));
 
 		// 자신이 작성한 동행에 신청 불가
-		if(Objects.equals(crew.getMember().getEmail(), member.getEmail())) {
+		if (Objects.equals(crew.getMember().getEmail(), member.getEmail())) {
 			throw new CrewException(FAIL_TO_APPLY_CREW);
 		}
 
 		// 해당 동행을 이미 신청한 경우 중복 불가
-		if(crewMemberRepository.existsByCrewAndMember(crew, member)) {
+		if (crewMemberRepository.existsByCrewAndMember(crew, member)) {
 			throw new CrewException(ALREADY_APPLIED_MEMBER);
 		}
 
@@ -78,7 +78,7 @@ public class CrewMemberServiceImpl implements CrewMemberService {
 			.orElseThrow(() -> new CrewException(CREW_MEMBER_NOT_FOUND));
 
 		// 신청자가 아니면 취소할 수 없음
-		if(!Objects.equals(crewMember.getMember().getEmail(), email)) {
+		if (!Objects.equals(crewMember.getMember().getEmail(), email)) {
 			throw new CrewException(FAIL_TO_CANCEL_CREW_MEMBER);
 		}
 
@@ -89,7 +89,7 @@ public class CrewMemberServiceImpl implements CrewMemberService {
 	@Override
 	public List<CrewMemberRes> getCrewMemberList(Long crewId) {
 
-		if(!crewRepository.existsById(crewId)) {
+		if (!crewRepository.existsById(crewId)) {
 			throw new CrewException(CREW_NOT_FOUND);
 		}
 

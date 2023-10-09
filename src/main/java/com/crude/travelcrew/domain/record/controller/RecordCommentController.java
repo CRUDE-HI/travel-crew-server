@@ -39,7 +39,6 @@ public class RecordCommentController {
 		return ResponseEntity.ok(recordCommentService.getCommentList(recordId, pageable));
 	}
 
-
 	/**
 	 * 여행 기록 댓글 작성
 	 */

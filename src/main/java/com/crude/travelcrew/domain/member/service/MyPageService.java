@@ -1,9 +1,8 @@
 package com.crude.travelcrew.domain.member.service;
 
-import java.util.Base64;
-
 import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -37,7 +36,6 @@ import com.crude.travelcrew.domain.record.model.entity.Record;
 import com.crude.travelcrew.domain.record.repository.RecordRepository;
 import com.crude.travelcrew.global.awss3.service.AwsS3Service;
 import com.crude.travelcrew.global.error.exception.MemberException;
-import com.crude.travelcrew.global.error.type.MemberErrorCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -57,10 +55,9 @@ public class MyPageService {
 	@Transactional
 	// 내 정보 상세 조회
 	public MemberRes myInfo(String email) {
-		Member member = memberRepository.findByEmail(email);
-		if (Objects.isNull(member)) {
-			throw new MemberException(MemberErrorCode.MEMBER_NOT_FOUND);
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+
 		return member.toMemberDTO();
 	}
 
@@ -128,23 +125,12 @@ public class MyPageService {
 			e.printStackTrace();
 		}
 	}
-  
-	// 내가 쓴 동행 글 조회
-	public List<CrewRes> getMyCrewList() {
-		String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-		if (Objects.isNull(email)) {
-			return null;
-		}
-		Member member = memberRepository.findByEmail(email)
-			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 	@Transactional
 	// 내가 작성한 동행글 조회
 	public List<CrewRes> getMyCrewList(String email) {
-		Member member = memberRepository.findByEmail(email);
-		if (Objects.isNull(member)) {
-			throw new MemberException(MemberErrorCode.MEMBER_NOT_FOUND);
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		List<Crew> crewList = crewRepository.findAllByMember(member);
 		return crewList.stream().map(Crew::toCrewDTO).collect(Collectors.toList());
@@ -157,7 +143,9 @@ public class MyPageService {
 		if (Objects.isNull(email)) {
 			return null;
 		}
-		Member member = memberRepository.findByEmail(email);
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+
 		List<Record> recordList = recordRepository.findAllByMember(member);
 		return recordList.stream().map(Record::toMyRecordDTO).collect(Collectors.toList());
 	}
@@ -165,10 +153,9 @@ public class MyPageService {
 	@Transactional
 	// 내가 스크랩한 동행글 조회
 	public List<CrewRes> prtcpCrew(String email) {
-		Member member = memberRepository.findByEmail(email);
-		if (Objects.isNull(member)) {
-			throw new MemberException(MemberErrorCode.MEMBER_NOT_FOUND);
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+
 		List<CrewScrap> scrapList = crewScrapRepository.findAllByMember(member);
 		return scrapList
 			.stream()
@@ -179,11 +166,8 @@ public class MyPageService {
 	// 회원 비활성화
 	public void withDraw(WithDrawPW withDrawPW, String email) {
 
-		Member member = memberRepository.findByEmail(email);
-
-		if (Objects.isNull(member)) {
-			throw new IllegalArgumentException("해당 사용자를 찾을수 없습니다.");
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		if (!encoder.matches(withDrawPW.getCurrentPassword(), member.getPassword())) {
 			throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
@@ -204,17 +188,15 @@ public class MyPageService {
 	// 내가 신청한 동행 글 조회
 	@Transactional
 	public List<CrewRes> commetCrewList(String email) {
-		Member member = memberRepository.findByEmail(email);
-		if (Objects.isNull(member)) {
-			throw new MemberException(MemberErrorCode.MEMBER_NOT_FOUND);
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		List<CrewMember> commentCrewList = crewMemberRepository.findAllByMember(member);
 
 		return commentCrewList
 			.stream()
 			.filter(crewMember -> crewMember.getStatus() != CrewMemberStatus.OWNER)
-			.map(gg->gg.getCrew().toCrewDTO())
+			.map(gg -> gg.getCrew().toCrewDTO())
 			.collect(Collectors.toList());
 	}
 

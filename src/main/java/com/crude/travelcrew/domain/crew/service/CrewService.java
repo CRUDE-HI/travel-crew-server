@@ -51,11 +51,8 @@ public class CrewService {
 	@Transactional
 	public CrewRes createCrew(CrewReq requestDto, MultipartFile image, String email) {
 
-		Member member = memberRepository.findByEmail(email);
-
-		if(Objects.isNull(member)){
-			throw new MemberException(MEMBER_NOT_FOUND);
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		Crew crew = Crew.builder()
 			.title(requestDto.getTitle())
@@ -89,16 +86,15 @@ public class CrewService {
 
 		crew.setThumbnailImgUrl(imageUrl);
 
-
 		return CrewRes.fromEntity(crew);
 	}
 
 	//수정
 	@Transactional
-	public CrewRes updateCrew(Long crewId,  CrewReq request, String email){
+	public CrewRes updateCrew(Long crewId, CrewReq request, String email) {
 		// 게시물 없을때
 		Crew crew = crewRepository.findById(crewId)
-			.orElseThrow(()->new CrewException(CREW_NOT_FOUND));
+			.orElseThrow(() -> new CrewException(CREW_NOT_FOUND));
 
 		// 작성자가 아닐떄
 		if (!Objects.equals(crew.getMember().getEmail(), email)) {
@@ -115,10 +111,10 @@ public class CrewService {
 
 		//해당하는 동행글이 존재하지 않습니다.
 		Crew crew = crewRepository.findById(crewId)
-			.orElseThrow(()->new CrewException(CREW_NOT_FOUND));
+			.orElseThrow(() -> new CrewException(CREW_NOT_FOUND));
 
 		//동행글 삭제는 작성자만 가능합니다.
-		if (!Objects.equals(crew.getMember().getEmail(), email)){
+		if (!Objects.equals(crew.getMember().getEmail(), email)) {
 			throw new CrewException(FAIL_TO_DELETE_CREW);
 		}
 
@@ -134,7 +130,7 @@ public class CrewService {
 		// 동행 기록 댓글 변경
 		List<CrewComment> crewComments = crewCommentRepository.findAllByCrewId(crewId);
 
-		for (CrewComment comment : crewComments){
+		for (CrewComment comment : crewComments) {
 			comment.setCrewId(0L);
 			crewCommentRepository.save(comment);
 		}

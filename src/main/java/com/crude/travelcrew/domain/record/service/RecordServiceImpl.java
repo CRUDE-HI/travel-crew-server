@@ -64,8 +64,9 @@ public class RecordServiceImpl implements RecordService {
 			record.getCreatedAt(),
 			record.getUpdatedAt()
 		);
+	}
 
-  @Override
+	@Override
 	@Transactional
 	public List<RecordListRes> listRecord(String keyword, Pageable pageable) {
 		List<Record> list = recordRepository.findByKeyword(keyword, pageable);

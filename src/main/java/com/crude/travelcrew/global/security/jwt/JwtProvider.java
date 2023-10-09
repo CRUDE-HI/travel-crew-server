@@ -38,7 +38,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class JwtProvider {
 
-
 	private static final String AUTHORIZATION_HEADER = "Authorization";
 	private static final String BEARER_PREFIX = "Bearer ";
 	private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30L;            // 30분
@@ -50,7 +49,6 @@ public class JwtProvider {
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final CustomUserDetailsService userDetailsService;
 	private final BlockAccessTokenRepository blockAccessTokenRepository;
-
 
 	@PostConstruct
 	protected void init() {
@@ -121,7 +119,6 @@ public class JwtProvider {
 		return false;
 	}
 
-
 	public Long getExpiration(String token) {
 		return Jwts.parserBuilder()
 			.setSigningKey(key)
@@ -144,6 +141,7 @@ public class JwtProvider {
 		}
 		return null;
 	}
+
 	public void saveRefreshTokenInRedis(String token, String email) {
 		RefreshToken refreshToken = RefreshToken.builder()
 			.id(email)
