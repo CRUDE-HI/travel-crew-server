@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.crude.travelcrew.domain.record.model.dto.EditRecordReq;
 import com.crude.travelcrew.domain.record.model.dto.EditRecordRes;
+import com.crude.travelcrew.domain.record.model.dto.GetRecordRes;
 import com.crude.travelcrew.domain.record.model.dto.RecordImageRes;
 import com.crude.travelcrew.domain.record.model.dto.RecordListRes;
 import com.crude.travelcrew.domain.record.service.RecordService;
@@ -36,6 +37,14 @@ public class RecordController {
 
 	private final RecordService recordService;
 
+	/**
+	 * 여행 기록 상세 조회
+	 */
+	@GetMapping("/{recordId}")
+	public ResponseEntity<GetRecordRes> getRecord(@PathVariable Long recordId) {
+		GetRecordRes getRecordRes = recordService.getRecord(recordId);
+		return ResponseEntity.ok(getRecordRes);
+    
 	/**
 	 * 여행 기록 전체글 조회
 	 */

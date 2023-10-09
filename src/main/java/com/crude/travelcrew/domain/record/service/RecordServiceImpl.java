@@ -19,6 +19,7 @@ import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.domain.record.model.dto.EditRecordReq;
 import com.crude.travelcrew.domain.record.model.dto.EditRecordRes;
+import com.crude.travelcrew.domain.record.model.dto.GetRecordRes;
 import com.crude.travelcrew.domain.record.model.dto.RecordImageRes;
 import com.crude.travelcrew.domain.record.model.dto.RecordListRes;
 import com.crude.travelcrew.domain.record.model.entity.Record;
@@ -45,6 +46,26 @@ public class RecordServiceImpl implements RecordService {
 	private final AwsS3Service awsS3Service;
 
 	@Override
+	@Transactional
+	public GetRecordRes getRecord(Long recordId) {
+		Record record = recordRepository.findById(recordId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+
+		List<String> imageUrls = record.getRecordImages().stream()
+			.map(RecordImage::getImageUrl)
+			.collect(Collectors.toList());
+
+		return new GetRecordRes(
+			record.getId(),
+			record.getMember().getNickname(),
+			record.getTitle(),
+			record.getContent(),
+			imageUrls,
+			record.getCreatedAt(),
+			record.getUpdatedAt()
+		);
+
+  @Override
 	@Transactional
 	public List<RecordListRes> listRecord(String keyword, Pageable pageable) {
 		List<Record> list = recordRepository.findByKeyword(keyword, pageable);

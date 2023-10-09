@@ -32,7 +32,6 @@ import com.crude.travelcrew.domain.member.model.dto.UpdatePWReq;
 import com.crude.travelcrew.domain.member.model.dto.WithDrawPW;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
-import com.crude.travelcrew.domain.record.model.dto.EditRecordRes;
 import com.crude.travelcrew.domain.record.model.dto.MyRecordRes;
 import com.crude.travelcrew.domain.record.model.entity.Record;
 import com.crude.travelcrew.domain.record.repository.RecordRepository;
@@ -160,7 +159,7 @@ public class MyPageService {
 		}
 		Member member = memberRepository.findByEmail(email);
 		List<Record> recordList = recordRepository.findAllByMember(member);
-		return recordList.stream().map(Record::toRecordDTO).collect(Collectors.toList());
+		return recordList.stream().map(Record::toMyRecordDTO).collect(Collectors.toList());
 	}
 
 	@Transactional
