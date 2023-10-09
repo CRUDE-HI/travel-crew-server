@@ -115,9 +115,9 @@ public class Crew extends BaseTime {
 	}
 
 	public CrewRes toCrewDTO () {
-
   
 		CrewRes toPostsDTO = new CrewRes();
+		toPostsDTO.setId(this.getCrewId());
 		toPostsDTO.setMemberId(this.getMember().getId());
 		toPostsDTO.setTitle(this.getTitle());
 		toPostsDTO.setThumbnailImgUrl(this.getThumbnailImgUrl());
