@@ -1,5 +1,6 @@
 package com.crude.travelcrew.domain.crew.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,4 +15,6 @@ public interface CrewMemberRepository extends JpaRepository<CrewMember, Long>, C
 	boolean existsByCrewAndMember(Crew crew, Member member);
 
 	Optional<CrewMember> findByCrewAndMember(Crew crew, Member member);
+
+	List<CrewMember> findAllByMember(Member member);
 }

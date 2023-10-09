@@ -4,14 +4,17 @@ import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 import static com.crude.travelcrew.global.error.type.RecordErrorCode.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
+import com.crude.travelcrew.domain.record.model.dto.RecordCommentListRes;
 import com.crude.travelcrew.domain.record.model.dto.RecordCommentReq;
 import com.crude.travelcrew.domain.record.model.dto.RecordCommentRes;
 import com.crude.travelcrew.domain.record.model.entity.Record;
@@ -30,6 +33,17 @@ public class RecordCommentServiceImpl implements RecordCommentService {
 	private final MemberRepository memberRepository;
 	private final RecordRepository recordRepository;
 	private final RecordCommentRepository recordCommentRepository;
+
+	@Override
+	@Transactional
+	public RecordCommentListRes getCommentList(Long recordId, Pageable pageable) {
+		Record record = recordRepository.findById(recordId)
+			.orElseThrow(() -> new RecordException(TRAVEL_RECORD_NOT_FOUND));
+
+		List<RecordComment> list = recordCommentRepository.findByRecord(record, pageable);
+
+		return RecordCommentListRes.fromEntityList(list);
+	}
 
 	@Override
 	@Transactional
@@ -62,7 +76,7 @@ public class RecordCommentServiceImpl implements RecordCommentService {
 			.orElseThrow(() -> new RecordException(TRAVEL_RECORD_NOT_FOUND));
 
 		RecordComment recordComment
-			= recordCommentRepository.findByRecordAndAndId(record, recordCommentId)
+			= recordCommentRepository.findByRecordAndId(record, recordCommentId)
 			.orElseThrow(() -> new RecordException(TRAVEL_RECORD_COMMENT_NOT_FOUND));
 
 		if (!Objects.equals(recordComment.getMember().getEmail(), email)) {
@@ -82,7 +96,7 @@ public class RecordCommentServiceImpl implements RecordCommentService {
 			.orElseThrow(() -> new RecordException(TRAVEL_RECORD_NOT_FOUND));
 
 		RecordComment recordComment
-			= recordCommentRepository.findByRecordAndAndId(record, recordCommentId)
+			= recordCommentRepository.findByRecordAndId(record, recordCommentId)
 			.orElseThrow(() -> new RecordException(TRAVEL_RECORD_COMMENT_NOT_FOUND));
 
 		if (!Objects.equals(recordComment.getMember().getEmail(), email)) {

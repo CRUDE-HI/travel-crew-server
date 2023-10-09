@@ -20,6 +20,8 @@ import com.crude.travelcrew.domain.member.model.dto.UpdateNickReq;
 import com.crude.travelcrew.domain.member.model.dto.UpdatePWReq;
 import com.crude.travelcrew.domain.member.model.dto.WithDrawPW;
 import com.crude.travelcrew.domain.member.service.MyPageService;
+import com.crude.travelcrew.domain.record.model.dto.EditRecordRes;
+import com.crude.travelcrew.domain.record.model.dto.MyRecordRes;
 
 import lombok.RequiredArgsConstructor;
 
@@ -64,9 +66,15 @@ public class MyPageController {
 	}
 
 	// 내가 쓴 동행 글 조회
-	@GetMapping("/post")
+	@GetMapping("/crew")
 	public ResponseEntity<List<CrewRes>> getMyCrewList(Principal principal) {
 		return ResponseEntity.ok(myPageService.getMyCrewList(principal.getName()));
+	}
+
+	// 내가 쓴 여행기록 글 조회
+	@GetMapping("/record")
+	public ResponseEntity<List<MyRecordRes>> getMyRecordList() {
+		return ResponseEntity.ok(myPageService.getMyRecordList());
 	}
 
 	// 내가 스크랩한 글 조회
@@ -81,5 +89,12 @@ public class MyPageController {
 	public ResponseEntity<Void> withDraw(@RequestBody WithDrawPW withDrawPW, Principal principal) {
 		myPageService.withDraw(withDrawPW, principal.getName());
 		return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+	// 내가 신청한 동행글 List 조회
+	@GetMapping("/participateList")
+	public ResponseEntity<List<CrewRes>> participateCrewList(Principal principal){
+		List<CrewRes> commentCrewList = myPageService.commetCrewList(principal.getName());
+		return ResponseEntity.ok(commentCrewList);
 	}
 }
