@@ -62,7 +62,7 @@ public class MyPageController {
 	}
 
 	// 내가 쓴 동행 글 조회
-	@GetMapping("/post")
+	@GetMapping("/crew")
 	public ResponseEntity<List<CrewRes>> getMyCrewList(Principal principal) {
 		return ResponseEntity.ok(myPageService.getMyCrewList(principal.getName()));
 	}
