@@ -43,6 +43,9 @@ import com.crude.travelcrew.domain.member.model.dto.SignUpReq;
 import com.crude.travelcrew.domain.member.model.dto.SignUpRes;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
+import com.crude.travelcrew.domain.record.model.dto.RecordCommentListRes;
+import com.crude.travelcrew.domain.record.model.dto.RecordCommentRes;
+import com.crude.travelcrew.domain.record.service.RecordCommentService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -68,6 +71,9 @@ public class AdminController {
 
 	@Autowired
 	CrewService crewService;
+
+	@Autowired
+	RecordCommentService recordCommentService;
 
 	@PostMapping("/sign-up")
 	public ResponseEntity<?> signUp(@RequestBody SignUpReq signUpReq) throws Exception {
@@ -235,6 +241,17 @@ public class AdminController {
 	@PatchMapping("/record/{recordId}")
 	public ResponseEntity<Void> blockRecord(@PathVariable Long recordId) {
 		adminGetRecordService.blockAndDeleteImages(recordId);
+		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping("/record/{recordId}/comment")
+	public ResponseEntity<RecordCommentListRes> recordCommentList(@PathVariable Long recordId, Pageable pageable) {
+		return ResponseEntity.ok(recordCommentService.getCommentList(recordId, pageable));
+	}
+
+	@PatchMapping("/record/{recordId}/comment/{commentId}")
+	public ResponseEntity<Object> blockRecordComment(@PathVariable Long recordId, @PathVariable Long commentId) {
+		adminGetRecordService.blockComment(recordId, commentId);
 		return ResponseEntity.noContent().build();
 	}
 }
