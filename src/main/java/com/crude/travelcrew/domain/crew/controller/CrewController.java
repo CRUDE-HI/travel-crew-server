@@ -47,6 +47,12 @@ public class CrewController {
 		return ResponseEntity.ok(crewService.getCrewList(keyword, pageable));
 	}
 
+	// 동행 게시글 상세조회
+	@GetMapping("/{crewId}")
+	public ResponseEntity<CrewRes> crewView(@PathVariable Long crewId){
+		return ResponseEntity.ok(crewService.crewView(crewId));
+	}
+
 	// 글 등록
 	@PostMapping
 	public ResponseEntity<CrewRes> createCrew(
