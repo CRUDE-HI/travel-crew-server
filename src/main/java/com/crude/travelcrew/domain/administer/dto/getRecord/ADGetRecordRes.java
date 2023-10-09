@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.administer.dto.getMember;
+package com.crude.travelcrew.domain.administer.dto.getRecord;
 
 import java.time.LocalDateTime;
 import java.util.List;
