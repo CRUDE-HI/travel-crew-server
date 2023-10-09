@@ -2,8 +2,6 @@ package com.crude.travelcrew.domain.administer.controller;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,12 +20,12 @@ import com.crude.travelcrew.domain.administer.dto.getCrew.ADCrewListReq;
 import com.crude.travelcrew.domain.administer.dto.getCrew.ADCrewListRes;
 import com.crude.travelcrew.domain.administer.dto.getCrew.ADGetCrewRes;
 import com.crude.travelcrew.domain.administer.dto.getMember.ADGetMemberRes;
-import com.crude.travelcrew.domain.administer.dto.getRecord.ADGetRecordRes;
-import com.crude.travelcrew.domain.administer.dto.getReport.ADGetReportRes;
 import com.crude.travelcrew.domain.administer.dto.getMember.ADMemberListReq;
 import com.crude.travelcrew.domain.administer.dto.getMember.ADMemberListRes;
+import com.crude.travelcrew.domain.administer.dto.getRecord.ADGetRecordRes;
 import com.crude.travelcrew.domain.administer.dto.getRecord.ADRecordListReq;
 import com.crude.travelcrew.domain.administer.dto.getRecord.ADRecordListRes;
+import com.crude.travelcrew.domain.administer.dto.getReport.ADGetReportRes;
 import com.crude.travelcrew.domain.administer.dto.getReport.ADReportListReq;
 import com.crude.travelcrew.domain.administer.dto.getReport.ADReportListRes;
 import com.crude.travelcrew.domain.administer.dto.getReport.ADReportedMemberListReq;
@@ -36,15 +34,15 @@ import com.crude.travelcrew.domain.administer.service.AdminGetMemberService;
 import com.crude.travelcrew.domain.administer.service.AdminGetRecordService;
 import com.crude.travelcrew.domain.administer.service.AdminGetReportService;
 import com.crude.travelcrew.domain.administer.service.AdminMemberService;
-import com.crude.travelcrew.domain.crew.model.dto.CrewCommentReq;
 import com.crude.travelcrew.domain.crew.model.dto.CrewCommentRes;
 import com.crude.travelcrew.domain.crew.service.CrewService;
+import com.crude.travelcrew.domain.member.model.dto.LoginReq;
+import com.crude.travelcrew.domain.member.model.dto.LoginRes;
 import com.crude.travelcrew.domain.member.model.dto.SignUpReq;
 import com.crude.travelcrew.domain.member.model.dto.SignUpRes;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
 import com.crude.travelcrew.domain.record.model.dto.RecordCommentListRes;
-import com.crude.travelcrew.domain.record.model.dto.RecordCommentRes;
 import com.crude.travelcrew.domain.record.service.RecordCommentService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -93,9 +91,9 @@ public class AdminController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<SignUpRes> login(@RequestBody SignUpReq signUpReq) throws Exception {
-		System.out.println("login: " + signUpReq);
-		return ResponseEntity.ok(adminMemberService.login(signUpReq));
+	public ResponseEntity<LoginRes> login(@RequestBody LoginReq request) {
+		LoginRes response = adminMemberService.login(request);
+		return ResponseEntity.ok(response);
 	}
 
 	@PostMapping("/logout")
