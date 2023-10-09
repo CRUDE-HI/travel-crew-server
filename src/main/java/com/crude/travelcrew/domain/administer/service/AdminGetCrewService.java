@@ -12,7 +12,6 @@ import com.crude.travelcrew.domain.administer.dto.getCrew.ADCrewListReq;
 import com.crude.travelcrew.domain.administer.dto.getCrew.ADCrewListRes;
 import com.crude.travelcrew.domain.administer.dto.getCrew.ADCrewListResponseDto;
 import com.crude.travelcrew.domain.administer.dto.getCrew.ADGetCrewRes;
-import com.crude.travelcrew.domain.crew.model.dto.CrewCommentReq;
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
 import com.crude.travelcrew.domain.crew.model.entity.CrewComment;
 import com.crude.travelcrew.domain.crew.repository.CrewCommentRepository;
