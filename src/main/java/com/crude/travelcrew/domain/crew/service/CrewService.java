@@ -1,5 +1,6 @@
 package com.crude.travelcrew.domain.crew.service;
 
+import static com.crude.travelcrew.domain.crew.model.constants.CrewMemberStatus.*;
 import static com.crude.travelcrew.global.error.type.CrewErrorCode.*;
 import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 
@@ -22,7 +23,9 @@ import com.crude.travelcrew.domain.crew.model.dto.CrewReq;
 import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
 import com.crude.travelcrew.domain.crew.model.entity.CrewComment;
+import com.crude.travelcrew.domain.crew.model.entity.CrewMember;
 import com.crude.travelcrew.domain.crew.repository.CrewCommentRepository;
+import com.crude.travelcrew.domain.crew.repository.CrewMemberRepository;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
@@ -42,6 +45,7 @@ public class CrewService {
 	private final CrewRepository crewRepository;
 	private final CrewCommentRepository crewCommentRepository;
 	private final MemberRepository memberRepository;
+	private final CrewMemberRepository crewMemberRepository;
 	private final AwsS3Service awsS3Service;
 
 	@Transactional
@@ -65,9 +69,18 @@ public class CrewService {
 			.crewContent(requestDto.getCrewContent())
 			.build();
 
+		CrewMember crewMember = CrewMember.builder()
+			.crew(crew)
+			.member(member)
+			.content("동행글 작성자")
+			.status(APPROVED)
+			.build();
+
 		crew.setMember(member);
 		crewRepository.save(crew);
+		crewMemberRepository.save(crewMember);
 
+		// 썸네일 이미지 저장
 		if (Objects.isNull(image)) {
 			throw new IllegalArgumentException("미리보기 이미지가 없습니다. ");
 		}
@@ -75,6 +88,8 @@ public class CrewService {
 		String imageUrl = awsS3Service.uploadImageFile(image, DIR);
 
 		crew.setThumbnailImgUrl(imageUrl);
+
+
 		return CrewRes.fromEntity(crew);
 	}
 
