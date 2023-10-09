@@ -139,6 +139,14 @@ public class CrewService {
 
 	}
 
+	// 동행 게시글 상세조회
+	@Transactional
+	public CrewRes crewView(Long id) {
+		Crew crew = crewRepository.findById(id)
+			.orElseThrow(()-> new CrewException(CREW_NOT_FOUND));
+		return crew.toCrewDTO();
+	}
+
 	// 전체 조회
 	@Transactional
 	public List<CrewListRes> getCrewList(String keyword, Pageable pageable) {
