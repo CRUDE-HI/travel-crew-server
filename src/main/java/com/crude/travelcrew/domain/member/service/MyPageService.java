@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,10 @@ import com.crude.travelcrew.domain.member.model.dto.UpdateNickReq;
 import com.crude.travelcrew.domain.member.model.dto.UpdatePWReq;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
+import com.crude.travelcrew.domain.record.model.dto.EditRecordRes;
+import com.crude.travelcrew.domain.record.model.dto.MyRecordRes;
+import com.crude.travelcrew.domain.record.model.entity.Record;
+import com.crude.travelcrew.domain.record.repository.RecordRepository;
 import com.crude.travelcrew.global.awss3.service.AwsS3Service;
 import com.crude.travelcrew.global.error.exception.MemberException;
 import com.crude.travelcrew.global.error.type.MemberErrorCode;
@@ -36,12 +41,14 @@ public class MyPageService {
 	private final static String DIR = "profile";
 
 	private final MemberRepository memberRepository;
+	private final RecordRepository recordRepository;
 	private final CrewRepository crewRepository;
 	private final CrewScrapRepository crewScrapRepository;
 	private final BCryptPasswordEncoder encoder;
 	private final CrewMemberRepository crewMemberRepository;
 	private final AwsS3Service awsS3Service;
 
+	@Transactional
 	// 내 정보 상세 조회
 	public MemberRes myInfo(String email) {
 		Member member = memberRepository.findByEmail(email);
@@ -55,7 +62,8 @@ public class MyPageService {
 	@Transactional
 	public void updateNick(UpdateNickReq updateNickReq, String email) {
 
-		Member member = memberRepository.findByEmail(email);
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		if (Objects.isNull(member)) {
 			throw new IllegalArgumentException("해당 사용자를 찾을수 없습니다.");
@@ -69,11 +77,8 @@ public class MyPageService {
 	@Transactional
 	public void updatePW(UpdatePWReq updatePWReq, String email) {
 
-		Member member = memberRepository.findByEmail(email);
-
-		if (Objects.isNull(member)) {
-			throw new IllegalArgumentException("해당 사용자를 찾을수 없습니다.");
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		if (!encoder.matches(updatePWReq.getCurrentPassword(), member.getPassword())) {
 			throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
@@ -91,25 +96,20 @@ public class MyPageService {
 	@Transactional
 	public void updateImg(MultipartFile image, String email) {
 
-		Member member = memberRepository.findByEmail(email);
-
-		if (Objects.isNull(member)) {
-			throw new IllegalArgumentException("해당 사용자를 찾을수 없습니다.");
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		String imageUrl = awsS3Service.uploadImageFile(image, DIR);
 		member.setProfileImgUrl(imageUrl);
 		memberRepository.save(member);
 	}
 
+	@Transactional
 	// 프로필 이미지 삭제
 	public void deleteImg(String profileImgUrl, String email) {
 
-		Member member = memberRepository.findByEmail(email);
-
-		if (Objects.isNull(member)) {
-			throw new IllegalArgumentException("해당 사용자를 찾을수 없습니다.");
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		memberRepository.findByProfileImgUrl(member.getProfileImgUrl())
 			.orElseThrow(() -> new IllegalArgumentException("이미지 파일이 존재하지 않습니다."));
@@ -122,17 +122,41 @@ public class MyPageService {
 			e.printStackTrace();
 		}
 	}
+  
+	// 내가 쓴 동행 글 조회
+	public List<CrewRes> getMyCrewList() {
+		String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+		if (Objects.isNull(email)) {
+			return null;
+		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
+	@Transactional
 	// 내가 작성한 동행글 조회
 	public List<CrewRes> getMyCrewList(String email) {
 		Member member = memberRepository.findByEmail(email);
 		if (Objects.isNull(member)) {
 			throw new MemberException(MemberErrorCode.MEMBER_NOT_FOUND);
 		}
+
 		List<Crew> crewList = crewRepository.findAllByMember(member);
 		return crewList.stream().map(Crew::toCrewDTO).collect(Collectors.toList());
 	}
 
+	// 내가 쓴 여행기록 글 조회
+	@Transactional
+	public List<MyRecordRes> getMyRecordList() {
+		String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+		if (Objects.isNull(email)) {
+			return null;
+		}
+		Member member = memberRepository.findByEmail(email);
+		List<Record> recordList = recordRepository.findAllByMember(member);
+		return recordList.stream().map(Record::toRecordDTO).collect(Collectors.toList());
+	}
+
+	@Transactional
 	// 내가 스크랩한 동행글 조회
 	public List<CrewRes> prtcpCrew(String email) {
 		Member member = memberRepository.findByEmail(email);

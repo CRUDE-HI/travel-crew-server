@@ -93,7 +93,7 @@ public class CrewController {
 
 	// 댓글 수정
 	@PatchMapping("/{crewId}/comment/{commentId}")
-	public ResponseEntity<Object> modifyComment(@PathVariable long commentId, @Valid CrewCommentReq commentReq) {
+	public ResponseEntity<Object> modifyComment(@PathVariable long commentId, @RequestBody @Valid CrewCommentReq commentReq) {
 		crewService.modifyComment(commentId, commentReq);
 		return ResponseEntity.ok().build();
 	}

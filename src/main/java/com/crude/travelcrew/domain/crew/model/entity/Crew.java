@@ -44,7 +44,7 @@ public class Crew extends BaseTime {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long crewId;
 
-	@Column(nullable = false, length = 30 )
+	@Column(nullable = false, length = 30)
 	private String title;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -84,7 +84,6 @@ public class Crew extends BaseTime {
 	@Column(nullable = false)
 	private String crewContent;
 
-
 	public Crew(CrewReq crewReq) {
 		this();
 		this.title = crewReq.getTitle();
@@ -115,14 +114,14 @@ public class Crew extends BaseTime {
 		this.crewContent = crewReq.getCrewContent();
 	}
 
-
-
 	public CrewRes toCrewDTO () {
 
+  
 		CrewRes toPostsDTO = new CrewRes();
 		toPostsDTO.setMemberId(this.getMember().getId());
 		toPostsDTO.setTitle(this.getTitle());
 		toPostsDTO.setThumbnailImgUrl(this.getThumbnailImgUrl());
+		toPostsDTO.setCrewPlace(this.getCrewPlace());
 		toPostsDTO.setCrewStatus(this.getCrewStatus());
 		toPostsDTO.setMaxCrew(this.getMaxCrew());
 		toPostsDTO.setTravelStart(this.getTravelStart());
@@ -134,7 +133,10 @@ public class Crew extends BaseTime {
 		return toPostsDTO;
 	}
 
-
-
-
+	public void blockContent() {
+		this.title = "차단된 글입니다.";
+		this.thumbnailImgUrl = "";
+		this.crewStatus = CrewStatus.CLOSE;
+		this.crewContent = "차단된 글입니다.";
+	}
 }

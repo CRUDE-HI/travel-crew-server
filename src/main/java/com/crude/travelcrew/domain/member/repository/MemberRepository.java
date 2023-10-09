@@ -9,7 +9,7 @@ import com.crude.travelcrew.domain.member.repository.custom.CustomMemberReposito
 
 public interface MemberRepository extends JpaRepository<Member, Long>, CustomMemberRepository {
 
-	Member findByEmail(String email);
+	Optional<Member> findByEmail(String email);
 
 	Optional<Member> findByProfileImgUrl(String profileImgUrl);
 

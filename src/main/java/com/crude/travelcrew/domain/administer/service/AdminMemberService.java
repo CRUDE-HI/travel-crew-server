@@ -1,5 +1,7 @@
 package com.crude.travelcrew.domain.administer.service;
 
+import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
+
 import java.time.LocalDateTime;
 
 import javax.security.auth.login.LoginException;
@@ -19,6 +21,7 @@ import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
 import com.crude.travelcrew.domain.member.repository.MemberProfileRepository;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
+import com.crude.travelcrew.global.error.exception.MemberException;
 import com.crude.travelcrew.global.security.JwtProvider;
 
 @Service
@@ -40,7 +43,8 @@ public class AdminMemberService {
 	BCryptPasswordEncoder encoder;
 
 	public Member getByCredential(String email) {
-		return memberRepository.findByEmail(email);
+		return memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 	}
 
 	public SignUpRes login(SignUpReq signUpReq) throws LoginException {

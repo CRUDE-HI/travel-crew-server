@@ -1,5 +1,7 @@
 package com.crude.travelcrew.domain.report.service;
 
+import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
+
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
@@ -11,6 +13,7 @@ import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.domain.report.model.dto.ReportReq;
 import com.crude.travelcrew.domain.report.model.entity.Report;
 import com.crude.travelcrew.domain.report.repository.ReportRepository;
+import com.crude.travelcrew.global.error.exception.MemberException;
 
 @Service
 public class ReportService {
@@ -26,10 +29,8 @@ public class ReportService {
 		Member reportedMember = memberRepository.findById(reported)
 			.orElseThrow(() -> new EntityNotFoundException("신고당한 멤버의 아이디를 찾을 수 없습니다."));
 
-		Member reporter = memberRepository.findByEmail(principalName);
-		if (reporter == null) {
-			throw new EntityNotFoundException("신고한 멤버의 아이디를 찾을 수 없습니다.");
-		}
+		Member reporter = memberRepository.findByEmail(principalName)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		if (reportedMember.getId().equals(reporter.getId())){
 			throw new IllegalArgumentException("자신을 신고할 수 없습니다.");
