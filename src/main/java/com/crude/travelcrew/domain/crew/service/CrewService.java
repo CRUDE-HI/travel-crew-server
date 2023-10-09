@@ -1,5 +1,6 @@
 package com.crude.travelcrew.domain.crew.service;
 
+import static com.crude.travelcrew.domain.crew.model.constants.CrewMemberStatus.*;
 import static com.crude.travelcrew.global.error.type.CrewErrorCode.*;
 import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 
@@ -22,7 +23,9 @@ import com.crude.travelcrew.domain.crew.model.dto.CrewReq;
 import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
 import com.crude.travelcrew.domain.crew.model.entity.CrewComment;
+import com.crude.travelcrew.domain.crew.model.entity.CrewMember;
 import com.crude.travelcrew.domain.crew.repository.CrewCommentRepository;
+import com.crude.travelcrew.domain.crew.repository.CrewMemberRepository;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
@@ -42,17 +45,14 @@ public class CrewService {
 	private final CrewRepository crewRepository;
 	private final CrewCommentRepository crewCommentRepository;
 	private final MemberRepository memberRepository;
+	private final CrewMemberRepository crewMemberRepository;
 	private final AwsS3Service awsS3Service;
 
-	//글 생성
 	@Transactional
 	public CrewRes createCrew(CrewReq requestDto, MultipartFile image, String email) {
 
-		Member member = memberRepository.findByEmail(email);
-
-		if(Objects.isNull(member)){
-			throw new MemberException(MEMBER_NOT_FOUND);
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		Crew crew = Crew.builder()
 			.title(requestDto.getTitle())
@@ -66,9 +66,18 @@ public class CrewService {
 			.crewContent(requestDto.getCrewContent())
 			.build();
 
+		CrewMember crewMember = CrewMember.builder()
+			.crew(crew)
+			.member(member)
+			.content("동행글 작성자")
+			.status(OWNER)
+			.build();
+
 		crew.setMember(member);
 		crewRepository.save(crew);
+		crewMemberRepository.save(crewMember);
 
+		// 썸네일 이미지 저장
 		if (Objects.isNull(image)) {
 			throw new IllegalArgumentException("미리보기 이미지가 없습니다. ");
 		}
@@ -77,43 +86,23 @@ public class CrewService {
 
 		crew.setThumbnailImgUrl(imageUrl);
 
-
-		return CrewRes.fromEntity(crew, imageUrl);
+		return CrewRes.fromEntity(crew);
 	}
 
 	//수정
 	@Transactional
-	public CrewRes updateCrew(Long crewId, CrewReq request, MultipartFile image, String email){
+	public CrewRes updateCrew(Long crewId, CrewReq request, String email) {
 		// 게시물 없을때
 		Crew crew = crewRepository.findById(crewId)
-			.orElseThrow(()->new CrewException(CREW_NOT_FOUND));
+			.orElseThrow(() -> new CrewException(CREW_NOT_FOUND));
+
 		// 작성자가 아닐떄
 		if (!Objects.equals(crew.getMember().getEmail(), email)) {
 			throw new CrewException(FAIL_TO_UPDATE_CREW);
 		}
 
-		// imageUrl에 대한 정의(crew파일에 있는 thumbnailImgUrl임을 의미)
-		String imageUrl = crew.getThumbnailImgUrl();
-
-		// if문을 통해 imageUrl이 입력받은 image와 동일하면 기존의 imageUrl을 반환
-		if (imageUrl == null && imageUrl.isEmpty() && imageUrl.equals(image)){
-
-			crew.setThumbnailImgUrl(imageUrl);
-
-			// else if 입력받은 이미지가 기존의 이미지와 다르다면
-		} else if (imageUrl != null && !imageUrl.isEmpty() && !imageUrl.equals(image)){
-			// aws s3에 있는 이미지를 삭제하고
-			awsS3Service.deleteImageFile(imageUrl, DIR);
-			//aws s3에 새로운 이미지를 저장
-			String newImageUrl = awsS3Service.uploadImageFile(image, DIR);
-			//aws s3에 저장한 이미지를 newImageUrl로 thumbnailImgUrl(entity)에 저장
-			crew.setThumbnailImgUrl(newImageUrl);
-		}
-
-		// 수정된 crew내용 모두 업데이트하기
 		crew.update(request);
-
-		return CrewRes.fromEntity(crew, crew.getThumbnailImgUrl());
+		return CrewRes.fromEntity(crew);
 	}
 
 	//삭제
@@ -122,10 +111,10 @@ public class CrewService {
 
 		//해당하는 동행글이 존재하지 않습니다.
 		Crew crew = crewRepository.findById(crewId)
-			.orElseThrow(()->new CrewException(CREW_NOT_FOUND));
+			.orElseThrow(() -> new CrewException(CREW_NOT_FOUND));
 
 		//동행글 삭제는 작성자만 가능합니다.
-		if (!Objects.equals(crew.getMember().getEmail(), email)){
+		if (!Objects.equals(crew.getMember().getEmail(), email)) {
 			throw new CrewException(FAIL_TO_DELETE_CREW);
 		}
 
@@ -141,7 +130,7 @@ public class CrewService {
 		// 동행 기록 댓글 변경
 		List<CrewComment> crewComments = crewCommentRepository.findAllByCrewId(crewId);
 
-		for (CrewComment comment : crewComments){
+		for (CrewComment comment : crewComments) {
 			comment.setCrewId(0L);
 			crewCommentRepository.save(comment);
 		}
@@ -168,7 +157,8 @@ public class CrewService {
 	public long validateToken() {
 		// 토큰에 담긴 사용자 정보가 실제로 member 테이블에 존재하는지 여부를 검증
 		String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-		Member member = memberRepository.findByEmail(email);
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 		if (Objects.isNull(member)) {
 			throw new MemberException(MEMBER_NOT_FOUND);
 		}

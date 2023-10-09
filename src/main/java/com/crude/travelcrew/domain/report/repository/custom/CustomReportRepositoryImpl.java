@@ -13,13 +13,13 @@ import com.crude.travelcrew.domain.report.model.entity.QReport;
 import com.crude.travelcrew.domain.report.model.entity.Report;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-public class CustomReportRepositoryImpl implements CustomReportRepository{
+public class CustomReportRepositoryImpl implements CustomReportRepository {
 
 	@PersistenceContext
 	private EntityManager em;
 
 	@Override
-	public Page<Report> findReportsByReportedId(Long reportedId,Pageable pageable) {
+	public Page<Report> findReportsByReportedId(Long reportedId, Pageable pageable) {
 		JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 		QReport report = QReport.report;
 

@@ -1,30 +1,33 @@
-package com.crude.travelcrew.domain.administer.dto.getMember;
+package com.crude.travelcrew.domain.record.model.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class ADGetRecordRes {
+public class GetRecordRes {
 
 	private Long recordId;
+
+	private String memberNick;
+
 	private String title;
+
 	private String content;
-	private LocalDateTime createdAt;
-	private LocalDateTime updatedAt;
 
 	private List<String> imageUrls;
 
-	private String email;
-	private String nickname;
-	private String profileImgUrl;
+	private LocalDateTime createdAt;
+
+	private LocalDateTime updatedAt;
+
 }

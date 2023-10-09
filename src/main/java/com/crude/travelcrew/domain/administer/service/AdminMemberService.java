@@ -1,8 +1,8 @@
 package com.crude.travelcrew.domain.administer.service;
 
-import java.time.LocalDateTime;
+import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 
-import javax.security.auth.login.LoginException;
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -13,13 +13,14 @@ import org.springframework.stereotype.Service;
 import com.crude.travelcrew.domain.member.model.constants.MemberRole;
 import com.crude.travelcrew.domain.member.model.constants.MemberStatus;
 import com.crude.travelcrew.domain.member.model.constants.ProviderType;
-import com.crude.travelcrew.domain.member.model.dto.SignUpReq;
-import com.crude.travelcrew.domain.member.model.dto.SignUpRes;
+import com.crude.travelcrew.domain.member.model.dto.LoginReq;
+import com.crude.travelcrew.domain.member.model.dto.LoginRes;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
 import com.crude.travelcrew.domain.member.repository.MemberProfileRepository;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
-import com.crude.travelcrew.global.security.JwtProvider;
+import com.crude.travelcrew.global.error.exception.MemberException;
+import com.crude.travelcrew.global.security.jwt.JwtProvider;
 
 @Service
 public class AdminMemberService {
@@ -34,39 +35,35 @@ public class AdminMemberService {
 	MemberProfileRepository memberProfileRepository;
 
 	@Autowired
+	BCryptPasswordEncoder passwordEncoder;
+
+	@Autowired
 	JwtProvider jwtProvider;
 
 	@Autowired
 	BCryptPasswordEncoder encoder;
 
 	public Member getByCredential(String email) {
-		return memberRepository.findByEmail(email);
+		return memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 	}
 
-	public SignUpRes login(SignUpReq signUpReq) throws LoginException {
+	public LoginRes login(LoginReq request) {
 
-		Member member = getByCredential(signUpReq.getEmail());
-		if (member == null)
-			throw new RuntimeException("가입 정보 없음.");
+		Member member = memberRepository.findByEmail(request.getEmail())
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
-		if (!encoder.matches(signUpReq.getPassword(), member.getPassword())) {
-			throw new RuntimeException("비밀번호 일치하지 않음.");
+		if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
+			throw new MemberException(WRONG_MEMBER_PASSWORD);
 		}
-		SignUpRes signUpRes = new SignUpRes();
-		String email = member.getEmail();
-		String nickname = member.getNickname();
-		String accesstoken = jwtProvider.createAccessToken(email);
-		String refreshtoken = jwtProvider.createRefreshToken(email);
-		signUpRes.setEmail(email);
-		signUpRes.setNickname(nickname);
-		signUpRes.setAccesstoken(accesstoken);
-		signUpRes.setRefreshtoken(refreshtoken);
-		System.out.println("email: " + email);
-		redisTemplate.opsForValue()
-			.set("JWT_ACCESS_TOKEN:" + email, accesstoken + "|" + jwtProvider.getExpiration(accesstoken));
-		redisTemplate.opsForValue()
-			.set("JWT_REFRESH_TOKEN:" + email, refreshtoken + "|" + jwtProvider.getExpiration(refreshtoken));
-		return signUpRes;
+
+		String accessToken = jwtProvider.createAccessToken(member.getEmail());
+		String refreshToken = jwtProvider.createRefreshToken(member.getEmail());
+
+		return LoginRes.builder()
+			.accessToken(accessToken)
+			.refreshToken(refreshToken)
+			.build();
 	}
 
 	public void logout() throws Exception {
