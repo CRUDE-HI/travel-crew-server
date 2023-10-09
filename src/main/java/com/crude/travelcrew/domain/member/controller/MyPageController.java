@@ -19,6 +19,7 @@ import com.crude.travelcrew.domain.member.model.dto.UpdateNickReq;
 import com.crude.travelcrew.domain.member.model.dto.UpdatePWReq;
 import com.crude.travelcrew.domain.member.service.MyPageService;
 import com.crude.travelcrew.domain.record.model.dto.EditRecordRes;
+import com.crude.travelcrew.domain.record.model.dto.MyRecordRes;
 
 import lombok.RequiredArgsConstructor;
 
@@ -70,7 +71,7 @@ public class MyPageController {
 
 	// 내가 쓴 여행기록 글 조회
 	@GetMapping("/record")
-	public ResponseEntity<List<EditRecordRes>> getMyRecordList() {
+	public ResponseEntity<List<MyRecordRes>> getMyRecordList() {
 		return ResponseEntity.ok(myPageService.getMyRecordList());
 	}
 

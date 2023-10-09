@@ -21,6 +21,7 @@ import com.crude.travelcrew.domain.member.model.dto.UpdatePWReq;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.domain.record.model.dto.EditRecordRes;
+import com.crude.travelcrew.domain.record.model.dto.MyRecordRes;
 import com.crude.travelcrew.domain.record.model.entity.Record;
 import com.crude.travelcrew.domain.record.repository.RecordRepository;
 import com.crude.travelcrew.global.awss3.service.AwsS3Service;
@@ -41,6 +42,7 @@ public class MyPageService {
 	private final BCryptPasswordEncoder encoder;
 	private final AwsS3Service awsS3Service;
 
+	@Transactional
 	// 내 정보 상세 조회
 	public MemberRes myInfo(String email) {
 		Member member = memberRepository.findByEmail(email);
@@ -101,6 +103,7 @@ public class MyPageService {
 		memberRepository.save(member);
 	}
 
+	@Transactional
 	// 프로필 이미지 삭제
 	public void deleteImg(String profileImgUrl, String email) {
 
@@ -122,6 +125,7 @@ public class MyPageService {
 		}
 	}
 
+	@Transactional
 	// 내가 작성한 동행글 조회
 	public List<CrewRes> getMyCrewList(String email) {
 		Member member = memberRepository.findByEmail(email);
@@ -133,7 +137,8 @@ public class MyPageService {
 	}
 
 	// 내가 쓴 여행기록 글 조회
-	public List<EditRecordRes> getMyRecordList() {
+	@Transactional
+	public List<MyRecordRes> getMyRecordList() {
 		String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
 		if (Objects.isNull(email)) {
 			return null;
@@ -143,6 +148,7 @@ public class MyPageService {
 		return recordList.stream().map(Record::toRecordDTO).collect(Collectors.toList());
 	}
 
+	@Transactional
 	// 내가 스크랩한 동행글 조회
 	public List<CrewRes> prtcpCrew(String email) {
 		Member member = memberRepository.findByEmail(email);
