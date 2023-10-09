@@ -36,7 +36,7 @@ public class RecordHeartServiceImpl implements RecordHeartService {
 			.orElseThrow(() -> new RecordException(TRAVEL_RECORD_NOT_FOUND));
 
 		// 이미 좋아요를 누른 경우
-		if(recordHeartRepository.existsByRecordAndMember(record, member)) {
+		if (recordHeartRepository.existsByRecordAndMember(record, member)) {
 			throw new RecordException(ALREADY_PUSH_TRAVEL_RECORD_HEART);
 		}
 

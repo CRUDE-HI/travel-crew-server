@@ -20,7 +20,6 @@ import com.crude.travelcrew.domain.member.model.dto.UpdateNickReq;
 import com.crude.travelcrew.domain.member.model.dto.UpdatePWReq;
 import com.crude.travelcrew.domain.member.model.dto.WithDrawPW;
 import com.crude.travelcrew.domain.member.service.MyPageService;
-import com.crude.travelcrew.domain.record.model.dto.EditRecordRes;
 import com.crude.travelcrew.domain.record.model.dto.MyRecordRes;
 
 import lombok.RequiredArgsConstructor;
@@ -89,11 +88,11 @@ public class MyPageController {
 	public ResponseEntity<Void> withDraw(@RequestBody WithDrawPW withDrawPW, Principal principal) {
 		myPageService.withDraw(withDrawPW, principal.getName());
 		return new ResponseEntity<>(HttpStatus.OK);
-  }
+	}
 
 	// 내가 신청한 동행글 List 조회
 	@GetMapping("/participateList")
-	public ResponseEntity<List<CrewRes>> participateCrewList(Principal principal){
+	public ResponseEntity<List<CrewRes>> participateCrewList(Principal principal) {
 		List<CrewRes> commentCrewList = myPageService.commetCrewList(principal.getName());
 		return ResponseEntity.ok(commentCrewList);
 	}

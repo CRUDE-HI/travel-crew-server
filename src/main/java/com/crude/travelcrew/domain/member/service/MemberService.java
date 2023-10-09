@@ -10,14 +10,10 @@ import org.springframework.stereotype.Service;
 import com.crude.travelcrew.domain.member.model.constants.MemberRole;
 import com.crude.travelcrew.domain.member.model.constants.MemberStatus;
 import com.crude.travelcrew.domain.member.model.constants.ProviderType;
-
 import com.crude.travelcrew.domain.member.model.dto.LoginReq;
 import com.crude.travelcrew.domain.member.model.dto.LoginRes;
-import com.crude.travelcrew.domain.member.model.dto.ReissueRes;
 import com.crude.travelcrew.domain.member.model.dto.MemberRes;
-import com.crude.travelcrew.domain.member.model.dto.SignUpReq;
-import com.crude.travelcrew.domain.member.model.dto.SignUpRes;
-
+import com.crude.travelcrew.domain.member.model.dto.ReissueRes;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
 import com.crude.travelcrew.domain.member.repository.MemberProfileRepository;
@@ -54,7 +50,7 @@ public class MemberService {
 		Member member = memberRepository.findByEmail(request.getEmail())
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
-		if(!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
+		if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
 			throw new MemberException(WRONG_MEMBER_PASSWORD);
 		}
 
@@ -90,7 +86,7 @@ public class MemberService {
 			= refreshTokenRepository.findById(email)
 			.orElseThrow(() -> new MemberException(FAIL_TO_REISSUE_TOKEN));
 
-		if(!Objects.equals(refreshTokenInRedis.getToken(), refreshToken)) {
+		if (!Objects.equals(refreshTokenInRedis.getToken(), refreshToken)) {
 			log.error("rtk in redis and rtk in request header are not equal");
 			throw new MemberException(FAIL_TO_REISSUE_TOKEN);
 		}

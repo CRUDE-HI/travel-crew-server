@@ -24,9 +24,9 @@ public class ReportController {
 
 	@PostMapping("/{memberId}")
 	public ResponseEntity<ReportRes> memberReport(
-			@PathVariable Long memberId,
-			Principal principal,
-			@RequestBody ReportReq reportReq) {
+		@PathVariable Long memberId,
+		Principal principal,
+		@RequestBody ReportReq reportReq) {
 		Report report = reportService.reportMember(memberId, principal.getName(), reportReq);
 		ReportRes response = new ReportRes(report.getReportId(), "신고가 정상적으로 접수되었습니다.");
 		return ResponseEntity.ok(response);
