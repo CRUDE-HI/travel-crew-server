@@ -70,4 +70,14 @@ public class AdminGetCrewService {
 			crew.getCrewContent()
 		);
 	}
+
+	@Transactional
+	public void blockAndDeleteImages(Long crewId) {
+		Crew crew = crewRepository.findById(crewId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 글을 찾을 수 없습니다."));
+
+		crew.blockContent();
+
+		crewRepository.save(crew);
+	}
 }

@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crude.travelcrew.domain.administer.dto.getCrew.ADGetCrewRes;
 import com.crude.travelcrew.domain.administer.dto.adminMember.ADUpdateMemberReq;
 import com.crude.travelcrew.domain.administer.dto.getCrew.ADCrewListReq;
 import com.crude.travelcrew.domain.administer.dto.getCrew.ADCrewListRes;
+import com.crude.travelcrew.domain.administer.dto.getCrew.ADGetCrewRes;
 import com.crude.travelcrew.domain.administer.dto.getMember.ADGetMemberRes;
 import com.crude.travelcrew.domain.administer.dto.getMember.ADGetRecordRes;
 import com.crude.travelcrew.domain.administer.dto.getMember.ADGetReportRes;
@@ -179,6 +179,12 @@ public class AdminController {
 	public ResponseEntity<ADGetCrewRes> getCrew(@PathVariable Long crewId) {
 		ADGetCrewRes crewRes = adminGetCrewService.getCrew(crewId);
 		return ResponseEntity.ok(crewRes);
+	}
+
+	@PatchMapping("/crew/{crewId}")
+	public ResponseEntity<Void> blockCrew(@PathVariable Long crewId) {
+		adminGetCrewService.blockAndDeleteImages(crewId);
+		return ResponseEntity.noContent().build();
 	}
 
 	@GetMapping("/record")
