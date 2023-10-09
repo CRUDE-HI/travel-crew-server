@@ -28,4 +28,8 @@ public class CrewComment extends BaseTime {
 	private Long crewId;
 	private Long memberId;
 	private String content;
+
+	public void blockContent() {
+		this.content = "차단된 댓글입니다.";
+	}
 }

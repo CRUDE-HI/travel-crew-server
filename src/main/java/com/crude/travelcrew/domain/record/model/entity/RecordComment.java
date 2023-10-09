@@ -44,4 +44,8 @@ public class RecordComment extends BaseTime {
 	public void update (String content) {
 		this.content = content;
 	}
+
+	public void blockContent() {
+		this.content = "차단된 댓글 입니다.";
+	}
 }
