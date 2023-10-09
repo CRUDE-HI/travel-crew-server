@@ -44,7 +44,6 @@ public class CrewService {
 	private final MemberRepository memberRepository;
 	private final AwsS3Service awsS3Service;
 
-	//글 생성
 	@Transactional
 	public CrewRes createCrew(CrewReq requestDto, MultipartFile image, String email) {
 
@@ -76,44 +75,23 @@ public class CrewService {
 		String imageUrl = awsS3Service.uploadImageFile(image, DIR);
 
 		crew.setThumbnailImgUrl(imageUrl);
-
-
-		return CrewRes.fromEntity(crew, imageUrl);
+		return CrewRes.fromEntity(crew);
 	}
 
 	//수정
 	@Transactional
-	public CrewRes updateCrew(Long crewId, CrewReq request, MultipartFile image, String email){
+	public CrewRes updateCrew(Long crewId,  CrewReq request, String email){
 		// 게시물 없을때
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(()->new CrewException(CREW_NOT_FOUND));
+
 		// 작성자가 아닐떄
 		if (!Objects.equals(crew.getMember().getEmail(), email)) {
 			throw new CrewException(FAIL_TO_UPDATE_CREW);
 		}
 
-		// imageUrl에 대한 정의(crew파일에 있는 thumbnailImgUrl임을 의미)
-		String imageUrl = crew.getThumbnailImgUrl();
-
-		// if문을 통해 imageUrl이 입력받은 image와 동일하면 기존의 imageUrl을 반환
-		if (imageUrl == null && imageUrl.isEmpty() && imageUrl.equals(image)){
-
-			crew.setThumbnailImgUrl(imageUrl);
-
-			// else if 입력받은 이미지가 기존의 이미지와 다르다면
-		} else if (imageUrl != null && !imageUrl.isEmpty() && !imageUrl.equals(image)){
-			// aws s3에 있는 이미지를 삭제하고
-			awsS3Service.deleteImageFile(imageUrl, DIR);
-			//aws s3에 새로운 이미지를 저장
-			String newImageUrl = awsS3Service.uploadImageFile(image, DIR);
-			//aws s3에 저장한 이미지를 newImageUrl로 thumbnailImgUrl(entity)에 저장
-			crew.setThumbnailImgUrl(newImageUrl);
-		}
-
-		// 수정된 crew내용 모두 업데이트하기
 		crew.update(request);
-
-		return CrewRes.fromEntity(crew, crew.getThumbnailImgUrl());
+		return CrewRes.fromEntity(crew);
 	}
 
 	//삭제

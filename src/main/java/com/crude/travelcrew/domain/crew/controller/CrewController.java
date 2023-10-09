@@ -62,11 +62,11 @@ public class CrewController {
 	@PatchMapping(value = "/{crewId}")
 	public ResponseEntity<CrewRes> updateCrew(
 		@PathVariable Long crewId,
-		@RequestPart(value = "image", required = true) MultipartFile image,
-		@RequestPart(value = "request") @Valid CrewReq request,
+		@RequestPart(value = "image", required = false) MultipartFile image,
+		@RequestBody @Valid CrewReq request,
 		Principal principal ){
 
-		CrewRes response = crewService.updateCrew(crewId, request, image, principal.getName());
+		CrewRes response = crewService.updateCrew(crewId, request, principal.getName());
 		return ResponseEntity.ok(response);
 	}
 
@@ -86,7 +86,7 @@ public class CrewController {
 
 	// 댓글 등록
 	@PostMapping("/{crewId}/comment")
-	public ResponseEntity<Object> createComment(@PathVariable long crewId, @Valid CrewCommentReq commentReq) {
+	public ResponseEntity<Object> createComment(@PathVariable long crewId, @RequestBody @Valid CrewCommentReq commentReq) {
 		crewService.createComment(crewId, commentReq);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}

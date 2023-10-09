@@ -37,12 +37,13 @@ public class CrewRes {
 	private Double longitude;
 	private String crewContent;
 
-	public static CrewRes fromEntity(Crew crew, String imageUrl) {
+	public static CrewRes fromEntity(Crew crew) {
 		return CrewRes.builder()
 			.id(crew.getCrewId())
 			.title(crew.getTitle())
 			.memberId(crew.getMember().getId())
 			.thumbnailImgUrl(crew.getThumbnailImgUrl())
+			.crewPlace(crew.getCrewPlace())
 			.crewStatus(crew.getCrewStatus())
 			.maxCrew(crew.getMaxCrew())
 			.travelStart(crew.getTravelStart())
