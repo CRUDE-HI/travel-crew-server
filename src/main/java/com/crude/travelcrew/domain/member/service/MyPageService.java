@@ -169,7 +169,6 @@ public class MyPageService {
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
-
 		if (!encoder.matches(withDrawPW.getCurrentPassword(), member.getPassword())) {
 			throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
 		} else {
@@ -197,7 +196,7 @@ public class MyPageService {
 		return commentCrewList
 			.stream()
 			.filter(crewMember -> crewMember.getStatus() != CrewMemberStatus.OWNER)
-			.map(gg->gg.getCrew().toCrewDTO())
+			.map(gg -> gg.getCrew().toCrewDTO())
 			.collect(Collectors.toList());
 	}
 
