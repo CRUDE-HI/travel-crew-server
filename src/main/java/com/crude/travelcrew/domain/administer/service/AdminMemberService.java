@@ -22,7 +22,7 @@ import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
 import com.crude.travelcrew.domain.member.repository.MemberProfileRepository;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.global.error.exception.MemberException;
-import com.crude.travelcrew.global.security.JwtProvider;
+import com.crude.travelcrew.global.security.jwt.JwtProvider;
 
 @Service
 public class AdminMemberService {
@@ -63,8 +63,6 @@ public class AdminMemberService {
 		String refreshtoken = jwtProvider.createRefreshToken(email);
 		signUpRes.setEmail(email);
 		signUpRes.setNickname(nickname);
-		signUpRes.setAccesstoken(accesstoken);
-		signUpRes.setRefreshtoken(refreshtoken);
 		System.out.println("email: " + email);
 		redisTemplate.opsForValue()
 			.set("JWT_ACCESS_TOKEN:" + email, accesstoken + "|" + jwtProvider.getExpiration(accesstoken));

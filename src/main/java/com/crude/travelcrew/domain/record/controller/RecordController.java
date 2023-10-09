@@ -44,7 +44,8 @@ public class RecordController {
 	public ResponseEntity<GetRecordRes> getRecord(@PathVariable Long recordId) {
 		GetRecordRes getRecordRes = recordService.getRecord(recordId);
 		return ResponseEntity.ok(getRecordRes);
-    
+	}
+
 	/**
 	 * 여행 기록 전체글 조회
 	 */

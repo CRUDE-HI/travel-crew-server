@@ -51,11 +51,8 @@ public class CrewService {
 	@Transactional
 	public CrewRes createCrew(CrewReq requestDto, MultipartFile image, String email) {
 
-		Member member = memberRepository.findByEmail(email);
-
-		if(Objects.isNull(member)){
-			throw new MemberException(MEMBER_NOT_FOUND);
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		Crew crew = Crew.builder()
 			.title(requestDto.getTitle())
