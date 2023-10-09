@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.crude.travelcrew.domain.administer.dto.getCrew.ADCrewListReq;
 import com.crude.travelcrew.domain.administer.dto.getCrew.ADCrewListRes;
 import com.crude.travelcrew.domain.administer.dto.getCrew.ADCrewListResponseDto;
+import com.crude.travelcrew.domain.administer.dto.getCrew.ADGetCrewRes;
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
 import com.crude.travelcrew.domain.member.model.entity.Member;
@@ -44,5 +45,29 @@ public class AdminGetCrewService {
 			ADCrewListReq.getPage());
 
 		return ADCrewListRes;
+	}
+
+	@Transactional
+	public ADGetCrewRes getCrew(Long crewId) {
+		Crew crew = crewRepository.findById(crewId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 글을 찾을 수 없습니다."));
+
+		Member member = crew.getMember();
+
+		return new ADGetCrewRes(
+			crew.getCrewId(),
+			crew.getTitle(),
+
+			member.getNickname(),
+
+			crew.getThumbnailImgUrl(),
+			crew.getCrewStatus(),
+			crew.getMaxCrew(),
+			crew.getTravelStart(),
+			crew.getTravelEnd(),
+			crew.getLatitude(),
+			crew.getLongitude(),
+			crew.getCrewContent()
+		);
 	}
 }
