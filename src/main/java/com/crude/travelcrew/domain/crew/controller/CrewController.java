@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,16 +56,15 @@ public class CrewController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
-
 	// 글 수정
 	@PatchMapping(value = "/{crewId}")
 	public ResponseEntity<CrewRes> updateCrew(
 		@PathVariable Long crewId,
-		@RequestPart(value = "image", required = true) MultipartFile image,
-		@RequestPart(value = "request") @Valid CrewReq request,
-		Principal principal ){
+		@RequestPart(value = "image", required = false) MultipartFile image,
+		@RequestBody @Valid CrewReq request,
+		Principal principal) {
 
-		CrewRes response = crewService.updateCrew(crewId, request, image, principal.getName());
+		CrewRes response = crewService.updateCrew(crewId, request, principal.getName());
 		return ResponseEntity.ok(response);
 	}
 
@@ -86,14 +84,16 @@ public class CrewController {
 
 	// 댓글 등록
 	@PostMapping("/{crewId}/comment")
-	public ResponseEntity<Object> createComment(@PathVariable long crewId, @Valid CrewCommentReq commentReq) {
+	public ResponseEntity<Object> createComment(@PathVariable long crewId,
+		@RequestBody @Valid CrewCommentReq commentReq) {
 		crewService.createComment(crewId, commentReq);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
 	// 댓글 수정
 	@PatchMapping("/{crewId}/comment/{commentId}")
-	public ResponseEntity<Object> modifyComment(@PathVariable long commentId, @Valid CrewCommentReq commentReq) {
+	public ResponseEntity<Object> modifyComment(@PathVariable long commentId,
+		@RequestBody @Valid CrewCommentReq commentReq) {
 		crewService.modifyComment(commentId, commentReq);
 		return ResponseEntity.ok().build();
 	}

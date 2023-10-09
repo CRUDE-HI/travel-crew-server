@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public enum ProviderType {
-	DEFAULT, GOOGLE, NAVER, KAKAO
+	DEFAULT, GOOGLE, NAVER, KAKAO, DROP
 }
