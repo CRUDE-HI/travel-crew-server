@@ -3,8 +3,6 @@ package com.crude.travelcrew.domain.record.service;
 import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 import static com.crude.travelcrew.global.error.type.RecordErrorCode.*;
 
-import java.util.Objects;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,11 +29,8 @@ public class RecordHeartServiceImpl implements RecordHeartService {
 	@Transactional
 	public void pushRecordHeart(Long recordId, String email) {
 
-		Member member = memberRepository.findByEmail(email);
-
-		if(Objects.isNull(member)) {
-			throw new MemberException(MEMBER_NOT_FOUND);
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		Record record = recordRepository.findById(recordId)
 			.orElseThrow(() -> new RecordException(TRAVEL_RECORD_NOT_FOUND));
@@ -57,11 +52,8 @@ public class RecordHeartServiceImpl implements RecordHeartService {
 	@Transactional
 	public void cancelRecordHeart(Long recordId, String email) {
 
-		Member member = memberRepository.findByEmail(email);
-
-		if(Objects.isNull(member)) {
-			throw new MemberException(MEMBER_NOT_FOUND);
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		Record record = recordRepository.findById(recordId)
 			.orElseThrow(() -> new RecordException(TRAVEL_RECORD_NOT_FOUND));
