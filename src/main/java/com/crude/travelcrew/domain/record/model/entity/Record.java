@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.crude.travelcrew.domain.member.model.entity.Member;
+import com.crude.travelcrew.domain.record.model.dto.EditRecordRes;
 import com.crude.travelcrew.global.entity.BaseTime;
 
 import lombok.AccessLevel;
@@ -51,6 +52,15 @@ public class Record extends BaseTime {
 	public void update (String title, String content) {
 		this.title = title;
 		this.content = content;
+	}
+
+	public EditRecordRes toRecordDTO() {
+		EditRecordRes toRecordDTO = new EditRecordRes();
+		toRecordDTO.setId(this.getMember().getId());
+		toRecordDTO.setTitle(this.getTitle());
+		toRecordDTO.setContent(this.getContent());
+		toRecordDTO.setCreatedAt(this.getCreatedAt());
+		return toRecordDTO;
 	}
 
 	public void blockContent() {
