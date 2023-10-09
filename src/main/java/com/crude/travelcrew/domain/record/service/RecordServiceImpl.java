@@ -17,7 +17,7 @@ import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.domain.record.model.dto.EditRecordReq;
 import com.crude.travelcrew.domain.record.model.dto.EditRecordRes;
-import com.crude.travelcrew.domain.record.model.dto.MyRecordRes;
+import com.crude.travelcrew.domain.record.model.dto.GetRecordRes;
 import com.crude.travelcrew.domain.record.model.dto.RecordImageRes;
 import com.crude.travelcrew.domain.record.model.entity.Record;
 import com.crude.travelcrew.domain.record.model.entity.RecordImage;
@@ -44,8 +44,8 @@ public class RecordServiceImpl implements RecordService {
 
 	@Override
 	@Transactional
-	public MyRecordRes opInfo(Long id) {
-		Record record = recordRepository.findById(id)
+	public GetRecordRes getRecord(Long recordId) {
+		Record record = recordRepository.findById(recordId)
 			.orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
 		return record.toRecordDTO();
 	}

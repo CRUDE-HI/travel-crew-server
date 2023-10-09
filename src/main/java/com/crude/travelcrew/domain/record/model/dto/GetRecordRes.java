@@ -13,7 +13,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MyRecordRes {
+public class GetRecordRes {
 
 	private Long recordId;
 
@@ -26,4 +26,5 @@ public class MyRecordRes {
 	private LocalDateTime createdAt;
 
 	private LocalDateTime updatedAt;
+
 }
