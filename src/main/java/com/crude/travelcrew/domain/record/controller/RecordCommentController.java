@@ -5,9 +5,11 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.crude.travelcrew.domain.record.model.dto.RecordCommentListRes;
 import com.crude.travelcrew.domain.record.model.dto.RecordCommentReq;
 import com.crude.travelcrew.domain.record.model.dto.RecordCommentRes;
 import com.crude.travelcrew.domain.record.service.RecordCommentService;
@@ -27,6 +30,15 @@ import lombok.RequiredArgsConstructor;
 public class RecordCommentController {
 
 	private final RecordCommentService recordCommentService;
+
+	/**
+	 * 여행 기록 댓글 조회
+	 */
+	@GetMapping("/{recordId}/comment")
+	public ResponseEntity<RecordCommentListRes> recordCommentList(@PathVariable Long recordId, Pageable pageable) {
+		return ResponseEntity.ok(recordCommentService.getCommentList(recordId, pageable));
+	}
+
 
 	/**
 	 * 여행 기록 댓글 작성

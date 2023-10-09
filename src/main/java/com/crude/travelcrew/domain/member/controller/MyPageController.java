@@ -18,6 +18,8 @@ import com.crude.travelcrew.domain.member.model.dto.MemberRes;
 import com.crude.travelcrew.domain.member.model.dto.UpdateNickReq;
 import com.crude.travelcrew.domain.member.model.dto.UpdatePWReq;
 import com.crude.travelcrew.domain.member.service.MyPageService;
+import com.crude.travelcrew.domain.record.model.dto.EditRecordRes;
+import com.crude.travelcrew.domain.record.model.dto.MyRecordRes;
 
 import lombok.RequiredArgsConstructor;
 
@@ -62,9 +64,15 @@ public class MyPageController {
 	}
 
 	// 내가 쓴 동행 글 조회
-	@GetMapping("/post")
+	@GetMapping("/crew")
 	public ResponseEntity<List<CrewRes>> getMyCrewList(Principal principal) {
 		return ResponseEntity.ok(myPageService.getMyCrewList(principal.getName()));
+	}
+
+	// 내가 쓴 여행기록 글 조회
+	@GetMapping("/record")
+	public ResponseEntity<List<MyRecordRes>> getMyRecordList() {
+		return ResponseEntity.ok(myPageService.getMyRecordList());
 	}
 
 	// 내가 스크랩한 글 조회
@@ -73,5 +81,4 @@ public class MyPageController {
 		List<CrewRes> postsList = myPageService.prtcpCrew(principal.getName());
 		return ResponseEntity.ok(postsList);
 	}
-
 }

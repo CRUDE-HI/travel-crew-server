@@ -119,6 +119,7 @@ public class Crew extends BaseTime {
 		toPostsDTO.setMemberId(this.getMember().getId());
 		toPostsDTO.setTitle(this.getTitle());
 		toPostsDTO.setThumbnailImgUrl(this.getThumbnailImgUrl());
+		toPostsDTO.setCrewPlace(this.getCrewPlace());
 		toPostsDTO.setCrewStatus(this.getCrewStatus());
 		toPostsDTO.setMaxCrew(this.getMaxCrew());
 		toPostsDTO.setTravelStart(this.getTravelStart());
