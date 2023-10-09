@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,7 +48,20 @@ public class RecordServiceImpl implements RecordService {
 	public GetRecordRes getRecord(Long recordId) {
 		Record record = recordRepository.findById(recordId)
 			.orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
-		return record.toRecordDTO();
+
+		List<String> imageUrls = record.getRecordImages().stream()
+			.map(RecordImage::getImageUrl)
+			.collect(Collectors.toList());
+
+		return new GetRecordRes(
+			record.getId(),
+			record.getMember().getNickname(),
+			record.getTitle(),
+			record.getContent(),
+			imageUrls,
+			record.getCreatedAt(),
+			record.getUpdatedAt()
+		);
 	}
 
 	@Override

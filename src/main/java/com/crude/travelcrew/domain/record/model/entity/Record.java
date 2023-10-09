@@ -14,7 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.crude.travelcrew.domain.member.model.entity.Member;
-import com.crude.travelcrew.domain.record.model.dto.GetRecordRes;
 import com.crude.travelcrew.domain.record.model.dto.MyRecordRes;
 import com.crude.travelcrew.global.entity.BaseTime;
 
@@ -57,17 +56,6 @@ public class Record extends BaseTime {
 
 	public MyRecordRes toMyRecordDTO() {
 		MyRecordRes toRecordDTO = new MyRecordRes();
-		toRecordDTO.setRecordId(this.getId());
-		toRecordDTO.setMemberNick(this.getMember().getNickname());
-		toRecordDTO.setTitle(this.getTitle());
-		toRecordDTO.setContent(this.getContent());
-		toRecordDTO.setCreatedAt(this.getCreatedAt());
-		toRecordDTO.setUpdatedAt(this.getUpdatedAt());
-		return toRecordDTO;
-	}
-
-	public GetRecordRes toRecordDTO() {
-		GetRecordRes toRecordDTO = new GetRecordRes();
 		toRecordDTO.setRecordId(this.getId());
 		toRecordDTO.setMemberNick(this.getMember().getNickname());
 		toRecordDTO.setTitle(this.getTitle());

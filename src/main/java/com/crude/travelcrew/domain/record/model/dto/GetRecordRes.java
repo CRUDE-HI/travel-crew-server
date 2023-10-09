@@ -1,6 +1,7 @@
 package com.crude.travelcrew.domain.record.model.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,8 @@ public class GetRecordRes {
 	private String title;
 
 	private String content;
+
+	private List<String> imageUrls;
 
 	private LocalDateTime createdAt;
 
