@@ -73,7 +73,7 @@ public class CrewService {
 			.crew(crew)
 			.member(member)
 			.content("동행글 작성자")
-			.status(APPROVED)
+			.status(OWNER)
 			.build();
 
 		crew.setMember(member);
