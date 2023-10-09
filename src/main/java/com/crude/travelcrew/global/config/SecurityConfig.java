@@ -1,8 +1,7 @@
-package com.crude.travelcrew.global.security;
+package com.crude.travelcrew.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -11,6 +10,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.crude.travelcrew.domain.member.model.constants.MemberRole;
+import com.crude.travelcrew.global.security.handler.CustomAccessDeniedHandler;
+import com.crude.travelcrew.global.security.handler.CustomAuthenticationEntryPoint;
+import com.crude.travelcrew.global.security.jwt.JwtAuthFilter;
+
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -18,11 +22,13 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-	private final JwtProvider jwtProvider;
-	private final RedisTemplate<String, String> redisTemplate;
+
+	private final JwtAuthFilter jwtAuthFilter;
+	private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+	private final CustomAccessDeniedHandler accessDeniedHandler;
 
 	@Bean
-	public BCryptPasswordEncoder encoder() {
+	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
@@ -30,23 +36,28 @@ public class SecurityConfig {
 	SecurityFilterChain filerChain(HttpSecurity http) throws Exception {
 		return http
 			.httpBasic().disable()
-			// disable csrf token
 			.csrf().disable()
-			// disable cors policy
-			.cors().disable()
-			// set permission of endpoints
-			.authorizeRequests()
-			.antMatchers("/**").permitAll()
-			.and()
 			.formLogin().disable()
-			// H2-console frameOption
 			.headers().frameOptions().sameOrigin()
+
 			.and()
-			// disable session (because we use jwt token)
+			.authorizeRequests()
+			.antMatchers("/api/member/sign-up", "/api/member/login",
+				"/api/member/email/send", "/api/member/email/verify", "/h2-console/**").permitAll()
+
+			.antMatchers("/api/admin/**").hasAuthority(MemberRole.ADMIN.getValue())
+			.anyRequest().authenticated()
+
+			.and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
 			.and()
-			// use custom jwtAuthFilter and CorsFilter
-			.addFilterBefore(new JwtAuthFilter(jwtProvider, redisTemplate), UsernamePasswordAuthenticationFilter.class)
+			.exceptionHandling()
+			.authenticationEntryPoint(authenticationEntryPoint)
+			.accessDeniedHandler(accessDeniedHandler)
+
+			.and()
+			.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
 			.build();
 	}
 }
