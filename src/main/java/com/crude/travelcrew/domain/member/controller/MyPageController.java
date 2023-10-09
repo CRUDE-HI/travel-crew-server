@@ -75,7 +75,7 @@ public class MyPageController {
 	}
 
 	// 내가 신청한 동행글 List 조회
-	@GetMapping("/comment")
+	@GetMapping("/participateList")
 	public ResponseEntity<List<CrewRes>> participateCrewList(Principal principal){
 		List<CrewRes> commentCrewList = myPageService.commetCrewList(principal.getName());
 		return ResponseEntity.ok(commentCrewList);
