@@ -3,12 +3,14 @@ package com.crude.travelcrew.domain.record.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.crude.travelcrew.domain.record.model.dto.EditRecordReq;
 import com.crude.travelcrew.domain.record.model.dto.EditRecordRes;
 import com.crude.travelcrew.domain.record.model.dto.GetRecordRes;
 import com.crude.travelcrew.domain.record.model.dto.RecordImageRes;
+import com.crude.travelcrew.domain.record.model.dto.RecordListRes;
 
 public interface RecordService {
 
@@ -16,6 +18,11 @@ public interface RecordService {
 	 * 여행 기록 상세 조회
 	 */
 	GetRecordRes getRecord(Long recordId);
+  
+	/**
+	 * 여행 기록 전체글 조회
+	 */
+	List<RecordListRes> listRecord(String keyword, Pageable pageable);
 
 	/**
 	 * 여행 기록 작성

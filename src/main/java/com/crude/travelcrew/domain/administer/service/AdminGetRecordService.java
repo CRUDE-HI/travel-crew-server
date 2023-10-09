@@ -15,7 +15,9 @@ import com.crude.travelcrew.domain.administer.dto.getRecord.ADRecordListRes;
 import com.crude.travelcrew.domain.administer.dto.getRecord.ADRecordListResponseDto;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.record.model.entity.Record;
+import com.crude.travelcrew.domain.record.model.entity.RecordComment;
 import com.crude.travelcrew.domain.record.model.entity.RecordImage;
+import com.crude.travelcrew.domain.record.repository.RecordCommentRepository;
 import com.crude.travelcrew.domain.record.repository.RecordImageRepository;
 import com.crude.travelcrew.domain.record.repository.RecordRepository;
 
@@ -27,6 +29,9 @@ public class AdminGetRecordService {
 
 	@Autowired
 	private RecordImageRepository recordImageRepository;
+
+	@Autowired
+	RecordCommentRepository recordCommentRepository;
 
 	public List<ADRecordListResponseDto> convertToDto(List<Record> records) {
 		return records.stream()
@@ -89,5 +94,17 @@ public class AdminGetRecordService {
 		recordImageRepository.deleteAllByRecordId(recordId);
 
 		recordRepository.save(record);
+	}
+
+	public void blockComment(Long recordId, Long commentId) {
+		Record record = recordRepository.findById(recordId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 글을 찾을 수 없습니다."));
+
+		RecordComment recordComment = recordCommentRepository.findByRecordAndId(record, commentId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 글을 찾을 수 없습니다."));
+
+		recordComment.blockContent();
+
+		recordCommentRepository.save(recordComment);
 	}
 }

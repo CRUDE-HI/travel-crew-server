@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +25,7 @@ import com.crude.travelcrew.domain.record.model.dto.EditRecordReq;
 import com.crude.travelcrew.domain.record.model.dto.EditRecordRes;
 import com.crude.travelcrew.domain.record.model.dto.GetRecordRes;
 import com.crude.travelcrew.domain.record.model.dto.RecordImageRes;
+import com.crude.travelcrew.domain.record.model.dto.RecordListRes;
 import com.crude.travelcrew.domain.record.service.RecordService;
 
 import lombok.RequiredArgsConstructor;
@@ -41,6 +44,16 @@ public class RecordController {
 	public ResponseEntity<GetRecordRes> getRecord(@PathVariable Long recordId) {
 		GetRecordRes getRecordRes = recordService.getRecord(recordId);
 		return ResponseEntity.ok(getRecordRes);
+    
+	/**
+	 * 여행 기록 전체글 조회
+	 */
+	// 글 조회
+	@GetMapping
+	public ResponseEntity<List<RecordListRes>> listAllCrew(
+		@RequestParam(value = "keyword", defaultValue = "") String keyword,
+		Pageable pageable) {
+		return ResponseEntity.ok(recordService.listRecord(keyword, pageable));
 	}
 
 	/**

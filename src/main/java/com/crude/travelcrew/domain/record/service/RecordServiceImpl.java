@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,7 @@ import com.crude.travelcrew.domain.record.model.dto.EditRecordReq;
 import com.crude.travelcrew.domain.record.model.dto.EditRecordRes;
 import com.crude.travelcrew.domain.record.model.dto.GetRecordRes;
 import com.crude.travelcrew.domain.record.model.dto.RecordImageRes;
+import com.crude.travelcrew.domain.record.model.dto.RecordListRes;
 import com.crude.travelcrew.domain.record.model.entity.Record;
 import com.crude.travelcrew.domain.record.model.entity.RecordImage;
 import com.crude.travelcrew.domain.record.repository.RecordCommentRepository;
@@ -62,6 +64,12 @@ public class RecordServiceImpl implements RecordService {
 			record.getCreatedAt(),
 			record.getUpdatedAt()
 		);
+
+  @Override
+	@Transactional
+	public List<RecordListRes> listRecord(String keyword, Pageable pageable) {
+		List<Record> list = recordRepository.findByKeyword(keyword, pageable);
+		return list.stream().map(RecordListRes::getEntity).collect(Collectors.toList());
 	}
 
 	@Override
@@ -69,11 +77,8 @@ public class RecordServiceImpl implements RecordService {
 	public EditRecordRes addRecord(EditRecordReq request, List<MultipartFile> images,
 		String email) {
 
-		Member member = memberRepository.findByEmail(email);
-
-		if (Objects.isNull(member)) {
-			throw new MemberException(MEMBER_NOT_FOUND);
-		}
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		Record record = Record.builder()
 			.title(request.getTitle())
