@@ -1,5 +1,7 @@
 package com.crude.travelcrew.domain.member.service;
 
+import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -9,9 +11,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.crude.travelcrew.domain.crew.model.constants.CrewMemberStatus;
 import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
+import com.crude.travelcrew.domain.crew.model.entity.CrewMember;
 import com.crude.travelcrew.domain.crew.model.entity.CrewScrap;
+import com.crude.travelcrew.domain.crew.repository.CrewMemberRepository;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
 import com.crude.travelcrew.domain.crew.repository.CrewScrapRepository;
 import com.crude.travelcrew.domain.member.model.dto.MemberRes;
@@ -34,6 +39,7 @@ public class MyPageService {
 	private final CrewRepository crewRepository;
 	private final CrewScrapRepository crewScrapRepository;
 	private final BCryptPasswordEncoder encoder;
+	private final CrewMemberRepository crewMemberRepository;
 	private final AwsS3Service awsS3Service;
 
 	// 내 정보 상세 조회
@@ -139,4 +145,20 @@ public class MyPageService {
 			.map(scraps -> scraps.getCrew().toCrewDTO())
 			.collect(Collectors.toList());
 	}
+
+	// 내가 신청한 동행 글 조회
+	public List<CrewRes> commetCrewList(String email) {
+		Member member = memberRepository.findByEmail(email);
+		if (Objects.isNull(member)) {
+			throw new MemberException(MemberErrorCode.MEMBER_NOT_FOUND);
+		}
+
+		List<CrewMember> commentCrewList = crewMemberRepository.findAllByMember(member);
+
+		return commentCrewList
+			.stream()
+			.map(gg->gg.getCrew().toCrewDTO())
+			.collect(Collectors.toList());
+	}
+
 }
