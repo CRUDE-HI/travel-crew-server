@@ -203,12 +203,12 @@ public class AdminController {
 	}
 
 	@GetMapping("/crew/{crewId}/comment")
-	public ResponseEntity<List<CrewCommentRes>> getCommentList(@PathVariable long crewId, Pageable pageable) {
+	public ResponseEntity<List<CrewCommentRes>> getCrewCommentList(@PathVariable long crewId, Pageable pageable) {
 		return ResponseEntity.ok(crewService.getCommentList(crewId, pageable));
 	}
 
 	@PatchMapping("/crew/{crewId}/comment/{commentId}")
-	public ResponseEntity<Object> blockComment(@PathVariable long commentId) {
+	public ResponseEntity<Object> blockCrewComment(@PathVariable long commentId) {
 		adminGetCrewService.blockComment(commentId);
 		return ResponseEntity.noContent().build();
 	}
