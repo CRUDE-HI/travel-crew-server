@@ -213,6 +213,7 @@ public class MyPageService {
 
 		return commentCrewList
 			.stream()
+			.filter(crewMember -> crewMember.getStatus() != CrewMemberStatus.OWNER)
 			.map(gg->gg.getCrew().toCrewDTO())
 			.collect(Collectors.toList());
 	}
