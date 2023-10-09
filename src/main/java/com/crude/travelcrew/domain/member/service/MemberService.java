@@ -2,6 +2,8 @@ package com.crude.travelcrew.domain.member.service;
 
 import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 
+import java.util.Objects;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,7 @@ import com.crude.travelcrew.domain.member.model.constants.MemberStatus;
 import com.crude.travelcrew.domain.member.model.constants.ProviderType;
 import com.crude.travelcrew.domain.member.model.dto.LoginReq;
 import com.crude.travelcrew.domain.member.model.dto.LoginRes;
+import com.crude.travelcrew.domain.member.model.dto.ReissueRes;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
 import com.crude.travelcrew.domain.member.repository.MemberProfileRepository;
@@ -17,11 +20,14 @@ import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.global.error.exception.MemberException;
 import com.crude.travelcrew.global.security.jwt.JwtProvider;
 import com.crude.travelcrew.global.security.jwt.model.BlockAccessToken;
+import com.crude.travelcrew.global.security.jwt.model.RefreshToken;
 import com.crude.travelcrew.global.security.jwt.repository.BlockAccessTokenRepository;
 import com.crude.travelcrew.global.security.jwt.repository.RefreshTokenRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -69,6 +75,25 @@ public class MemberService {
 
 		refreshTokenRepository.deleteById(email);
 		blockAccessTokenRepository.save(blockAccessToken);
+	}
+
+	public ReissueRes reissueAccessToken(String refreshToken) {
+
+		String email = jwtProvider.getEmail(refreshToken);
+
+		RefreshToken refreshTokenInRedis
+			= refreshTokenRepository.findById(email)
+			.orElseThrow(() -> new MemberException(FAIL_TO_REISSUE_TOKEN));
+
+		if(!Objects.equals(refreshTokenInRedis.getToken(), refreshToken)) {
+			log.error("rtk in redis and rtk in request header are not equal");
+			throw new MemberException(FAIL_TO_REISSUE_TOKEN);
+		}
+
+		String newAccessToken = jwtProvider.createRefreshToken(email);
+		return ReissueRes.builder()
+			.accessToken(newAccessToken)
+			.build();
 	}
 
 	public Member signUp(Member member) {

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.crude.travelcrew.domain.member.model.dto.LoginReq;
 import com.crude.travelcrew.domain.member.model.dto.LoginRes;
+import com.crude.travelcrew.domain.member.model.dto.ReissueRes;
 import com.crude.travelcrew.domain.member.model.dto.SignUpReq;
 import com.crude.travelcrew.domain.member.model.dto.SignUpRes;
 import com.crude.travelcrew.domain.member.model.entity.Member;
@@ -38,6 +39,12 @@ public class MemberController {
 		return ResponseEntity.ok().build();
 	}
 
+	@PostMapping("/token")
+	public ResponseEntity<ReissueRes> reissue(@RequestHeader("REFRESH-TOKEN") String refreshToken) {
+		ReissueRes response = memberService.reissueAccessToken(refreshToken);
+		return ResponseEntity.ok(response);
+	}
+
 	@PostMapping("/sign-up")
 	public ResponseEntity<?> signUp(@RequestBody SignUpReq signUpReq) {
 		try {
@@ -46,7 +53,7 @@ public class MemberController {
 			log.info("/api/member/sign-up request... userInfo : {}", memberEntity);
 			Member member = memberService.signUp(memberEntity);
 
-			MemberProfile memberProfile = memberService.setProfile(memberProfileEntity,
+			memberService.setProfile(memberProfileEntity,
 				memberService.getByCredential(member.getEmail()));
 			return ResponseEntity.ok().body(new SignUpRes(member));
 		} catch (Exception e) {
