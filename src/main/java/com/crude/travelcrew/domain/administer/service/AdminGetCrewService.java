@@ -12,7 +12,10 @@ import com.crude.travelcrew.domain.administer.dto.getCrew.ADCrewListReq;
 import com.crude.travelcrew.domain.administer.dto.getCrew.ADCrewListRes;
 import com.crude.travelcrew.domain.administer.dto.getCrew.ADCrewListResponseDto;
 import com.crude.travelcrew.domain.administer.dto.getCrew.ADGetCrewRes;
+import com.crude.travelcrew.domain.crew.model.dto.CrewCommentReq;
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
+import com.crude.travelcrew.domain.crew.model.entity.CrewComment;
+import com.crude.travelcrew.domain.crew.repository.CrewCommentRepository;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 
@@ -21,6 +24,9 @@ public class AdminGetCrewService {
 
 	@Autowired
 	CrewRepository crewRepository;
+
+	@Autowired
+	CrewCommentRepository crewCommentRepository;
 
 	public List<ADCrewListResponseDto> convertToDto(List<Crew> crews) {
 		return crews.stream()
@@ -79,5 +85,14 @@ public class AdminGetCrewService {
 		crew.blockContent();
 
 		crewRepository.save(crew);
+	}
+
+	public void blockComment(long commentId) {
+		CrewComment crewComment = crewCommentRepository.findById(commentId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 댓글을 찾을 수 없습니다."));
+
+		crewComment.blockContent();
+
+		crewCommentRepository.save(crewComment);
 	}
 }

@@ -1,7 +1,12 @@
 package com.crude.travelcrew.domain.administer.controller;
 
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -31,6 +36,9 @@ import com.crude.travelcrew.domain.administer.service.AdminGetMemberService;
 import com.crude.travelcrew.domain.administer.service.AdminGetRecordService;
 import com.crude.travelcrew.domain.administer.service.AdminGetReportService;
 import com.crude.travelcrew.domain.administer.service.AdminMemberService;
+import com.crude.travelcrew.domain.crew.model.dto.CrewCommentReq;
+import com.crude.travelcrew.domain.crew.model.dto.CrewCommentRes;
+import com.crude.travelcrew.domain.crew.service.CrewService;
 import com.crude.travelcrew.domain.member.model.dto.SignUpReq;
 import com.crude.travelcrew.domain.member.model.dto.SignUpRes;
 import com.crude.travelcrew.domain.member.model.entity.Member;
@@ -57,6 +65,9 @@ public class AdminController {
 
 	@Autowired
 	AdminGetReportService adminGetReportService;
+
+	@Autowired
+	CrewService crewService;
 
 	@PostMapping("/sign-up")
 	public ResponseEntity<?> signUp(@RequestBody SignUpReq signUpReq) throws Exception {
@@ -184,6 +195,17 @@ public class AdminController {
 	@PatchMapping("/crew/{crewId}")
 	public ResponseEntity<Void> blockCrew(@PathVariable Long crewId) {
 		adminGetCrewService.blockAndDeleteImages(crewId);
+		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping("/crew/{crewId}/comment")
+	public ResponseEntity<List<CrewCommentRes>> getCommentList(@PathVariable long crewId, Pageable pageable) {
+		return ResponseEntity.ok(crewService.getCommentList(crewId, pageable));
+	}
+
+	@PatchMapping("/crew/{crewId}/comment/{commentId}")
+	public ResponseEntity<Object> blockComment(@PathVariable long commentId) {
+		adminGetCrewService.blockComment(commentId);
 		return ResponseEntity.noContent().build();
 	}
 
