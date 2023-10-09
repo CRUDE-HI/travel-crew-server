@@ -147,6 +147,7 @@ public class MyPageService {
 	}
 
 	// 내가 신청한 동행 글 조회
+	@Transactional
 	public List<CrewRes> commetCrewList(String email) {
 		Member member = memberRepository.findByEmail(email);
 		if (Objects.isNull(member)) {
