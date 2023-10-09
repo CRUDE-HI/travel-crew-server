@@ -81,4 +81,11 @@ public class MyPageController {
 		List<CrewRes> postsList = myPageService.prtcpCrew(principal.getName());
 		return ResponseEntity.ok(postsList);
 	}
+
+	// 내가 신청한 동행글 List 조회
+	@GetMapping("/participateList")
+	public ResponseEntity<List<CrewRes>> participateCrewList(Principal principal){
+		List<CrewRes> commentCrewList = myPageService.commetCrewList(principal.getName());
+		return ResponseEntity.ok(commentCrewList);
+	}
 }
