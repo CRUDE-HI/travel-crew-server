@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,7 @@ import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
 import com.crude.travelcrew.domain.member.model.dto.MemberRes;
 import com.crude.travelcrew.domain.member.model.dto.UpdateNickReq;
 import com.crude.travelcrew.domain.member.model.dto.UpdatePWReq;
+import com.crude.travelcrew.domain.member.model.dto.WithDrawPW;
 import com.crude.travelcrew.domain.member.service.MyPageService;
 import com.crude.travelcrew.domain.record.model.dto.EditRecordRes;
 
@@ -79,5 +81,12 @@ public class MyPageController {
 	public ResponseEntity<List<CrewRes>> prtcpCrew(Principal principal) {
 		List<CrewRes> postsList = myPageService.prtcpCrew(principal.getName());
 		return ResponseEntity.ok(postsList);
+	}
+
+	// 회원 비활성화
+	@PutMapping
+	public ResponseEntity<Void> withDraw(@RequestBody WithDrawPW withDrawPW, Principal principal) {
+		myPageService.withDraw(withDrawPW, principal.getName());
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

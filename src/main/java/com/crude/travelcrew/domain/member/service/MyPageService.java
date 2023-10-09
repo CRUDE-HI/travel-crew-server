@@ -1,7 +1,9 @@
 package com.crude.travelcrew.domain.member.service;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,9 +17,13 @@ import com.crude.travelcrew.domain.crew.model.entity.Crew;
 import com.crude.travelcrew.domain.crew.model.entity.CrewScrap;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
 import com.crude.travelcrew.domain.crew.repository.CrewScrapRepository;
+import com.crude.travelcrew.domain.member.model.constants.MemberRole;
+import com.crude.travelcrew.domain.member.model.constants.MemberStatus;
+import com.crude.travelcrew.domain.member.model.constants.ProviderType;
 import com.crude.travelcrew.domain.member.model.dto.MemberRes;
 import com.crude.travelcrew.domain.member.model.dto.UpdateNickReq;
 import com.crude.travelcrew.domain.member.model.dto.UpdatePWReq;
+import com.crude.travelcrew.domain.member.model.dto.WithDrawPW;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.domain.record.model.dto.EditRecordRes;
@@ -154,5 +160,30 @@ public class MyPageService {
 			.stream()
 			.map(scraps -> scraps.getCrew().toCrewDTO())
 			.collect(Collectors.toList());
+	}
+
+	// 회원 비활성화
+	public void withDraw(WithDrawPW withDrawPW, String email) {
+
+		Member member = memberRepository.findByEmail(email);
+
+		if (Objects.isNull(member)) {
+			throw new IllegalArgumentException("해당 사용자를 찾을수 없습니다.");
+		}
+
+		if (!encoder.matches(withDrawPW.getCurrentPassword(), member.getPassword())) {
+			throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+		} else {
+			member.setMemberStatus(MemberStatus.DROP);
+			member.setRole(MemberRole.DROP);
+			member.setProviderType(ProviderType.DROP);
+
+			UUID uuid = UUID.randomUUID();
+			member.setEmail(Base64.getEncoder().encodeToString(uuid.toString().getBytes()));
+			member.setPassword("");
+			member.setNickname("탈퇴회원");
+			member.setProfileImgUrl("");
+			memberRepository.save(member);
+		}
 	}
 }
