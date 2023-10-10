@@ -1,9 +1,9 @@
 package com.crude.travelcrew.domain.email.service;
 
+import com.crude.travelcrew.domain.email.model.EmailAuthCode;
 import com.crude.travelcrew.domain.email.model.EmailSendReq;
 import com.crude.travelcrew.domain.email.model.EmailVerifyReq;
-import com.crude.travelcrew.global.redis.RedisKey;
-import com.crude.travelcrew.global.redis.RedisService;
+import com.crude.travelcrew.domain.email.repository.EmailAuthCodeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +29,8 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     private String from;
 
     private final JavaMailSender javaMailSender;
-    private final RedisService redisService;
+//    private final RedisService redisService;
+    private final EmailAuthCodeRepository emailAuthCodeRepository;
 
     @Override
     @Async
@@ -41,8 +42,8 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             smm.setSubject(subject);
             smm.setText(text + authCode);
             this.javaMailSender.send(smm);
-            redisService.setDataWithExpiration(RedisKey.EAUTH.getKey() + emailSendReq.getEmail(), authCode, 60 * 5L);
-            log.info("email send success, authCode : " + redisService.getData(RedisKey.EAUTH.getKey() + emailSendReq.getEmail()));
+            emailAuthCodeRepository.save(EmailAuthCode.builder().id(emailSendReq.getEmail()).code(authCode).expiration(1000 * 60 * 3L).build());
+            log.info("email send success");
         } catch (Exception e) {
             log.error("can not send email. [" + e.getMessage() + "]");
         }
@@ -51,11 +52,14 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     @Transactional
     @Override
     public Boolean verifyEmail(EmailVerifyReq emailVerifyReq) {
-        String storedCode = redisService.getData(RedisKey.EAUTH.getKey() + emailVerifyReq.getEmail());
-            log.info("redis stored key : " + storedCode);
-            log.info("input authCode : " + authCode);
-        if (storedCode != null && storedCode.equals(authCode)) {
-            redisService.deleteData(RedisKey.EAUTH.getKey() + emailVerifyReq.getEmail());
+        EmailAuthCode storedCode = emailAuthCodeRepository.findById(emailVerifyReq.getEmail())
+                .orElseThrow(() -> new RuntimeException("인증 코드가 존재하지 않습니다."));
+//        String storedCode = redisService.getData(RedisKey.EAUTH.getKey() + emailVerifyReq.getEmail());
+//        log.info("redis stored key : " + authCode.getCode());
+//        log.info("input authCode : " + authCode.getCode());
+        if (storedCode.getCode().equals(emailVerifyReq.getAuthCode())) {
+            emailAuthCodeRepository.deleteById(emailVerifyReq.getEmail());
+//            redisService.deleteData(RedisKey.EAUTH.getKey() + emailVerifyReq.getEmail());
             return true;
         } else return false;
     }

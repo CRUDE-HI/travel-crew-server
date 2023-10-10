@@ -10,7 +10,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@EnableRedisRepositories(basePackages = {"com.crude.travelcrew.global.security.jwt.repository"})
+@EnableRedisRepositories(basePackages = {"com.crude.travelcrew.global.security.jwt.repository", "com.crude.travelcrew.domain.email.repository"})
 public class RedisConfig {
 
 	@Value("${spring.redis.host}")
