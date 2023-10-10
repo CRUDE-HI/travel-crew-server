@@ -55,14 +55,14 @@ public class Record extends BaseTime {
 	}
 
 	public MyRecordRes toMyRecordDTO() {
-		MyRecordRes toRecordDTO = new MyRecordRes();
-		toRecordDTO.setRecordId(this.getId());
-		toRecordDTO.setMemberNick(this.getMember().getNickname());
-		toRecordDTO.setTitle(this.getTitle());
-		toRecordDTO.setContent(this.getContent());
-		toRecordDTO.setCreatedAt(this.getCreatedAt());
-		toRecordDTO.setUpdatedAt(this.getUpdatedAt());
-		return toRecordDTO;
+		MyRecordRes toMyRecordDTO = new MyRecordRes();
+		toMyRecordDTO.setRecordId(this.getId());
+		toMyRecordDTO.setMemberNick(this.getMember().getNickname());
+		toMyRecordDTO.setTitle(this.getTitle());
+		toMyRecordDTO.setContent(this.getContent());
+		toMyRecordDTO.setCreatedAt(this.getCreatedAt());
+		toMyRecordDTO.setUpdatedAt(this.getUpdatedAt());
+		return toMyRecordDTO;
 	}
 
 	public void blockContent() {

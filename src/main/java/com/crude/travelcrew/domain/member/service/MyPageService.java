@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,8 +51,8 @@ public class MyPageService {
 	private final CrewMemberRepository crewMemberRepository;
 	private final AwsS3Service awsS3Service;
 
-	@Transactional
 	// 내 정보 상세 조회
+	@Transactional
 	public MemberRes myInfo(String email) {
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
@@ -107,8 +106,8 @@ public class MyPageService {
 		memberRepository.save(member);
 	}
 
-	@Transactional
 	// 프로필 이미지 삭제
+	@Transactional
 	public void deleteImg(String profileImgUrl, String email) {
 
 		Member member = memberRepository.findByEmail(email)
@@ -126,8 +125,8 @@ public class MyPageService {
 		}
 	}
 
-	@Transactional
 	// 내가 작성한 동행글 조회
+	@Transactional
 	public List<CrewRes> getMyCrewList(String email) {
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
@@ -138,11 +137,7 @@ public class MyPageService {
 
 	// 내가 쓴 여행기록 글 조회
 	@Transactional
-	public List<MyRecordRes> getMyRecordList() {
-		String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-		if (Objects.isNull(email)) {
-			return null;
-		}
+	public List<MyRecordRes> getMyRecordList(String email) {
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
@@ -150,8 +145,8 @@ public class MyPageService {
 		return recordList.stream().map(Record::toMyRecordDTO).collect(Collectors.toList());
 	}
 
-	@Transactional
 	// 내가 스크랩한 동행글 조회
+	@Transactional
 	public List<CrewRes> prtcpCrew(String email) {
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
@@ -164,6 +159,7 @@ public class MyPageService {
 	}
 
 	// 회원 비활성화
+	@Transactional
 	public void withDraw(WithDrawPW withDrawPW, String email) {
 
 		Member member = memberRepository.findByEmail(email)
