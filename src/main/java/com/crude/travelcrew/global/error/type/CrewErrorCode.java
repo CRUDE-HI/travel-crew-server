@@ -21,7 +21,9 @@ public enum CrewErrorCode {
 	FAIL_TO_CANCEL_CREW_MEMBER(HttpStatus.UNAUTHORIZED, "E304", "신청자 본인만 취소할 수 있습니다."),
 	CREW_NOT_FOUND(HttpStatus.NOT_FOUND, "E308", "동행 글이 존재하지 않습니다."),
 	FAIL_TO_DELETE_CREW(HttpStatus.UNAUTHORIZED, "E309", "동행글 삭제는 작성자만 가능합니다. "),
-	FAIL_TO_UPDATE_CREW(HttpStatus.UNAUTHORIZED, "E310", "동행글 수정은 작성자만 가능합니다. ");
+	FAIL_TO_UPDATE_CREW(HttpStatus.UNAUTHORIZED, "E310", "동행글 수정은 작성자만 가능합니다. "),
+	ALREADY_REVIEW_CREW_RITER(HttpStatus.BAD_REQUEST, "E311", "이미 리뷰를 참여한 동행입니다."),
+	FAIL_TO_REVIEW_CREW_RITER(HttpStatus.BAD_REQUEST, "E312", "본인에게 리뷰를 남길 수 없습니다.");
 
 	private final HttpStatus status;
 	private final String code;

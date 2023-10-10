@@ -22,4 +22,9 @@ public interface CrewMemberService {
 	 * 동행 신청한 회원 목록 조회
 	 */
 	List<CrewMemberRes> getCrewMemberList(Long crewId);
+
+	/**
+	 * 나를 제외한 동행 인원 리스트
+	 */
+	List<Object> crewMemberList(long crewId, String email);
 }

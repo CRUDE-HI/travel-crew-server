@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -100,5 +102,20 @@ public class CrewMemberServiceImpl implements CrewMemberService {
 		Map<String, String> result = new HashMap<>();
 		result.put("result", message);
 		return result;
+	}
+
+	// 나를 제외한 동행 인원 리스트
+	@Transactional
+	public List<Object> crewMemberList(long crewId, String email) {
+		Crew crew = crewRepository.findById(crewId).orElseThrow();
+		Optional<Member> optionalMember = memberRepository.findByEmail(email);
+		if(optionalMember.isPresent()) {
+			Member member = optionalMember.get();
+			List<CrewMember> list = crewMemberRepository.findAllByCrewAndMemberNotAndStatus(crew, member, APPROVED);
+			return list.stream().map(CrewMemberRes::fromEntity).collect(Collectors.toList());
+		}else {
+			throw new MemberException(MEMBER_NOT_FOUND);
+		}
+
 	}
 }
