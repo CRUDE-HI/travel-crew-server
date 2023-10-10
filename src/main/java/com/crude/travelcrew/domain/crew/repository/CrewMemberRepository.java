@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.crude.travelcrew.domain.crew.model.constants.CrewMemberStatus;
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
 import com.crude.travelcrew.domain.crew.model.entity.CrewMember;
 import com.crude.travelcrew.domain.crew.repository.custom.CustomCrewMemberRepository;
@@ -17,4 +18,6 @@ public interface CrewMemberRepository extends JpaRepository<CrewMember, Long>, C
 	Optional<CrewMember> findByCrewAndMember(Crew crew, Member member);
 
 	List<CrewMember> findAllByMember(Member member);
+
+	List<CrewMember> findAllByCrewAndMemberNotAndStatus(Crew crew, Member member, CrewMemberStatus Status);
 }

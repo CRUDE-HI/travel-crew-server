@@ -50,4 +50,11 @@ public class CrewMemberController {
 		List<CrewMemberRes> response = crewMemberService.getCrewMemberList(crewId);
 		return ResponseEntity.ok(response);
 	}
+
+	// 나를 제외한 동행 인원 리스트
+	@GetMapping("/{crewId}/members")
+	public ResponseEntity<List<Object>> CrewMemberList(@PathVariable long crewId, Principal principal) {
+		return ResponseEntity.ok(crewMemberService.crewMemberList(crewId, principal.getName()));
+	}
+
 }
