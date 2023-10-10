@@ -15,46 +15,48 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crude.travelcrew.domain.crew.model.dto.ApplyForCrewReq;
-import com.crude.travelcrew.domain.crew.model.dto.CrewMemberRes;
-import com.crude.travelcrew.domain.crew.service.CrewMemberService;
+import com.crude.travelcrew.domain.crew.model.dto.AddProposalReq;
+import com.crude.travelcrew.domain.crew.model.dto.ProposalRes;
+import com.crude.travelcrew.domain.crew.service.ProposalService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/crew")
 @RequiredArgsConstructor
-public class CrewMemberController {
+public class ProposalController {
 
-	private final CrewMemberService crewMemberService;
+	private final ProposalService proposalService;
 
 	@PostMapping("/{crewId}/apply")
-	public ResponseEntity<Map<String, String>> applyForCrewMember(@PathVariable Long crewId,
-		@RequestBody @Valid ApplyForCrewReq request,
+	public ResponseEntity<Map<String, String>> addProposal(@PathVariable Long crewId,
+		@RequestBody @Valid AddProposalReq request,
 		Principal principal) {
 
-		Map<String, String> response = crewMemberService.applyForCrewMember(crewId, request, principal.getName());
+		Map<String, String> response = proposalService.addProposal(crewId, request, principal.getName());
 		return ResponseEntity.ok(response);
 	}
 
 	@DeleteMapping("/{crewId}/apply")
-	public ResponseEntity<Map<String, String>> cancelCrewMember(@PathVariable Long crewId, Principal principal) {
+	public ResponseEntity<Map<String, String>> cancelProposal(@PathVariable Long crewId, Principal principal) {
 
-		Map<String, String> response = crewMemberService.cancelCrewMember(crewId, principal.getName());
+		Map<String, String> response = proposalService.cancelProposal(crewId, principal.getName());
 		return ResponseEntity.ok(response);
 	}
 
 	@GetMapping("/{crewId}/list")
-	public ResponseEntity<List<CrewMemberRes>> getCrewMemberList(@PathVariable Long crewId) {
+	public ResponseEntity<List<ProposalRes>> getProposalList(@PathVariable Long crewId) {
 
-		List<CrewMemberRes> response = crewMemberService.getCrewMemberList(crewId);
+		List<ProposalRes> response = proposalService.getProposalList(crewId);
 		return ResponseEntity.ok(response);
 	}
 
-	// 나를 제외한 동행 인원 리스트
+	// 나를 제외한 동행 참여 인원 리스트
+
+/*
 	@GetMapping("/{crewId}/members")
 	public ResponseEntity<List<Object>> CrewMemberList(@PathVariable long crewId, Principal principal) {
-		return ResponseEntity.ok(crewMemberService.crewMemberList(crewId, principal.getName()));
+		return ResponseEntity.ok(proposalService.crewMemberList(crewId, principal.getName()));
 	}
-
+*/
 }

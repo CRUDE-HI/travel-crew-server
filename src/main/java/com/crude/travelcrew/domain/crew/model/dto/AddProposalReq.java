@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApplyForCrewReq {
+public class AddProposalReq {
 
 	@NotBlank(message = "내용을 입력해주세요.")
 	private String content;

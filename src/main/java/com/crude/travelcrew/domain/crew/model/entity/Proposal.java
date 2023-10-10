@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.crude.travelcrew.domain.crew.model.constants.CrewMemberStatus;
+import com.crude.travelcrew.domain.crew.model.constants.ProposalStatus;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.global.entity.BaseTime;
 
@@ -26,10 +26,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CrewMember extends BaseTime {
+public class Proposal extends BaseTime {
 
 	@Id
-	@Column(name = "crew_member_id")
+	@Column(name = "proposal_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
@@ -45,5 +45,5 @@ public class CrewMember extends BaseTime {
 	private String content;
 
 	@Enumerated(EnumType.STRING)
-	private CrewMemberStatus status;
+	private ProposalStatus status;
 }
