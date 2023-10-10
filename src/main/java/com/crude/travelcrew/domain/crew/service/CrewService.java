@@ -1,6 +1,5 @@
 package com.crude.travelcrew.domain.crew.service;
 
-import static com.crude.travelcrew.domain.crew.model.constants.CrewMemberStatus.*;
 import static com.crude.travelcrew.global.error.type.CrewErrorCode.*;
 import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 
@@ -23,10 +22,9 @@ import com.crude.travelcrew.domain.crew.model.dto.CrewReq;
 import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
 import com.crude.travelcrew.domain.crew.model.entity.CrewComment;
-import com.crude.travelcrew.domain.crew.model.entity.CrewMember;
 import com.crude.travelcrew.domain.crew.repository.CrewCommentRepository;
-import com.crude.travelcrew.domain.crew.repository.CrewMemberRepository;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
+import com.crude.travelcrew.domain.crew.repository.ProposalRepository;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.global.awss3.service.AwsS3Service;
@@ -45,7 +43,7 @@ public class CrewService {
 	private final CrewRepository crewRepository;
 	private final CrewCommentRepository crewCommentRepository;
 	private final MemberRepository memberRepository;
-	private final CrewMemberRepository crewMemberRepository;
+	private final ProposalRepository proposalRepository;
 	private final AwsS3Service awsS3Service;
 
 	@Transactional
@@ -66,16 +64,8 @@ public class CrewService {
 			.crewContent(requestDto.getCrewContent())
 			.build();
 
-		CrewMember crewMember = CrewMember.builder()
-			.crew(crew)
-			.member(member)
-			.content("동행글 작성자")
-			.status(OWNER)
-			.build();
-
 		crew.setMember(member);
 		crewRepository.save(crew);
-		crewMemberRepository.save(crewMember);
 
 		// 썸네일 이미지 저장
 		if (Objects.isNull(image)) {
@@ -125,7 +115,7 @@ public class CrewService {
 		}
 
 		// 동행 신청 멤버 삭제
-		crewMemberRepository.deleteAllByCrewMemberId(crewId);
+		proposalRepository.deleteAllByProposalId(crewId);
 
 		// 게시물 댓글 삭제
 		crewCommentRepository.deleteAllByCrewId(crewId);

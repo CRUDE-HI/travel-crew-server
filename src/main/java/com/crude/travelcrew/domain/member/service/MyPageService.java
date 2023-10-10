@@ -13,14 +13,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.crude.travelcrew.domain.crew.model.constants.CrewMemberStatus;
 import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
-import com.crude.travelcrew.domain.crew.model.entity.CrewMember;
 import com.crude.travelcrew.domain.crew.model.entity.CrewScrap;
-import com.crude.travelcrew.domain.crew.repository.CrewMemberRepository;
+import com.crude.travelcrew.domain.crew.model.entity.Proposal;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
 import com.crude.travelcrew.domain.crew.repository.CrewScrapRepository;
+import com.crude.travelcrew.domain.crew.repository.ProposalRepository;
 import com.crude.travelcrew.domain.member.model.constants.MemberRole;
 import com.crude.travelcrew.domain.member.model.constants.MemberStatus;
 import com.crude.travelcrew.domain.member.model.constants.ProviderType;
@@ -48,7 +47,7 @@ public class MyPageService {
 	private final CrewRepository crewRepository;
 	private final CrewScrapRepository crewScrapRepository;
 	private final BCryptPasswordEncoder encoder;
-	private final CrewMemberRepository crewMemberRepository;
+	private final ProposalRepository proposalRepository;
 	private final AwsS3Service awsS3Service;
 
 	// 내 정보 상세 조회
@@ -183,15 +182,14 @@ public class MyPageService {
 
 	// 내가 신청한 동행 글 조회
 	@Transactional
-	public List<CrewRes> commetCrewList(String email) {
+	public List<CrewRes> getMyProposalCrewList(String email) {
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
-		List<CrewMember> commentCrewList = crewMemberRepository.findAllByMember(member);
+		List<Proposal> crewList = proposalRepository.findAllByMember(member);
 
-		return commentCrewList
+		return crewList
 			.stream()
-			.filter(crewMember -> crewMember.getStatus() != CrewMemberStatus.OWNER)
 			.map(gg -> gg.getCrew().toCrewDTO())
 			.collect(Collectors.toList());
 	}
