@@ -124,6 +124,9 @@ public class CrewService {
 			awsS3Service.deleteImageFile(crewImageUrl, DIR);
 		}
 
+		// 동행 신청 멤버 삭제
+		crewMemberRepository.deleteAllByCrewMemberId(crewId);
+
 		// 게시물 댓글 삭제
 		crewCommentRepository.deleteAllByCrewId(crewId);
 

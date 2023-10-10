@@ -28,4 +28,11 @@ public class CustomCrewMemberRepositoryImpl implements CustomCrewMemberRepositor
 			.leftJoin(crewMember.member, member)
 			.fetch();
 	}
+
+	@Override
+	public Long deleteAllByCrewMemberId(Long crewMemberId){
+		return queryFactory.delete(crewMember)
+			.where(crewMember.id.eq(crewMemberId))
+			.execute();
+	}
 }
