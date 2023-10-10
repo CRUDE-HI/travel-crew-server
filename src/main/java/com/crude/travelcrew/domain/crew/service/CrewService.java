@@ -124,16 +124,16 @@ public class CrewService {
 			awsS3Service.deleteImageFile(crewImageUrl, DIR);
 		}
 
+		// 동행 신청 멤버 삭제
+		crewMemberRepository.deleteAllByCrewMemberId(crewId);
+
+		// 게시물 댓글 삭제
+		crewCommentRepository.deleteAllByCrewId(crewId);
+
 		// 동행 기록 삭제
 		crewRepository.deleteById(crewId);
 
-		// 동행 기록 댓글 변경
-		List<CrewComment> crewComments = crewCommentRepository.findAllByCrewId(crewId);
 
-		for (CrewComment comment : crewComments) {
-			comment.setCrewId(0L);
-			crewCommentRepository.save(comment);
-		}
 
 		return getMessage("동행 기록이 삭제되었습니다.");
 

@@ -7,4 +7,6 @@ import com.crude.travelcrew.domain.crew.model.dto.CrewMemberRes;
 public interface CustomCrewMemberRepository {
 
 	List<CrewMemberRes> findAllCrewMemberByCrewId(Long crewId);
+
+	Long deleteAllByCrewMemberId(Long crewMemberId);
 }
