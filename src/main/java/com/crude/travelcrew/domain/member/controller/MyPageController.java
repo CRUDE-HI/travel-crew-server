@@ -72,8 +72,8 @@ public class MyPageController {
 
 	// 내가 쓴 여행기록 글 조회
 	@GetMapping("/record")
-	public ResponseEntity<List<MyRecordRes>> getMyRecordList() {
-		return ResponseEntity.ok(myPageService.getMyRecordList());
+	public ResponseEntity<List<MyRecordRes>> getMyRecordList(Principal principal) {
+		return ResponseEntity.ok(myPageService.getMyRecordList(principal.getName()));
 	}
 
 	// 내가 스크랩한 글 조회
