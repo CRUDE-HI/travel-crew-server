@@ -8,6 +8,9 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.crude.travelcrew.domain.record.model.dto.RecordHeartRes;
+import com.crude.travelcrew.domain.record.model.entity.RecordHeart;
+import com.crude.travelcrew.domain.record.repository.RecordHeartRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +51,7 @@ public class MyPageService {
 	private final CrewScrapRepository crewScrapRepository;
 	private final BCryptPasswordEncoder encoder;
 	private final ProposalRepository proposalRepository;
+	private final RecordHeartRepository recordHeartRepository;
 	private final AwsS3Service awsS3Service;
 
 	// 내 정보 상세 조회
@@ -194,4 +198,15 @@ public class MyPageService {
 			.collect(Collectors.toList());
 	}
 
+	// 내가 좋아요 한 여행 기록 조회
+	@Transactional
+	public List<RecordHeartRes> getMyHeartRecordList(String email) {
+		Member member = memberRepository.findByEmail(email)
+				.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+		List<RecordHeart> heartList = recordHeartRepository.findAllByMember(member);
+		return heartList
+				.stream()
+				.map(RecordHeart::toRecordHeartsDTO)
+				.collect(Collectors.toList());
+	}
 }

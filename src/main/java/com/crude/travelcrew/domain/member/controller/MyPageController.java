@@ -3,6 +3,7 @@ package com.crude.travelcrew.domain.member.controller;
 import java.security.Principal;
 import java.util.List;
 
+import com.crude.travelcrew.domain.record.model.dto.RecordHeartRes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -95,5 +96,12 @@ public class MyPageController {
 	public ResponseEntity<List<CrewRes>> participateCrewList(Principal principal) {
 		List<CrewRes> commentCrewList = myPageService.getMyProposalCrewList(principal.getName());
 		return ResponseEntity.ok(commentCrewList);
+	}
+
+	// 내가 좋아요 한 여행 기록 조회
+	@GetMapping("/heart")
+	public ResponseEntity<List<RecordHeartRes>> getMyHeartRecordList(Principal principal) {
+		List<RecordHeartRes> myHeartRecordList = myPageService.getMyHeartRecordList(principal.getName());
+		return ResponseEntity.ok(myHeartRecordList);
 	}
 }
