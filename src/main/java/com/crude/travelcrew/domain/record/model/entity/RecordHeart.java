@@ -11,13 +11,11 @@ import javax.persistence.ManyToOne;
 
 import com.crude.travelcrew.domain.member.model.entity.Member;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.crude.travelcrew.domain.record.model.dto.RecordHeartRes;
+import lombok.*;
 
 @Getter
+@Setter
 @Entity
 @Builder
 @AllArgsConstructor
@@ -36,4 +34,12 @@ public class RecordHeart {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "record_id", updatable = false)
 	private Record record;
+
+	public RecordHeartRes toRecordHeartsDTO() {
+		RecordHeartRes toDTO = new RecordHeartRes();
+		toDTO.setRecord_heart_id(this.getId());
+		toDTO.setMember(this.getMember());
+		toDTO.setRecord(this.getRecord());
+		return toDTO;
+	}
 }
