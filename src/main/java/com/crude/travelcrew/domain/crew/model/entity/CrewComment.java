@@ -1,5 +1,6 @@
 package com.crude.travelcrew.domain.crew.model.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,6 +28,7 @@ public class CrewComment extends BaseTime {
 	private Long commentId;
 	private Long crewId;
 	private Long memberId;
+	@Column(columnDefinition = "TEXT", nullable = false)
 	private String content;
 
 	public void blockContent() {

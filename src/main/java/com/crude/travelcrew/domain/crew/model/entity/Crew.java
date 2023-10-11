@@ -70,10 +70,6 @@ public class Crew extends BaseTime {
 	@Column
 	private LocalDate travelEnd;
 
-	@Column
-	@LastModifiedDate
-	private LocalDateTime updateAt;
-
 	//plan 내용
 	@Column(nullable = false)
 	private Double latitude;
@@ -81,7 +77,7 @@ public class Crew extends BaseTime {
 	@Column(nullable = false)
 	private Double longitude;
 
-	@Column(nullable = false)
+	@Column(columnDefinition = "TEXT", nullable = false)
 	private String crewContent;
 
 	public Crew(CrewReq crewReq) {
@@ -126,7 +122,6 @@ public class Crew extends BaseTime {
 		toPostsDTO.setMaxCrew(this.getMaxCrew());
 		toPostsDTO.setTravelStart(this.getTravelStart());
 		toPostsDTO.setTravelEnd(this.getTravelEnd());
-		toPostsDTO.setUpdateAt(this.getUpdateAt());
 		toPostsDTO.setLatitude(this.getLatitude());
 		toPostsDTO.setLongitude(this.getLongitude());
 		toPostsDTO.setCrewContent(this.getCrewContent());
