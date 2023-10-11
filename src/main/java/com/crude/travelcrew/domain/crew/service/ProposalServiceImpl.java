@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,10 +16,13 @@ import com.crude.travelcrew.domain.crew.model.dto.AddProposalReq;
 import com.crude.travelcrew.domain.crew.model.dto.EditProposalStatusReq;
 import com.crude.travelcrew.domain.crew.model.dto.ProposalRes;
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
+import com.crude.travelcrew.domain.crew.model.entity.CrewMember;
 import com.crude.travelcrew.domain.crew.model.entity.Proposal;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
 import com.crude.travelcrew.domain.crew.repository.ProposalRepository;
+import com.crude.travelcrew.domain.crew.repository.custom.CrewMemberRepository;
 import com.crude.travelcrew.domain.member.model.entity.Member;
+import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.global.error.exception.CrewException;
 
 import lombok.RequiredArgsConstructor;
@@ -29,6 +33,9 @@ public class ProposalServiceImpl implements ProposalService {
 
 	private final CrewRepository crewRepository;
 	private final ProposalRepository proposalRepository;
+	private final CrewMemberRepository crewMemberRepository;
+	private final MemberRepository memberRepository;
+	private final RabbitTemplate rabbitTemplate;
 
 	@Override
 	@Transactional
@@ -96,6 +103,29 @@ public class ProposalServiceImpl implements ProposalService {
 			.orElseThrow(() -> new CrewException(IMPOSSIBLE_TO_APPROVE_MEMBER));
 
 		proposal.approve();
+
+		// crewMember에 초대
+		Member proposer = memberRepository.findByNickname(request.getNickname())
+			.orElseThrow(() -> new CrewException(PROPOSAL_MEMBER_NOT_FOUND));
+
+		CrewMember crewMember = new CrewMember(proposer.getId(), crew.getCrewId());
+
+		// 크루 멤버 초과시
+		if (crewMemberRepository.countByIdCrewId(crew.getCrewId()) >= crew.getMaxCrew()) {
+			throw new CrewException(CREW_EXCEEDED_MAX);
+		}
+
+		// 크루 멤버가 아닐 경우 초대
+		if (!crewMemberRepository.existsById(crewMember.getId())) {
+			crewMemberRepository.save(crewMember);
+
+			// RabbitMQ에 입장 메시지 전송
+			String entranceMessage = proposer.getNickname() + "님이 크루에 참여하였습니다.";
+			rabbitTemplate.convertAndSend("CREW_EXCHANGE_NAME", "crew." + crewId, entranceMessage);
+		} else {
+			throw new CrewException(ALREADY_APPROVE);
+		}
+
 		return getMessage(String.format("%s님의 동행 신청을 수락하였습니다.", request.getNickname()));
 	}
 
