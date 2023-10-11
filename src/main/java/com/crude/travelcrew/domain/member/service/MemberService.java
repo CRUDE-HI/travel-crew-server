@@ -3,6 +3,7 @@ package com.crude.travelcrew.domain.member.service;
 import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -118,7 +119,9 @@ public class MemberService {
 	}
 
 	public MemberRes opInfo(String nickname) {
-		Member member = memberRepository.findByNickname(nickname);
-		return member.toMemberDTO();
+		Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
+
+		return optionalMember.map(Member::toMemberDTO)
+			.orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
 	}
 }
