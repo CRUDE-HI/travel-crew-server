@@ -1,6 +1,5 @@
 package com.crude.travelcrew.domain.crew.controller;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.crude.travelcrew.domain.crew.model.dto.AddProposalReq;
+import com.crude.travelcrew.domain.crew.model.dto.EditProposalStatusReq;
 import com.crude.travelcrew.domain.crew.model.dto.ProposalRes;
 import com.crude.travelcrew.domain.crew.service.ProposalService;
+import com.crude.travelcrew.global.security.CustomUserDetails;
+import com.crude.travelcrew.global.util.AuthUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,17 +33,17 @@ public class ProposalController {
 
 	@PostMapping("/{crewId}/apply")
 	public ResponseEntity<Map<String, String>> addProposal(@PathVariable Long crewId,
-		@RequestBody @Valid AddProposalReq request,
-		Principal principal) {
+		@RequestBody @Valid AddProposalReq request, @AuthUser CustomUserDetails userDetails) {
 
-		Map<String, String> response = proposalService.addProposal(crewId, request, principal.getName());
+		Map<String, String> response = proposalService.addProposal(crewId, request, userDetails.getMember());
 		return ResponseEntity.ok(response);
 	}
 
 	@DeleteMapping("/{crewId}/apply")
-	public ResponseEntity<Map<String, String>> cancelProposal(@PathVariable Long crewId, Principal principal) {
+	public ResponseEntity<Map<String, String>> cancelProposal(@PathVariable Long crewId,
+		@AuthUser CustomUserDetails userDetails) {
 
-		Map<String, String> response = proposalService.cancelProposal(crewId, principal.getName());
+		Map<String, String> response = proposalService.cancelProposal(crewId, userDetails.getMember());
 		return ResponseEntity.ok(response);
 	}
 
@@ -48,6 +51,14 @@ public class ProposalController {
 	public ResponseEntity<List<ProposalRes>> getProposalList(@PathVariable Long crewId) {
 
 		List<ProposalRes> response = proposalService.getProposalList(crewId);
+		return ResponseEntity.ok(response);
+	}
+
+	@PatchMapping("/{crewId}/approve")
+	public ResponseEntity<Map<String, String>> approveProposal(@PathVariable Long crewId,
+		@RequestBody EditProposalStatusReq request, @AuthUser CustomUserDetails userDetails) {
+
+		Map<String, String> response = proposalService.approveProposal(crewId, request, userDetails.getMember());
 		return ResponseEntity.ok(response);
 	}
 
