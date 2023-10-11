@@ -1,5 +1,7 @@
 package com.crude.travelcrew.domain.crew.model.entity;
 
+import static com.crude.travelcrew.domain.crew.model.constants.ProposalStatus.*;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -46,4 +48,12 @@ public class Proposal extends BaseTime {
 
 	@Enumerated(EnumType.STRING)
 	private ProposalStatus status;
+
+	public void approve() {
+		this.status = APPROVED;
+	}
+
+	public void reject() {
+		this.status = REJECTED;
+	}
 }
