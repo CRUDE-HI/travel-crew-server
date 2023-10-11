@@ -67,11 +67,11 @@ public class ProposalServiceImpl implements ProposalService {
 			.orElseThrow(() -> new CrewException(CREW_NOT_FOUND));
 
 		Proposal proposal = proposalRepository.findByCrewAndMember(crew, member)
-			.orElseThrow(() -> new CrewException(CREW_MEMBER_NOT_FOUND));
+			.orElseThrow(() -> new CrewException(PROPOSAL_MEMBER_NOT_FOUND));
 
 		// 신청자가 아니면 취소할 수 없음
 		if (!Objects.equals(proposal.getMember().getEmail(), member.getEmail())) {
-			throw new CrewException(FAIL_TO_CANCEL_CREW_MEMBER);
+			throw new CrewException(FAIL_TO_CANCEL_PROPOSAL);
 		}
 
 		proposalRepository.delete(proposal);
@@ -90,13 +90,33 @@ public class ProposalServiceImpl implements ProposalService {
 			throw new CrewException(FAIL_TO_APPROVE_CREW);
 		}
 
-		// 신청 승인이 가능한 상태인지 확인
+		// 신청 승인이 가능한 상태인지 확인 (= WAITING)
 		Proposal proposal
 			= proposalRepository.findByCrewIdAndNicknameAndProposalStatus(crewId, request.getNickname(), WAITING)
 			.orElseThrow(() -> new CrewException(IMPOSSIBLE_TO_APPROVE_MEMBER));
 
 		proposal.approve();
 		return getMessage(String.format("%s님의 동행 신청을 수락하였습니다.", request.getNickname()));
+	}
+
+	@Override
+	public Map<String, String> rejectProposal(Long crewId, EditProposalStatusReq request, Member member) {
+
+		Crew crew = crewRepository.findById(crewId)
+			.orElseThrow(() -> new CrewException(CREW_NOT_FOUND));
+
+		// 동행 작성자만 거절 가능
+		if (!Objects.equals(member.getEmail(), crew.getMember().getEmail())) {
+			throw new CrewException(FAIL_TO_REJECT_CREW);
+		}
+
+		// 신청 거절이 가능한 상태인지 확인 (= WAITING)
+		Proposal proposal
+			= proposalRepository.findByCrewIdAndNicknameAndProposalStatus(crewId, request.getNickname(), WAITING)
+			.orElseThrow(() -> new CrewException(IMPOSSIBLE_TO_REJECT_MEMBER));
+
+		proposal.reject();
+		return getMessage(String.format("%s님의 동행 신청을 거절하였습니다.", request.getNickname()));
 	}
 
 	@Override

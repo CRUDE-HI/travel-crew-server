@@ -62,6 +62,14 @@ public class ProposalController {
 		return ResponseEntity.ok(response);
 	}
 
+	@PatchMapping("/{crewId}/reject")
+	public ResponseEntity<Map<String, String>> rejectProposal(@PathVariable Long crewId,
+		@RequestBody EditProposalStatusReq request, @AuthUser CustomUserDetails userDetails) {
+
+		Map<String, String> response = proposalService.rejectProposal(crewId, request, userDetails.getMember());
+		return ResponseEntity.ok(response);
+	}
+
 	// 나를 제외한 동행 참여 인원 리스트
 
 /*

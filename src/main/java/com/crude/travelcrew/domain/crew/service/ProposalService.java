@@ -26,6 +26,11 @@ public interface ProposalService {
 	Map<String, String> approveProposal(Long crewId, EditProposalStatusReq request, Member member);
 
 	/**
+	 * 동행 신청 거절
+	 */
+	Map<String, String> rejectProposal(Long crewId, EditProposalStatusReq request, Member member);
+
+	/**
 	 * 동행 신청한 회원 목록 조회
 	 */
 	List<ProposalRes> getProposalList(Long crewId);

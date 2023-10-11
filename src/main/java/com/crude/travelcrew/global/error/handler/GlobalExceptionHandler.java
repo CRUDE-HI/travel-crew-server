@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import com.crude.travelcrew.global.error.exception.CommonException;
+import com.crude.travelcrew.global.error.exception.CrewException;
 import com.crude.travelcrew.global.error.exception.MemberException;
 import com.crude.travelcrew.global.error.exception.RecordException;
 import com.crude.travelcrew.global.error.model.ErrorResponse;
@@ -61,6 +62,18 @@ public class GlobalExceptionHandler {
 			.build();
 
 		return ResponseEntity.status(IMAGE_SIZE_LIMIT_EXCEEDED.getStatus()).body(response);
+	}
+
+	@ExceptionHandler(CrewException.class)
+	public ResponseEntity<ErrorResponse> handleCrewException(CrewException e) {
+
+		ErrorResponse response = ErrorResponse.builder()
+			.status(e.getErrorCode().getStatus().value())
+			.code(e.getErrorCode().getCode())
+			.message(e.getErrorCode().getMessage())
+			.build();
+
+		return ResponseEntity.status(e.getErrorCode().getStatus()).body(response);
 	}
 
 	@ExceptionHandler(CommonException.class)

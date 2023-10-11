@@ -52,4 +52,8 @@ public class Proposal extends BaseTime {
 	public void approve() {
 		this.status = APPROVED;
 	}
+
+	public void reject() {
+		this.status = REJECTED;
+	}
 }
