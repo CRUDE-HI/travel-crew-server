@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 
 import com.crude.travelcrew.global.entity.BaseTime;
@@ -29,12 +30,11 @@ public class CrewMessage extends BaseTime {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "crew_member_id")
+	@JoinColumns({
+		@JoinColumn(name = "crew_member_id", referencedColumnName = "crew_member_id_column_name_in_crew_member"),
+		@JoinColumn(name = "crew_id", referencedColumnName = "crew_id_column_name_in_crew_member")
+	})
 	private CrewMember crewMember;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "crew_id")
-	private Crew crew;
 
 	@Column(columnDefinition = "TEXT", nullable = false)
 	private String message;
