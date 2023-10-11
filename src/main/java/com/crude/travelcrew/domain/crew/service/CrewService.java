@@ -22,9 +22,12 @@ import com.crude.travelcrew.domain.crew.model.dto.CrewReq;
 import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
 import com.crude.travelcrew.domain.crew.model.entity.CrewComment;
+import com.crude.travelcrew.domain.crew.model.entity.CrewMember;
+import com.crude.travelcrew.domain.crew.model.entity.CrewMemberId;
 import com.crude.travelcrew.domain.crew.repository.CrewCommentRepository;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
 import com.crude.travelcrew.domain.crew.repository.ProposalRepository;
+import com.crude.travelcrew.domain.crew.repository.custom.CrewMemberRepository;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.global.awss3.service.AwsS3Service;
@@ -45,6 +48,7 @@ public class CrewService {
 	private final MemberRepository memberRepository;
 	private final ProposalRepository proposalRepository;
 	private final AwsS3Service awsS3Service;
+	private final CrewMemberRepository crewMemberRepository;
 
 	@Transactional
 	public CrewRes createCrew(CrewReq requestDto, MultipartFile image, String email) {
@@ -66,6 +70,16 @@ public class CrewService {
 
 		crew.setMember(member);
 		crewRepository.save(crew);
+
+		// 작성자가 크루 멤버에 Owner로 저장
+		CrewMemberId crewMemberId = new CrewMemberId(member.getId(), crew.getCrewId());
+
+		CrewMember crewMember = CrewMember.builder()
+			.id(crewMemberId)
+			.isOwner(true)
+			.build();
+
+		crewMemberRepository.save(crewMember);
 
 		// 썸네일 이미지 저장
 		if (Objects.isNull(image)) {
@@ -123,8 +137,6 @@ public class CrewService {
 		// 동행 기록 삭제
 		crewRepository.deleteById(crewId);
 
-
-
 		return getMessage("동행 기록이 삭제되었습니다.");
 
 	}
@@ -133,7 +145,7 @@ public class CrewService {
 	@Transactional
 	public CrewRes crewView(Long id) {
 		Crew crew = crewRepository.findById(id)
-			.orElseThrow(()-> new CrewException(CREW_NOT_FOUND));
+			.orElseThrow(() -> new CrewException(CREW_NOT_FOUND));
 		return crew.toCrewDTO();
 	}
 
