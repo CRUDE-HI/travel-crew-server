@@ -2,10 +2,13 @@ package com.crude.travelcrew.domain.crew.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 
 import com.crude.travelcrew.global.entity.BaseTime;
 
@@ -13,25 +16,27 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Table
-@Builder
 @Getter
-@Setter
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
-public class CrewComment extends BaseTime {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long commentId;
-	private Long crewId;
-	private Long memberId;
-	@Column(columnDefinition = "TEXT", nullable = false)
-	private String content;
+@NoArgsConstructor
+public class CrewMessage extends BaseTime {
 
-	public void blockContent() {
-		this.content = "차단된 댓글입니다.";
-	}
+	@Id
+	@Column(name = "crew_message_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumns({
+		@JoinColumn(name = "crew_member_id"),
+		@JoinColumn(name = "crew_id")
+	})
+	private CrewMember crewMember;
+
+	@Column(columnDefinition = "TEXT", nullable = false)
+	private String message;
+
 }

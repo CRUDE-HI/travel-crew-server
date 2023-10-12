@@ -74,6 +74,10 @@ public class Member extends BaseTime {
 	@JoinColumn(name = "crew_id", updatable = false)
 	private Crew crew;
 
+	public Member(String nickname) {
+		this.nickname = nickname;
+	}
+
 	public MemberRes toMemberDTO() {
 		MemberRes toMemberDTO = new MemberRes();
 		toMemberDTO.setEmail(this.getEmail());

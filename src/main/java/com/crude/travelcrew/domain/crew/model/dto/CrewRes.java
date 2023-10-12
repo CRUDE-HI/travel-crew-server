@@ -48,7 +48,6 @@ public class CrewRes {
 			.maxCrew(crew.getMaxCrew())
 			.travelStart(crew.getTravelStart())
 			.travelEnd(crew.getTravelEnd())
-			.updateAt(crew.getUpdateAt())
 			.longitude(crew.getLatitude())
 			.latitude(crew.getLatitude())
 			.crewContent(crew.getCrewContent())
@@ -64,7 +63,6 @@ public class CrewRes {
 		this.maxCrew = crew.getMaxCrew();
 		this.travelStart = crew.getTravelStart();
 		this.travelEnd = crew.getTravelEnd();
-		this.updateAt = crew.getUpdateAt();
 
 		this.latitude = crew.getLatitude();
 		this.longitude = crew.getLongitude();
