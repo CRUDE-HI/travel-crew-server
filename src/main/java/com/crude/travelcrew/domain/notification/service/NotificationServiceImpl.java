@@ -42,6 +42,21 @@ public class NotificationServiceImpl implements NotificationService {
 		return getMessage("알림이 삭제되었습니다.");
 	}
 
+	@Override
+	@Transactional
+	public Map<String, String> read(Long notificationId, String email) {
+
+		Notification notification = notificationRepository.findByEmailAndId(email, notificationId)
+			.orElseThrow(() -> new RuntimeException("알림이 존재하지 않습니다."));
+
+		if(notification.isRead()) {
+			return getMessage("이미 확인한 알림입니다.");
+		}
+
+		notification.read();
+		return getMessage("알림을 확인하였습니다.");
+	}
+
 	private static Map<String, String> getMessage(String message) {
 		Map<String, String> result = new HashMap<>();
 		result.put("result", message);

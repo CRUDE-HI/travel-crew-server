@@ -18,4 +18,9 @@ public interface NotificationService {
 	 * 알림 삭제
 	 */
 	Map<String, String> remove(Long notificationId, String email);
+
+	/**
+	 * 읽지 않은 알림 확인
+	 */
+	Map<String, String> read(Long notificationId, String email);
 }

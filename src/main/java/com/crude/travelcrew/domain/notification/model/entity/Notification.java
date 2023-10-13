@@ -47,4 +47,8 @@ public class Notification extends BaseTime {
 
 	@Enumerated(EnumType.STRING)
 	private NotificationType notificationType;
+
+	public void read() {
+		this.isRead = true;
+	}
 }

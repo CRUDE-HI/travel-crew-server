@@ -5,12 +5,14 @@ import static com.crude.travelcrew.domain.notification.model.entity.QNotificatio
 import static com.querydsl.core.types.Projections.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
 import com.crude.travelcrew.domain.notification.model.dto.NotificationInfoRes;
+import com.crude.travelcrew.domain.notification.model.entity.Notification;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -40,6 +42,17 @@ public class CustomNotificationRepositoryImpl implements CustomNotificationRepos
 
 		return checkLastPage(pageable, notifications);
 	}
+
+	@Override
+	public Optional<Notification> findByEmailAndId(String email, Long notificationId) {
+		return Optional.ofNullable(
+			queryFactory.selectFrom(notification)
+				.leftJoin(notification.member, member)
+				.where(notification.id.eq(notificationId), member.email.eq(email))
+				.fetchOne()
+		);
+	}
+
 
 	private BooleanExpression lastNotificationId(Long lastId) {
 		if (lastId == null) {

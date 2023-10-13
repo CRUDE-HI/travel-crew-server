@@ -8,6 +8,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,5 +43,13 @@ public class NotificationController {
 
 		Map<String, String> response = notificationService.remove(notificationId, userDetails.getUsername());
  		return ResponseEntity.ok(response);
+	}
+
+	@PatchMapping("/notification/{notificationId}")
+	public ResponseEntity<Map<String, String>> readNotification(@PathVariable Long notificationId,
+		@AuthUser CustomUserDetails userDetails) {
+
+		Map<String, String> response = notificationService.read(notificationId, userDetails.getUsername());
+		return ResponseEntity.ok(response);
 	}
 }
