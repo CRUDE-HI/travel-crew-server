@@ -3,6 +3,7 @@ package com.crude.travelcrew.domain.member.service;
 import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -135,7 +136,13 @@ public class MyPageService {
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		List<Crew> crewList = crewRepository.findAllByMember(member);
-		return crewList.stream().map(Crew::toCrewDTO).collect(Collectors.toList());
+		return crewList.stream().map(Crew::toCrewDTO).collect(Collectors.collectingAndThen(
+			Collectors.toList(),
+			reversedList -> {
+				Collections.reverse(reversedList);
+				return reversedList;
+			}
+		));
 	}
 
 	// 내가 쓴 여행기록 글 조회
@@ -145,7 +152,13 @@ public class MyPageService {
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		List<Record> recordList = recordRepository.findAllByMember(member);
-		return recordList.stream().map(Record::toMyRecordDTO).collect(Collectors.toList());
+		return recordList.stream().map(Record::toMyRecordDTO).collect(Collectors.collectingAndThen(
+			Collectors.toList(),
+			reversedList -> {
+				Collections.reverse(reversedList);
+				return reversedList;
+			}
+		));
 	}
 
 	// 내가 스크랩한 동행글 조회
@@ -158,7 +171,13 @@ public class MyPageService {
 		return scrapList
 			.stream()
 			.map(scraps -> scraps.getCrew().toCrewDTO())
-			.collect(Collectors.toList());
+			.collect(Collectors.collectingAndThen(
+				Collectors.toList(),
+				reversedList -> {
+					Collections.reverse(reversedList);
+					return reversedList;
+				}
+			));
 	}
 
 	// 회원 비활성화
@@ -195,7 +214,13 @@ public class MyPageService {
 		return crewList
 			.stream()
 			.map(gg -> gg.getCrew().toCrewDTO())
-			.collect(Collectors.toList());
+			.collect(Collectors.collectingAndThen(
+				Collectors.toList(),
+				reversedList -> {
+					Collections.reverse(reversedList);
+					return reversedList;
+				}
+			));
 	}
 
 	// 내가 좋아요 한 여행 기록 조회

@@ -90,24 +90,24 @@ public class CrewController {
 
 	// 댓글 등록
 	@PostMapping("/{crewId}/comment")
-	public ResponseEntity<Object> createComment(@PathVariable long crewId,
+	public ResponseEntity<Object> createComment(@PathVariable long crewId, Principal principal,
 		@RequestBody @Valid CrewCommentReq commentReq) {
-		crewService.createComment(crewId, commentReq);
+		crewService.createComment(crewId, principal.getName(), commentReq);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
 	// 댓글 수정
 	@PatchMapping("/{crewId}/comment/{commentId}")
-	public ResponseEntity<Object> modifyComment(@PathVariable long commentId,
+	public ResponseEntity<Object> modifyComment(@PathVariable long commentId, Principal principal,
 		@RequestBody @Valid CrewCommentReq commentReq) {
-		crewService.modifyComment(commentId, commentReq);
+		crewService.modifyComment(commentId, principal.getName(), commentReq);
 		return ResponseEntity.ok().build();
 	}
 
 	// 댓글 삭제
 	@DeleteMapping("/{crewId}/comment/{commentId}")
-	public ResponseEntity<Object> deleteComment(@PathVariable long commentId) {
-		crewService.deleteComment(commentId);
+	public ResponseEntity<Object> deleteComment(@PathVariable long commentId, Principal principal) {
+		crewService.deleteComment(commentId, principal.getName());
 		return ResponseEntity.ok().build();
 	}
 
