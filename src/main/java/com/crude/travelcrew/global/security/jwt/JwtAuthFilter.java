@@ -27,6 +27,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 		"/api/member/email/send", "/api/member/email/verify"};
 
 	private static final String REISSUE_TOKEN_URL = "/api/member/token";
+	private static final String SSE_CONNECT_URL = "/api/sse/connect";
 
 	private final JwtProvider jwtProvider;
 
@@ -41,8 +42,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 		String token;
 
-		// token 재발급 요청인 경우
-		if (request.getRequestURI().startsWith(REISSUE_TOKEN_URL)) {
+		if (request.getRequestURI().startsWith(SSE_CONNECT_URL)) { // sse 연결 요청인 경우
+			log.info("resolve access token from query string");
+			token = request.getQueryString().split("=")[1];
+		} else if (request.getRequestURI().startsWith(REISSUE_TOKEN_URL)) { // token 재발급 요청인 경우
 			log.info("resolve refresh token from header");
 			// header에서 refresh token 추출
 			token = request.getHeader("REFRESH-TOKEN");
