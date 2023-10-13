@@ -121,7 +121,7 @@ public class ProposalServiceImpl implements ProposalService {
 
 			// RabbitMQ에 입장 메시지 전송
 			String entranceMessage = proposer.getNickname() + "님이 크루에 참여하였습니다.";
-			rabbitTemplate.convertAndSend("CREW_EXCHANGE_NAME", "crew." + crewId, entranceMessage);
+			rabbitTemplate.convertAndSend("CHAT_EXCHANGE_NAME", "chat." + crewId, entranceMessage);
 		} else {
 			throw new CrewException(ALREADY_APPROVE);
 		}
