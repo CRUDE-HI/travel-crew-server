@@ -55,12 +55,15 @@ public class RecordServiceImpl implements RecordService {
 			.map(RecordImage::getImageUrl)
 			.collect(Collectors.toList());
 
+		long heartsCount = recordRepository.countHeartsForRecord(recordId);
+
 		return new GetRecordRes(
 			record.getId(),
 			record.getMember().getNickname(),
 			record.getTitle(),
 			record.getContent(),
 			imageUrls,
+			heartsCount,
 			record.getCreatedAt(),
 			record.getUpdatedAt()
 		);
