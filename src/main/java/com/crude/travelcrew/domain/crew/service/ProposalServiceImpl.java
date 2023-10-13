@@ -1,6 +1,7 @@
 package com.crude.travelcrew.domain.crew.service;
 
 import static com.crude.travelcrew.domain.crew.model.constants.ProposalStatus.*;
+import static com.crude.travelcrew.domain.notification.model.constants.NotificationType.*;
 import static com.crude.travelcrew.global.error.type.CrewErrorCode.*;
 
 import java.util.HashMap;
@@ -22,6 +23,8 @@ import com.crude.travelcrew.domain.crew.repository.ProposalRepository;
 import com.crude.travelcrew.domain.crew.repository.custom.CrewMemberRepository;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
+import com.crude.travelcrew.domain.notification.handler.NotificationProducer;
+import com.crude.travelcrew.domain.notification.model.dto.Message;
 import com.crude.travelcrew.global.error.exception.CrewException;
 
 import lombok.RequiredArgsConstructor;
@@ -34,6 +37,7 @@ public class ProposalServiceImpl implements ProposalService {
 	private final ProposalRepository proposalRepository;
 	private final CrewMemberRepository crewMemberRepository;
 	private final MemberRepository memberRepository;
+	private final NotificationProducer notificationProducer;
 
 	@Override
 	@Transactional
@@ -60,6 +64,14 @@ public class ProposalServiceImpl implements ProposalService {
 			.build();
 
 		proposalRepository.save(proposal);
+
+		Message message = Message.builder()
+			.type(NEW_PROPOSAL_ON_CREW)
+			.targetId(proposal.getId())
+			.nickname(crew.getMember().getNickname())
+			.build();
+
+		notificationProducer.produce(message);
 		return getMessage(String.format("%s님 신청이 완료되었습니다.", member.getNickname()));
 	}
 
@@ -96,6 +108,13 @@ public class ProposalServiceImpl implements ProposalService {
 
 		proposal.approve();
 
+		Message message = Message.builder()
+			.type(CREW_REQUEST_APPROVED)
+			.targetId(proposal.getId())
+			.nickname(request.getNickname())
+			.build();
+
+		notificationProducer.produce(message);
 		// crew member 저장
 		Member proposer = memberRepository.findByNickname(request.getNickname())
 			.orElseThrow(() -> new CrewException(PROPOSAL_MEMBER_NOT_FOUND));
@@ -121,6 +140,14 @@ public class ProposalServiceImpl implements ProposalService {
 			.orElseThrow(() -> new CrewException(IMPOSSIBLE_TO_REJECT_MEMBER));
 
 		proposal.reject();
+
+		Message message = Message.builder()
+			.type(CREW_REQUEST_REJECTED)
+			.targetId(proposal.getId())
+			.nickname(request.getNickname())
+			.build();
+
+		notificationProducer.produce(message);
 		return getMessage(String.format("%s님의 동행 신청을 거절하였습니다.", request.getNickname()));
 	}
 
