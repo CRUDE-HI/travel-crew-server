@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  redis:
+    image: redis:latest
+    restart: always
+    container_name: redis-serv
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: always
+    container_name: rabbitmq-serv
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "61613:61613"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin123!
