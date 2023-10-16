@@ -50,8 +50,6 @@ public class CrewController {
 	private final CrewService crewService;
 	private final JwtProvider jwtProvider;
 
-	private final static String CHAT_QUEUE_NAME = "chat.queue";
-
 	@GetMapping("/{crewId}/chat")
 	public ResponseEntity<?> enterCrewChat(@PathVariable Long crewId, HttpServletRequest request) {
 		String token = jwtProvider.resolveToken(request);
