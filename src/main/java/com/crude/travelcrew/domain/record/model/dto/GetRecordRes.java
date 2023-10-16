@@ -26,8 +26,9 @@ public class GetRecordRes {
 
 	private List<String> imageUrls;
 
+	private Long heartsCount;
+
 	private LocalDateTime createdAt;
 
 	private LocalDateTime updatedAt;
-
 }

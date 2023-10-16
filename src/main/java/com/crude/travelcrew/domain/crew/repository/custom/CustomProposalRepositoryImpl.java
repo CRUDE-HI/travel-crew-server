@@ -1,5 +1,6 @@
 package com.crude.travelcrew.domain.crew.repository.custom;
 
+import static com.crude.travelcrew.domain.crew.model.entity.QCrew.*;
 import static com.crude.travelcrew.domain.crew.model.entity.QProposal.*;
 import static com.crude.travelcrew.domain.member.model.entity.QMember.*;
 import static com.querydsl.core.types.Projections.*;
@@ -41,7 +42,23 @@ public class CustomProposalRepositoryImpl implements CustomProposalRepository {
 	}
 
 	@Override
-	public Optional<Proposal> findByCrewIdAndNicknameAndProposalStatus(Long crewId, String nickname, ProposalStatus status) {
+	public Optional<Proposal> findPossibleToApprove(Long crewId, String nickname, ProposalStatus status, Integer max) {
+		return Optional.ofNullable(
+			queryFactory.selectFrom(proposal)
+				.leftJoin(proposal.member, member)
+				.leftJoin(proposal.crew, crew)
+				.where(
+					member.nickname.eq(nickname),
+					proposal.status.eq(status),
+					crew.crewId.eq(crewId),
+					crew.maxCrew.lt(max)
+				)
+				.fetchOne()
+		);
+	}
+
+	@Override
+	public Optional<Proposal> findPossibleToReject(Long crewId, String nickname, ProposalStatus status) {
 		return Optional.ofNullable(
 			queryFactory.selectFrom(proposal)
 				.leftJoin(proposal.member, member)
@@ -53,5 +70,4 @@ public class CustomProposalRepositoryImpl implements CustomProposalRepository {
 				.fetchOne()
 		);
 	}
-
 }

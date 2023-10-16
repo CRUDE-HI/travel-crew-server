@@ -26,6 +26,7 @@ import com.crude.travelcrew.domain.record.model.dto.RecordListRes;
 import com.crude.travelcrew.domain.record.model.entity.Record;
 import com.crude.travelcrew.domain.record.model.entity.RecordImage;
 import com.crude.travelcrew.domain.record.repository.RecordCommentRepository;
+import com.crude.travelcrew.domain.record.repository.RecordHeartRepository;
 import com.crude.travelcrew.domain.record.repository.RecordImageRepository;
 import com.crude.travelcrew.domain.record.repository.RecordRepository;
 import com.crude.travelcrew.global.awss3.service.AwsS3Service;
@@ -45,6 +46,7 @@ public class RecordServiceImpl implements RecordService {
 	private final RecordImageRepository recordImageRepository;
 	private final RecordCommentRepository recordCommentRepository;
 	private final AwsS3Service awsS3Service;
+	private final RecordHeartRepository recordHeartRepository;
 
 	@Override
 	@Transactional
@@ -56,12 +58,15 @@ public class RecordServiceImpl implements RecordService {
 			.map(RecordImage::getImageUrl)
 			.collect(Collectors.toList());
 
+		long heartsCount = recordRepository.countHeartsForRecord(recordId);
+
 		return new GetRecordRes(
 			record.getId(),
 			record.getMember().getNickname(),
 			record.getTitle(),
 			record.getContent(),
 			imageUrls,
+			heartsCount,
 			record.getCreatedAt(),
 			record.getUpdatedAt()
 		);
@@ -71,6 +76,7 @@ public class RecordServiceImpl implements RecordService {
 	@Transactional
 	public List<RecordListRes> listRecord(String keyword, Pageable pageable) {
 		List<Record> list = recordRepository.findByKeyword(keyword, pageable);
+
 		return list.stream().map(RecordListRes::getEntity).collect(Collectors.collectingAndThen(
 			Collectors.toList(),
 			reversedList -> {
@@ -78,6 +84,18 @@ public class RecordServiceImpl implements RecordService {
 				return reversedList;
 			}
 		));
+
+		List<RecordListRes> recordList = list.stream()
+			.map(record -> {
+				long heartsCount = recordHeartRepository.countHeartsForRecord(record.getId());
+				RecordListRes recordRes = RecordListRes.getEntity(record);
+				recordRes.setHeartsCount(heartsCount);
+				return recordRes;
+			})
+			.collect(Collectors.toList());
+
+		return recordList;
+		// return list.stream().map(RecordListRes::getEntity).collect(Collectors.toList());
 	}
 
 	@Override
