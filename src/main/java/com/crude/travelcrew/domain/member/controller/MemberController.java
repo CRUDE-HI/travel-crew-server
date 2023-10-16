@@ -1,5 +1,7 @@
 package com.crude.travelcrew.domain.member.controller;
 
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +34,20 @@ public class MemberController {
 
 	private final MemberService memberService;
 
+	@GetMapping("/duplicate/email/{email}")
+	public ResponseEntity<Map<String, String>> checkDuplicatedEmail(@PathVariable String email) {
+
+		Map<String, String> response = memberService.checkDuplicatedEmail(email);
+		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping("/duplicate/nickname/{nickname}")
+	public ResponseEntity<Map<String, String>> checkDuplicatedNickname(@PathVariable String nickname) {
+
+		Map<String, String> response = memberService.checkDuplicatedNickname(nickname);
+		return ResponseEntity.ok(response);
+	}
+
 	@PostMapping("/login")
 	public ResponseEntity<LoginRes> login(@RequestBody LoginReq request) {
 		LoginRes response = memberService.login(request);
@@ -55,7 +71,6 @@ public class MemberController {
 		try {
 			Member memberEntity = new Member(signUpReq);
 			MemberProfile memberProfileEntity = new MemberProfile(signUpReq);
-			log.info("/api/member/sign-up request... userInfo : {}", memberEntity);
 			Member member = memberService.signUp(memberEntity);
 
 			memberService.setProfile(memberProfileEntity,

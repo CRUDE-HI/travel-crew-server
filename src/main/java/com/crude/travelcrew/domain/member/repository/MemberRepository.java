@@ -14,4 +14,8 @@ public interface MemberRepository extends JpaRepository<Member, Long>, CustomMem
 	Optional<Member> findByProfileImgUrl(String profileImgUrl);
 
 	Optional<Member>  findByNickname(String nickname);
+
+	boolean existsByEmail(String email);
+
+	boolean existsByNickname(String nickname);
 }
