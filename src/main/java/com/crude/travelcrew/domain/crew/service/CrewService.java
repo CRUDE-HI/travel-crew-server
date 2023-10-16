@@ -3,6 +3,7 @@ package com.crude.travelcrew.domain.crew.service;
 import static com.crude.travelcrew.global.error.type.CrewErrorCode.*;
 import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -153,44 +153,51 @@ public class CrewService {
 	@Transactional
 	public List<CrewListRes> getCrewList(String keyword, Pageable pageable) {
 		List<Crew> list = crewRepository.findByKeyword(keyword, pageable);
-		return list.stream().map(CrewListRes::getEntity).collect(Collectors.toList());
-	}
-
-	public long validateToken() {
-		// 토큰에 담긴 사용자 정보가 실제로 member 테이블에 존재하는지 여부를 검증
-		String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-		Member member = memberRepository.findByEmail(email)
-			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
-		if (Objects.isNull(member)) {
-			throw new MemberException(MEMBER_NOT_FOUND);
-		}
-		return member.getId();
+		return list.stream()
+			.map(CrewListRes::getEntity)
+			.collect(Collectors.collectingAndThen(
+				Collectors.toList(),
+				reversedList -> {
+					Collections.reverse(reversedList);
+					return reversedList;
+				}
+			));
 	}
 
 	// 댓글 조회
 	public List<CrewCommentRes> getCommentList(long crewId, Pageable pageable) {
 		// 무한 스크롤 추가 예정
 		List<CrewComment> list = crewCommentRepository.findByCrewId(crewId, pageable);
-		return list.stream().map(CrewCommentRes::fromEntity).collect(Collectors.toList());
+		return list.stream().map(CrewCommentRes::fromEntity).collect(Collectors.collectingAndThen(
+			Collectors.toList(),
+			reversedList -> {
+				Collections.reverse(reversedList);
+				return reversedList;
+			}
+		));
 	}
 
 	// 댓글 등록
-	public void createComment(long crewId, CrewCommentReq commentReq) {
-		long memberId = validateToken();
+	public void createComment(long crewId, String email, CrewCommentReq commentReq) {
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+
 		CrewComment comment = CrewComment.builder()
 			.crewId(crewId)
-			.memberId(memberId)
+			.memberId(member.getId())
 			.content(commentReq.getContent())
 			.build();
 		crewCommentRepository.save(comment);
 	}
 
 	// 댓글 수정
-	public void modifyComment(long commentId, CrewCommentReq commentReq) {
-		long memberId = validateToken();
+	public void modifyComment(long commentId, String email, CrewCommentReq commentReq) {
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+
 		CrewComment comment = crewCommentRepository.findById(commentId)
 			.orElseThrow(() -> new CrewException(CrewErrorCode.COMMENT_NOT_FOUND));
-		if (memberId != comment.getMemberId()) {
+		if (!Objects.equals(member.getId(), comment.getMemberId())) {
 			throw new CrewException(CrewErrorCode.FAIL_TO_MODIFY_CREW_COMMENT);
 		}
 		comment.setContent(commentReq.getContent());
@@ -198,11 +205,13 @@ public class CrewService {
 	}
 
 	// 댓글 삭제
-	public void deleteComment(long commentId) {
-		long memberId = validateToken();
+	public void deleteComment(long commentId, String email) {
+		Member member = memberRepository.findByEmail(email)
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+
 		CrewComment comment = crewCommentRepository.findById(commentId)
 			.orElseThrow(() -> new CrewException(CrewErrorCode.COMMENT_NOT_FOUND));
-		if (memberId != comment.getMemberId()) {
+		if (!Objects.equals(member.getId(), comment.getMemberId())) {
 			throw new CrewException(CrewErrorCode.FAIL_TO_DELETE_CREW_COMMENT);
 		}
 		crewCommentRepository.delete(comment);

@@ -4,6 +4,7 @@ import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 import static com.crude.travelcrew.global.error.type.RecordErrorCode.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,15 @@ public class RecordServiceImpl implements RecordService {
 	@Transactional
 	public List<RecordListRes> listRecord(String keyword, Pageable pageable) {
 		List<Record> list = recordRepository.findByKeyword(keyword, pageable);
+
+		return list.stream().map(RecordListRes::getEntity).collect(Collectors.collectingAndThen(
+			Collectors.toList(),
+			reversedList -> {
+				Collections.reverse(reversedList);
+				return reversedList;
+			}
+		));
+
 		List<RecordListRes> recordList = list.stream()
 			.map(record -> {
 				long heartsCount = recordHeartRepository.countHeartsForRecord(record.getId());

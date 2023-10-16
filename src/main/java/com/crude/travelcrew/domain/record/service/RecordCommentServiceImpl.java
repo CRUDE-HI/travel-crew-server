@@ -3,6 +3,7 @@ package com.crude.travelcrew.domain.record.service;
 import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 import static com.crude.travelcrew.global.error.type.RecordErrorCode.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,8 @@ public class RecordCommentServiceImpl implements RecordCommentService {
 			.orElseThrow(() -> new RecordException(TRAVEL_RECORD_NOT_FOUND));
 
 		List<RecordComment> list = recordCommentRepository.findByRecord(record, pageable);
+
+		Collections.reverse(list);
 
 		return RecordCommentListRes.fromEntityList(list);
 	}
