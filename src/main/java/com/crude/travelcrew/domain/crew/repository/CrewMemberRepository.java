@@ -1,4 +1,4 @@
-package com.crude.travelcrew.domain.crew.repository.custom;
+package com.crude.travelcrew.domain.crew.repository;
 
 import java.util.List;
 

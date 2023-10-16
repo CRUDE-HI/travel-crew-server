@@ -7,16 +7,13 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.crude.travelcrew.domain.crew.controller.CrewMessageController;
 import com.crude.travelcrew.domain.crew.model.dto.CrewMessageReq;
 import com.crude.travelcrew.domain.crew.model.dto.CrewMessageRes;
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
 import com.crude.travelcrew.domain.crew.model.entity.CrewMember;
-import com.crude.travelcrew.domain.crew.model.entity.CrewMemberId;
 import com.crude.travelcrew.domain.crew.model.entity.CrewMessage;
 import com.crude.travelcrew.domain.crew.repository.CrewMessageRepository;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
-import com.crude.travelcrew.domain.crew.repository.custom.CrewMemberRepository;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.global.error.exception.CrewException;

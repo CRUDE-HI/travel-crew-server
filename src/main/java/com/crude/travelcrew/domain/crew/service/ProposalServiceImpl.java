@@ -20,7 +20,7 @@ import com.crude.travelcrew.domain.crew.model.entity.CrewMember;
 import com.crude.travelcrew.domain.crew.model.entity.Proposal;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
 import com.crude.travelcrew.domain.crew.repository.ProposalRepository;
-import com.crude.travelcrew.domain.crew.repository.custom.CrewMemberRepository;
+import com.crude.travelcrew.domain.crew.repository.CrewMemberRepository;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.global.error.exception.CrewException;

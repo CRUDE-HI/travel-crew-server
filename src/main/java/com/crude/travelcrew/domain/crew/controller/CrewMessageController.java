@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.crude.travelcrew.domain.crew.model.dto.CrewMessageReq;
 import com.crude.travelcrew.domain.crew.service.CrewMessageService;
-import com.crude.travelcrew.domain.crew.service.CrewService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class CrewMessageController {
 
-	private final CrewService crewService;
 	private final CrewMessageService crewMessageService;
 
 	@MessageMapping("/crew.chat/{crewId}")

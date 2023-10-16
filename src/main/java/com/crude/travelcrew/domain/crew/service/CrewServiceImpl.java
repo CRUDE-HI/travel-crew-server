@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -31,7 +29,7 @@ import com.crude.travelcrew.domain.crew.model.entity.QCrewMessage;
 import com.crude.travelcrew.domain.crew.repository.CrewCommentRepository;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
 import com.crude.travelcrew.domain.crew.repository.ProposalRepository;
-import com.crude.travelcrew.domain.crew.repository.custom.CrewMemberRepository;
+import com.crude.travelcrew.domain.crew.repository.CrewMemberRepository;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.global.awss3.service.AwsS3Service;
