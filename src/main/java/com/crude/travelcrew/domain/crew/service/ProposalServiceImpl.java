@@ -1,6 +1,7 @@
 package com.crude.travelcrew.domain.crew.service;
 
 import static com.crude.travelcrew.domain.crew.model.constants.ProposalStatus.*;
+import static com.crude.travelcrew.domain.notification.model.constants.NotificationType.*;
 import static com.crude.travelcrew.global.error.type.CrewErrorCode.*;
 
 import java.util.HashMap;
@@ -8,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +23,8 @@ import com.crude.travelcrew.domain.crew.repository.ProposalRepository;
 import com.crude.travelcrew.domain.crew.repository.custom.CrewMemberRepository;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
+import com.crude.travelcrew.domain.notification.handler.NotificationProducer;
+import com.crude.travelcrew.domain.notification.model.dto.Message;
 import com.crude.travelcrew.global.error.exception.CrewException;
 
 import lombok.RequiredArgsConstructor;
@@ -35,7 +37,7 @@ public class ProposalServiceImpl implements ProposalService {
 	private final ProposalRepository proposalRepository;
 	private final CrewMemberRepository crewMemberRepository;
 	private final MemberRepository memberRepository;
-	private final RabbitTemplate rabbitTemplate;
+	private final NotificationProducer notificationProducer;
 
 	@Override
 	@Transactional
@@ -62,7 +64,14 @@ public class ProposalServiceImpl implements ProposalService {
 			.build();
 
 		proposalRepository.save(proposal);
-		// 추후 알림 전송 예정
+
+		Message message = Message.builder()
+			.type(NEW_PROPOSAL_ON_CREW)
+			.targetId(proposal.getId())
+			.nickname(crew.getMember().getNickname())
+			.build();
+
+		notificationProducer.produce(message);
 		return getMessage(String.format("%s님 신청이 완료되었습니다.", member.getNickname()));
 	}
 
@@ -76,56 +85,41 @@ public class ProposalServiceImpl implements ProposalService {
 		Proposal proposal = proposalRepository.findByCrewAndMember(crew, member)
 			.orElseThrow(() -> new CrewException(PROPOSAL_MEMBER_NOT_FOUND));
 
-		// 신청자가 아니면 취소할 수 없음
-		if (!Objects.equals(proposal.getMember().getEmail(), member.getEmail())) {
-			throw new CrewException(FAIL_TO_CANCEL_PROPOSAL);
-		}
-
 		proposalRepository.delete(proposal);
 		return getMessage(String.format("%s님 신청이 취소되었습니다.", member.getNickname()));
 	}
 
 	@Override
 	@Transactional
-	public Map<String, String> approveProposal(Long crewId, EditProposalStatusReq request, Member member) {
+	public Map<String, String> approveProposal(Long crewId, EditProposalStatusReq request, String email) {
 
 		Crew crew = crewRepository.findById(crewId)
 			.orElseThrow(() -> new CrewException(CREW_NOT_FOUND));
 
 		// 동행 작성자만 승인 가능
-		if (!Objects.equals(member.getEmail(), crew.getMember().getEmail())) {
+		if (!Objects.equals(email, crew.getMember().getEmail())) {
 			throw new CrewException(FAIL_TO_APPROVE_CREW);
 		}
 
-		// 신청 승인이 가능한 상태인지 확인 (= WAITING)
+		// 신청 승인이 가능한 상태인지 확인 (= WAITING && 최대 인원 수)
 		Proposal proposal
-			= proposalRepository.findByCrewIdAndNicknameAndProposalStatus(crewId, request.getNickname(), WAITING)
+			= proposalRepository.findPossibleToApprove(crewId, request.getNickname(), WAITING, crew.getMaxCrew())
 			.orElseThrow(() -> new CrewException(IMPOSSIBLE_TO_APPROVE_MEMBER));
 
 		proposal.approve();
 
-		// crewMember에 초대
+		Message message = Message.builder()
+			.type(CREW_REQUEST_APPROVED)
+			.targetId(proposal.getId())
+			.nickname(request.getNickname())
+			.build();
+
+		notificationProducer.produce(message);
+		// crew member 저장
 		Member proposer = memberRepository.findByNickname(request.getNickname())
 			.orElseThrow(() -> new CrewException(PROPOSAL_MEMBER_NOT_FOUND));
 
-		CrewMember crewMember = new CrewMember(proposer.getId(), crew.getCrewId());
-
-		// 크루 멤버 초과시
-		if (crewMemberRepository.countByIdCrewId(crew.getCrewId()) >= crew.getMaxCrew()) {
-			throw new CrewException(CREW_EXCEEDED_MAX);
-		}
-
-		// 크루 멤버가 아닐 경우 초대
-		if (!crewMemberRepository.existsById(crewMember.getId())) {
-			crewMemberRepository.save(crewMember);
-
-			// RabbitMQ에 입장 메시지 전송
-			String entranceMessage = proposer.getNickname() + "님이 크루에 참여하였습니다.";
-			rabbitTemplate.convertAndSend("CREW_EXCHANGE_NAME", "crew." + crewId, entranceMessage);
-		} else {
-			throw new CrewException(ALREADY_APPROVE);
-		}
-
+		crewMemberRepository.save(new CrewMember(proposer.getId(), crew.getCrewId()));
 		return getMessage(String.format("%s님의 동행 신청을 수락하였습니다.", request.getNickname()));
 	}
 
@@ -142,10 +136,18 @@ public class ProposalServiceImpl implements ProposalService {
 
 		// 신청 거절이 가능한 상태인지 확인 (= WAITING)
 		Proposal proposal
-			= proposalRepository.findByCrewIdAndNicknameAndProposalStatus(crewId, request.getNickname(), WAITING)
+			= proposalRepository.findPossibleToReject(crewId, request.getNickname(), WAITING)
 			.orElseThrow(() -> new CrewException(IMPOSSIBLE_TO_REJECT_MEMBER));
 
 		proposal.reject();
+
+		Message message = Message.builder()
+			.type(CREW_REQUEST_REJECTED)
+			.targetId(proposal.getId())
+			.nickname(request.getNickname())
+			.build();
+
+		notificationProducer.produce(message);
 		return getMessage(String.format("%s님의 동행 신청을 거절하였습니다.", request.getNickname()));
 	}
 

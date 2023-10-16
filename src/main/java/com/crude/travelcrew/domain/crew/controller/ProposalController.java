@@ -58,7 +58,7 @@ public class ProposalController {
 	public ResponseEntity<Map<String, String>> approveProposal(@PathVariable Long crewId,
 		@RequestBody EditProposalStatusReq request, @AuthUser CustomUserDetails userDetails) {
 
-		Map<String, String> response = proposalService.approveProposal(crewId, request, userDetails.getMember());
+		Map<String, String> response = proposalService.approveProposal(crewId, request, userDetails.getUsername());
 		return ResponseEntity.ok(response);
 	}
 

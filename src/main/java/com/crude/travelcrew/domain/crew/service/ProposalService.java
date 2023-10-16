@@ -23,7 +23,7 @@ public interface ProposalService {
 	/**
 	 * 동행 신청 승인
 	 */
-	Map<String, String> approveProposal(Long crewId, EditProposalStatusReq request, Member member);
+	Map<String, String> approveProposal(Long crewId, EditProposalStatusReq request, String email);
 
 	/**
 	 * 동행 신청 거절

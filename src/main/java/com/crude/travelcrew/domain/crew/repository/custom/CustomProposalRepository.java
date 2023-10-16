@@ -13,5 +13,7 @@ public interface CustomProposalRepository {
 
 	Long deleteAllByProposalId(Long proposalId);
 
-	Optional<Proposal> findByCrewIdAndNicknameAndProposalStatus(Long crewId, String nickname, ProposalStatus status);
+	Optional<Proposal> findPossibleToApprove(Long crewId, String nickname, ProposalStatus status, Integer max);
+
+	Optional<Proposal> findPossibleToReject(Long crewId, String nickname, ProposalStatus status);
 }
