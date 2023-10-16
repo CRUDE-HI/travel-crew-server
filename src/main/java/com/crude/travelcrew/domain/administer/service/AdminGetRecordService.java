@@ -1,5 +1,7 @@
 package com.crude.travelcrew.domain.administer.service;
 
+import static com.crude.travelcrew.global.error.type.RecordErrorCode.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +22,7 @@ import com.crude.travelcrew.domain.record.model.entity.RecordImage;
 import com.crude.travelcrew.domain.record.repository.RecordCommentRepository;
 import com.crude.travelcrew.domain.record.repository.RecordImageRepository;
 import com.crude.travelcrew.domain.record.repository.RecordRepository;
+import com.crude.travelcrew.global.error.exception.RecordException;
 
 @Service
 public class AdminGetRecordService {
@@ -63,7 +66,7 @@ public class AdminGetRecordService {
 	@Transactional
 	public ADGetRecordRes getRecord(Long recordId) {
 		Record record = recordRepository.findById(recordId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 글을 찾을 수 없습니다."));
+			.orElseThrow(() -> new RecordException(TRAVEL_RECORD_NOT_FOUND));
 
 		List<String> imageUrls = record.getRecordImages().stream()
 			.map(RecordImage::getImageUrl)
@@ -87,7 +90,7 @@ public class AdminGetRecordService {
 	@Transactional
 	public void blockAndDeleteImages(Long recordId) {
 		Record record = recordRepository.findById(recordId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 글을 찾을 수 없습니다."));
+			.orElseThrow(() -> new RecordException(TRAVEL_RECORD_NOT_FOUND));
 
 		record.blockContent();
 
@@ -98,10 +101,10 @@ public class AdminGetRecordService {
 
 	public void blockComment(Long recordId, Long commentId) {
 		Record record = recordRepository.findById(recordId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 글을 찾을 수 없습니다."));
+			.orElseThrow(() -> new RecordException(TRAVEL_RECORD_NOT_FOUND));
 
 		RecordComment recordComment = recordCommentRepository.findByRecordAndId(record, commentId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 글을 찾을 수 없습니다."));
+			.orElseThrow(() -> new RecordException(TRAVEL_RECORD_COMMENT_NOT_FOUND));
 
 		recordComment.blockContent();
 
