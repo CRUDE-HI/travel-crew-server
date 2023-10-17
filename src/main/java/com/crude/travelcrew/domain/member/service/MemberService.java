@@ -14,6 +14,7 @@ import com.crude.travelcrew.domain.member.model.constants.ProviderType;
 import com.crude.travelcrew.domain.member.model.dto.LoginReq;
 import com.crude.travelcrew.domain.member.model.dto.LoginRes;
 import com.crude.travelcrew.domain.member.model.dto.MemberRes;
+import com.crude.travelcrew.domain.member.model.dto.ProfileRes;
 import com.crude.travelcrew.domain.member.model.dto.ReissueRes;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
@@ -123,5 +124,9 @@ public class MemberService {
 
 		return optionalMember.map(Member::toMemberDTO)
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+	}
+
+	public ProfileRes getMyProfile(Member member) {
+		return ProfileRes.fromEntity(member);
 	}
 }
