@@ -38,7 +38,7 @@ public class NotificationServiceImpl implements NotificationService {
 	public Map<String, String> remove(Long notificationId, String email) {
 
 		Notification notification = notificationRepository.findByEmailAndId(email, notificationId)
-			.orElseThrow(() -> new RuntimeException("알림을 삭제할 수 없습니다."));
+			.orElseThrow(() -> new MemberException(NOTIFICATION_NOT_FOUND));
 
 		notificationRepository.delete(notification);
 		return getMessage("알림이 삭제되었습니다.");
@@ -49,7 +49,7 @@ public class NotificationServiceImpl implements NotificationService {
 	public Map<String, String> read(Long notificationId, String email) {
 
 		Notification notification = notificationRepository.findByEmailAndId(email, notificationId)
-			.orElseThrow(() -> new RuntimeException("확인 가능한 알림이 없습니다."));
+			.orElseThrow(() -> new MemberException(NOTIFICATION_NOT_FOUND));
 
 		if(notification.isRead()) {
 			return getMessage("이미 확인한 알림입니다.");

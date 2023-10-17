@@ -4,7 +4,6 @@ import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 import static com.crude.travelcrew.global.error.type.RecordErrorCode.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +51,7 @@ public class RecordServiceImpl implements RecordService {
 	@Transactional
 	public GetRecordRes getRecord(Long recordId) {
 		Record record = recordRepository.findById(recordId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+			.orElseThrow(() -> new RecordException(TRAVEL_RECORD_NOT_FOUND));
 
 		List<String> imageUrls = record.getRecordImages().stream()
 			.map(RecordImage::getImageUrl)
@@ -76,15 +75,6 @@ public class RecordServiceImpl implements RecordService {
 	@Transactional
 	public List<RecordListRes> listRecord(String keyword, Pageable pageable) {
 		List<Record> list = recordRepository.findByKeyword(keyword, pageable);
-
-		return list.stream().map(RecordListRes::getEntity).collect(Collectors.collectingAndThen(
-			Collectors.toList(),
-			reversedList -> {
-				Collections.reverse(reversedList);
-				return reversedList;
-			}
-		));
-
 		List<RecordListRes> recordList = list.stream()
 			.map(record -> {
 				long heartsCount = recordHeartRepository.countHeartsForRecord(record.getId());
@@ -95,7 +85,6 @@ public class RecordServiceImpl implements RecordService {
 			.collect(Collectors.toList());
 
 		return recordList;
-		// return list.stream().map(RecordListRes::getEntity).collect(Collectors.toList());
 	}
 
 	@Override

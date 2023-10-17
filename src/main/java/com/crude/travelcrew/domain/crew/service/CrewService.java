@@ -81,11 +81,6 @@ public class CrewService {
 
 		crewMemberRepository.save(crewMember);
 
-		// 썸네일 이미지 저장
-		if (Objects.isNull(image)) {
-			throw new IllegalArgumentException("미리보기 이미지가 없습니다. ");
-		}
-
 		String imageUrl = awsS3Service.uploadImageFile(image, DIR);
 
 		crew.setThumbnailImgUrl(imageUrl);

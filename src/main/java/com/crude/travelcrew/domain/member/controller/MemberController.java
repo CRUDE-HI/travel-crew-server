@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.crude.travelcrew.domain.member.model.dto.LoginReq;
 import com.crude.travelcrew.domain.member.model.dto.LoginRes;
+import com.crude.travelcrew.domain.member.model.dto.ProfileRes;
 import com.crude.travelcrew.domain.member.model.dto.ReissueRes;
 import com.crude.travelcrew.domain.member.model.dto.MemberRes;
 
@@ -22,6 +23,8 @@ import com.crude.travelcrew.domain.member.model.dto.SignUpRes;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
 import com.crude.travelcrew.domain.member.service.MemberService;
+import com.crude.travelcrew.global.security.CustomUserDetails;
+import com.crude.travelcrew.global.util.AuthUser;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -86,5 +89,12 @@ public class MemberController {
 	@GetMapping("/info/{nickname}")
 	public ResponseEntity<MemberRes> opInfo(@PathVariable String nickname) {
 		return ResponseEntity.ok(memberService.opInfo(nickname));
+	}
+
+	@GetMapping("/profile")
+	public ResponseEntity<ProfileRes> getMyProfile(@AuthUser CustomUserDetails userDetails) {
+
+		ProfileRes response = memberService.getMyProfile(userDetails.getMember());
+		return ResponseEntity.ok(response);
 	}
 }

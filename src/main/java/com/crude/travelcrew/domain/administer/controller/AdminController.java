@@ -74,7 +74,7 @@ public class AdminController {
 	RecordCommentService recordCommentService;
 
 	@PostMapping("/sign-up")
-	public ResponseEntity<?> signUp(@RequestBody SignUpReq signUpReq) throws Exception {
+	public ResponseEntity<?> signUp(@RequestBody SignUpReq signUpReq) {
 		try {
 			Member memberEntity = new Member(signUpReq);
 			MemberProfile memberProfileEntity = new MemberProfile(signUpReq);
@@ -108,7 +108,7 @@ public class AdminController {
 		@RequestParam(value = "page", defaultValue = "0") int page,
 		@RequestParam(value = "size", defaultValue = "10") int size,
 		@RequestParam(value = "search", required = false) String search
-	) throws Exception {
+	) {
 
 		ADMemberListReq ADMemberListReq = new ADMemberListReq();
 		ADMemberListReq.setPage(page);
@@ -137,7 +137,7 @@ public class AdminController {
 		@RequestParam(value = "page", defaultValue = "0") int page,
 		@RequestParam(value = "size", defaultValue = "10") int size,
 		@RequestParam(value = "search", required = false) String search
-	) throws Exception {
+	) {
 
 		ADReportedMemberListReq memberListReq = new ADReportedMemberListReq();
 		memberListReq.setPage(page);
@@ -154,7 +154,7 @@ public class AdminController {
 		@RequestParam(value = "size", defaultValue = "10") int size,
 		@RequestParam(value = "search", required = false) String search,
 		@PathVariable Long memberId
-	) throws Exception {
+	)  {
 
 		ADReportListReq ADReportListReq = new ADReportListReq();
 		ADReportListReq.setPage(page);
@@ -178,7 +178,7 @@ public class AdminController {
 		@RequestParam(value = "page", defaultValue = "0") int page,
 		@RequestParam(value = "size", defaultValue = "10") int size,
 		@RequestParam(value = "search", required = false) String search
-	) throws Exception {
+	) {
 
 		ADCrewListReq ADCrewListReq = new ADCrewListReq();
 		ADCrewListReq.setPage(page);
@@ -218,7 +218,7 @@ public class AdminController {
 		@RequestParam(value = "page", defaultValue = "0") int page,
 		@RequestParam(value = "size", defaultValue = "10") int size,
 		@RequestParam(value = "search", required = false) String search
-	) throws Exception {
+	) {
 
 		ADRecordListReq ADRecordListReq = new ADRecordListReq();
 		ADRecordListReq.setPage(page);

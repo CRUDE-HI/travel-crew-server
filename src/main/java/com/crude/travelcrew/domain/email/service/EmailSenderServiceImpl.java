@@ -1,9 +1,13 @@
 package com.crude.travelcrew.domain.email.service;
 
+import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
+
 import com.crude.travelcrew.domain.email.model.EmailAuthCode;
 import com.crude.travelcrew.domain.email.model.EmailSendReq;
 import com.crude.travelcrew.domain.email.model.EmailVerifyReq;
 import com.crude.travelcrew.domain.email.repository.EmailAuthCodeRepository;
+import com.crude.travelcrew.global.error.exception.MemberException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,13 +57,10 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     @Override
     public Boolean verifyEmail(EmailVerifyReq emailVerifyReq) {
         EmailAuthCode storedCode = emailAuthCodeRepository.findById(emailVerifyReq.getEmail())
-                .orElseThrow(() -> new RuntimeException("인증 코드가 존재하지 않습니다."));
-//        String storedCode = redisService.getData(RedisKey.EAUTH.getKey() + emailVerifyReq.getEmail());
-//        log.info("redis stored key : " + authCode.getCode());
-//        log.info("input authCode : " + authCode.getCode());
+                .orElseThrow(() -> new MemberException(EMAIL_AUTH_CODE_NOT_FOUND));
+
         if (storedCode.getCode().equals(emailVerifyReq.getAuthCode())) {
             emailAuthCodeRepository.deleteById(emailVerifyReq.getEmail());
-//            redisService.deleteData(RedisKey.EAUTH.getKey() + emailVerifyReq.getEmail());
             return true;
         } else return false;
     }
