@@ -72,7 +72,7 @@ public class MyPageService {
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		if (Objects.isNull(member)) {
-			throw new IllegalArgumentException("해당 사용자를 찾을수 없습니다.");
+			throw new MemberException(MEMBER_NOT_FOUND);
 		}
 
 		member.setNickname(updateNickReq.getNickname());
@@ -87,10 +87,10 @@ public class MyPageService {
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		if (!encoder.matches(updatePWReq.getCurrentPassword(), member.getPassword())) {
-			throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+			throw new MemberException(WRONG_MEMBER_PASSWORD);
 		} else {
 			if (!updatePWReq.getNewPassword().equals(updatePWReq.getValidPassword())) {
-				throw new IllegalArgumentException("새로운 비밀번호가 일치하지 않습니다.");
+				throw new MemberException(WRONG_MEMBER_PASSWORD);
 			} else {
 				member.setPassword(encoder.encode(updatePWReq.getNewPassword()));
 				memberRepository.save(member);
@@ -112,13 +112,10 @@ public class MyPageService {
 
 	// 프로필 이미지 삭제
 	@Transactional
-	public void deleteImg(String profileImgUrl, String email) {
+	public void deleteImg(String email) {
 
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
-
-		memberRepository.findByProfileImgUrl(member.getProfileImgUrl())
-			.orElseThrow(() -> new IllegalArgumentException("이미지 파일이 존재하지 않습니다."));
 
 		try {
 			awsS3Service.deleteImageFile(member.getProfileImgUrl(), DIR);
@@ -188,7 +185,7 @@ public class MyPageService {
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		if (!encoder.matches(withDrawPW.getCurrentPassword(), member.getPassword())) {
-			throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+			throw new MemberException(WRONG_MEMBER_PASSWORD);
 		} else {
 			member.setMemberStatus(MemberStatus.DROP);
 			member.setRole(MemberRole.DROP);

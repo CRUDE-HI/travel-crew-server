@@ -1,5 +1,7 @@
 package com.crude.travelcrew.domain.administer.service;
 
+import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,7 @@ import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
 import com.crude.travelcrew.domain.member.repository.MemberProfileRepository;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
+import com.crude.travelcrew.global.error.exception.MemberException;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 @Service
@@ -28,8 +31,6 @@ public class AdminGetMemberService {
 	@Autowired
 	MemberProfileRepository memberProfileRepository;
 
-	@Autowired
-	private JPAQueryFactory queryFactory;
 
 	public List<ADMemberListResponseDto> convertToDto(List<Member> members) {
 		return members.stream()
@@ -64,7 +65,7 @@ public class AdminGetMemberService {
 	public ADGetMemberRes getMember(Long memberId) {
 
 		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다."));
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		MemberProfile profile = member.getMemberProfile();
 
@@ -88,7 +89,7 @@ public class AdminGetMemberService {
 
 	public void updateMember(Long id, ADUpdateMemberReq updateMemberReq) {
 		Member member = memberRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다."));
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		if (updateMemberReq.getEmail() != null) {
 			member.setEmail(updateMemberReq.getEmail());

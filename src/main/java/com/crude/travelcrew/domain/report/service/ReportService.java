@@ -1,5 +1,6 @@
 package com.crude.travelcrew.domain.report.service;
 
+import static com.crude.travelcrew.global.error.type.CommonErrorCode.*;
 import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 
 import javax.persistence.EntityNotFoundException;
@@ -13,6 +14,7 @@ import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.domain.report.model.dto.ReportReq;
 import com.crude.travelcrew.domain.report.model.entity.Report;
 import com.crude.travelcrew.domain.report.repository.ReportRepository;
+import com.crude.travelcrew.global.error.exception.CommonException;
 import com.crude.travelcrew.global.error.exception.MemberException;
 
 @Service
@@ -33,7 +35,7 @@ public class ReportService {
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		if (reportedMember.getId().equals(reporter.getId())){
-			throw new IllegalArgumentException("자신을 신고할 수 없습니다.");
+			throw new CommonException(FAIL_TO_REPORT);
 		}
 
 		Report report = Report.builder()

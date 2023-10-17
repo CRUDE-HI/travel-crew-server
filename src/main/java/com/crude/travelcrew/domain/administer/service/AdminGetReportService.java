@@ -1,5 +1,7 @@
 package com.crude.travelcrew.domain.administer.service;
 
+import static com.crude.travelcrew.global.error.type.CommonErrorCode.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,7 @@ import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.domain.report.model.entity.Report;
 import com.crude.travelcrew.domain.report.repository.ReportRepository;
+import com.crude.travelcrew.global.error.exception.CommonException;
 
 @Service
 public class AdminGetReportService {
@@ -59,7 +62,7 @@ public class AdminGetReportService {
 	@Transactional
 	public ADGetReportRes getReport(Long reportId) {
 		Report report = reportRepository.findById(reportId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 신고를 찾을 수 없습니다."));
+			.orElseThrow(() -> new CommonException(REPORT_NOT_FOUND));
 
 		Member reported = report.getReported();
 		Member reporter = report.getReporter();
