@@ -31,9 +31,9 @@ public interface CrewService {
 
 	List<CrewCommentRes> getCommentList(long crewId, Pageable pageable);
 
-	void createComment(long crewId, CrewCommentReq commentReq);
-  
-	void modifyComment(long commentId, CrewCommentReq commentReq);
+	void createComment(long crewId, String email, CrewCommentReq commentReq);
 
-	void deleteComment(long commentId);
+	void modifyComment(long commentId, String email, CrewCommentReq commentReq);
+
+	void deleteComment(long commentId, String email);
 }
