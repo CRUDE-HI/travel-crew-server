@@ -73,29 +73,6 @@ public class AdminController {
 	@Autowired
 	RecordCommentService recordCommentService;
 
-	@PostMapping("/sign-up")
-	public ResponseEntity<?> signUp(@RequestBody SignUpReq signUpReq) {
-		try {
-			Member memberEntity = new Member(signUpReq);
-			MemberProfile memberProfileEntity = new MemberProfile(signUpReq);
-			log.info("/api/admin/sign-up request... userInfo : {}", memberEntity);
-			Member member = adminMemberService.signUp(memberEntity);
-
-			MemberProfile memberProfile = adminMemberService.setProfile(memberProfileEntity,
-				adminMemberService.getByCredential(member.getEmail()));
-			return ResponseEntity.ok().body(new SignUpRes(member));
-		} catch (Exception e) {
-			log.info(e.getMessage());
-			return ResponseEntity.badRequest().body(e.getMessage());
-		}
-	}
-
-	@PostMapping("/login")
-	public ResponseEntity<LoginRes> login(@RequestBody LoginReq request) {
-		LoginRes response = adminMemberService.login(request);
-		return ResponseEntity.ok(response);
-	}
-
 	@PostMapping("/logout")
 	public ResponseEntity<String> logout() throws Exception {
 		System.out.println("logout");
