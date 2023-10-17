@@ -69,7 +69,6 @@ public class AdminController {
 	@Autowired
 	RecordCommentService recordCommentService;
 
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	@PostMapping("/logout")
 	public ResponseEntity<String> logout() throws Exception {
 		System.out.println("logout");
@@ -77,7 +76,7 @@ public class AdminController {
 		return ResponseEntity.ok().build();
 	}
 
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	@GetMapping("/member")
 	public ResponseEntity<ADMemberListRes> memberList(
 		@RequestParam(value = "page", defaultValue = "0") int page,
@@ -95,7 +94,7 @@ public class AdminController {
 		return ResponseEntity.ok(ADMemberListRes);
 	}
 
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	@GetMapping("/member/{id}")
 	public ResponseEntity<ADGetMemberRes> getMember(@PathVariable Long id) {
 		ADGetMemberRes memberResponseDto = adminGetMemberService.getMember(id);
@@ -109,7 +108,7 @@ public class AdminController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	@GetMapping("/member/report")
 	public ResponseEntity<Page<Member>> getReportedMembers(
 		@RequestParam(value = "page", defaultValue = "0") int page,
@@ -126,7 +125,7 @@ public class AdminController {
 		return ResponseEntity.ok(reportedMembers);
 	}
 
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	@GetMapping("/reported-members/{memberId}")
 	public ResponseEntity<ADReportListRes> getReports(
 		@RequestParam(value = "page", defaultValue = "0") int page,
@@ -146,14 +145,14 @@ public class AdminController {
 		return ResponseEntity.ok(ADReportListRes);
 	}
 
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	@GetMapping("/reported-members/{memberId}/{reportId}")
 	public ResponseEntity<ADGetReportRes> getReport(@PathVariable Long reportId) {
 		ADGetReportRes reportRes = adminGetReportService.getReport(reportId);
 		return ResponseEntity.ok(reportRes);
 	}
 
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	@GetMapping("/crew")
 	public ResponseEntity<ADCrewListRes> getCrew(
 		@RequestParam(value = "page", defaultValue = "0") int page,
@@ -171,34 +170,34 @@ public class AdminController {
 		return ResponseEntity.ok(ADCrewListRes);
 	}
 
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	@GetMapping("/crew/{crewId}")
 	public ResponseEntity<ADGetCrewRes> getCrew(@PathVariable Long crewId) {
 		ADGetCrewRes crewRes = adminGetCrewService.getCrew(crewId);
 		return ResponseEntity.ok(crewRes);
 	}
 
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	@PatchMapping("/crew/{crewId}")
 	public ResponseEntity<Void> blockCrew(@PathVariable Long crewId) {
 		adminGetCrewService.blockAndDeleteImages(crewId);
 		return ResponseEntity.noContent().build();
 	}
 
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	@GetMapping("/crew/{crewId}/comment")
 	public ResponseEntity<List<CrewCommentRes>> getCrewCommentList(@PathVariable long crewId, Pageable pageable) {
 		return ResponseEntity.ok(crewService.getCommentList(crewId, pageable));
 	}
 
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	@PatchMapping("/crew/{crewId}/comment/{commentId}")
 	public ResponseEntity<Object> blockCrewComment(@PathVariable long commentId) {
 		adminGetCrewService.blockComment(commentId);
 		return ResponseEntity.noContent().build();
 	}
 
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	@GetMapping("/record")
 	public ResponseEntity<ADRecordListRes> recordList(
 		@RequestParam(value = "page", defaultValue = "0") int page,
@@ -216,27 +215,27 @@ public class AdminController {
 		return ResponseEntity.ok(ADRecordListRes);
 	}
 
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	@GetMapping("/record/{recordId}")
 	public ResponseEntity<ADGetRecordRes> getRecord(@PathVariable Long recordId) {
 		ADGetRecordRes recordRes = adminGetRecordService.getRecord(recordId);
 		return ResponseEntity.ok(recordRes);
 	}
 
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	@PatchMapping("/record/{recordId}")
 	public ResponseEntity<Void> blockRecord(@PathVariable Long recordId) {
 		adminGetRecordService.blockAndDeleteImages(recordId);
 		return ResponseEntity.noContent().build();
 	}
 
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	@GetMapping("/record/{recordId}/comment")
 	public ResponseEntity<RecordCommentListRes> recordCommentList(@PathVariable Long recordId, Pageable pageable) {
 		return ResponseEntity.ok(recordCommentService.getCommentList(recordId, pageable));
 	}
 
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	@PatchMapping("/record/{recordId}/comment/{commentId}")
 	public ResponseEntity<Object> blockRecordComment(@PathVariable Long recordId, @PathVariable Long commentId) {
 		adminGetRecordService.blockComment(recordId, commentId);
