@@ -122,6 +122,6 @@ public class MemberService {
 		Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
 
 		return optionalMember.map(Member::toMemberDTO)
-			.orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 	}
 }
