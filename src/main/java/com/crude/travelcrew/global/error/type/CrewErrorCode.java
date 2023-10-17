@@ -27,8 +27,11 @@ public enum CrewErrorCode {
 	IMPOSSIBLE_TO_APPROVE_MEMBER(HttpStatus.BAD_REQUEST, "E314", "동행 신청 승인이 불가능합니다."),
 	FAIL_TO_REJECT_CREW(HttpStatus.UNAUTHORIZED, "E315", "동행 신청 거절 권한이 없습니다."),
 	IMPOSSIBLE_TO_REJECT_MEMBER(HttpStatus.BAD_REQUEST, "E316", "동행 신청 거절이 불가능합니다."),
-	CREW_SCRAP_NOT_FOUND(HttpStatus.BAD_REQUEST, "E317", "동행 스크랩이 존재하지 않습니다."),
-	ALREADY_SCRAP_CREW(HttpStatus.BAD_REQUEST, "E318", "이미 스크랩 한 동행 글입이니다.");
+	CREW_EXCEEDED_MAX(HttpStatus.BAD_REQUEST, "E317", "동행 인원이 가득 찼습니다."),
+	ALREADY_APPROVE(HttpStatus.BAD_REQUEST, "E318", "이미 승인된 회원 입니다."),
+	FAIL_ENTER(HttpStatus.BAD_REQUEST, "E319", "해당 동행멤버가 아닙니다."),
+	CREW_SCRAP_NOT_FOUND(HttpStatus.BAD_REQUEST, "E320", "동행 스크랩이 존재하지 않습니다."),
+	ALREADY_SCRAP_CREW(HttpStatus.BAD_REQUEST, "E321", "이미 스크랩 한 동행 글입이니다.");
 
 	private final HttpStatus status;
 	private final String code;

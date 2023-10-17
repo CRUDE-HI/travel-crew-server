@@ -31,12 +31,12 @@ public class CrewMessage extends BaseTime {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
-		@JoinColumn(name = "crew_member_id"),
-		@JoinColumn(name = "crew_id")
+		@JoinColumn(name = "crew_member_id", referencedColumnName="memberId"),
+		@JoinColumn(name = "crew_id", referencedColumnName="crewId")
 	})
 	private CrewMember crewMember;
 
 	@Column(columnDefinition = "TEXT", nullable = false)
-	private String message;
+	private String content;
 
 }

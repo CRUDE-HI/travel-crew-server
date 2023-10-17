@@ -54,20 +54,4 @@ public class CrewRes {
 			.build();
 	}
 
-	public CrewRes(Crew crew){
-		this.title = crew.getTitle();
-		this.memberId = crew.getMember().getId();
-		this.thumbnailImgUrl = crew.getThumbnailImgUrl();
-		this.crewPlace = crew.getCrewPlace();
-		this.crewStatus = crew.getCrewStatus();
-		this.maxCrew = crew.getMaxCrew();
-		this.travelStart = crew.getTravelStart();
-		this.travelEnd = crew.getTravelEnd();
-
-		this.latitude = crew.getLatitude();
-		this.longitude = crew.getLongitude();
-		this.crewContent = crew.getCrewContent();
-
-	}
-
 }

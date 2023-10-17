@@ -20,7 +20,7 @@ import com.crude.travelcrew.domain.crew.model.entity.CrewMember;
 import com.crude.travelcrew.domain.crew.model.entity.Proposal;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
 import com.crude.travelcrew.domain.crew.repository.ProposalRepository;
-import com.crude.travelcrew.domain.crew.repository.custom.CrewMemberRepository;
+import com.crude.travelcrew.domain.crew.repository.CrewMemberRepository;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.domain.notification.handler.NotificationProducer;
@@ -120,6 +120,7 @@ public class ProposalServiceImpl implements ProposalService {
 			.orElseThrow(() -> new CrewException(PROPOSAL_MEMBER_NOT_FOUND));
 
 		crewMemberRepository.save(new CrewMember(proposer.getId(), crew.getCrewId()));
+    
 		return getMessage(String.format("%s님의 동행 신청을 수락하였습니다.", request.getNickname()));
 	}
 

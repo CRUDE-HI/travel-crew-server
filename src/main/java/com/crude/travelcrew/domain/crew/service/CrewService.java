@@ -1,18 +1,9 @@
 package com.crude.travelcrew.domain.crew.service;
 
-import static com.crude.travelcrew.global.error.type.CrewErrorCode.*;
-import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
-
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.crude.travelcrew.domain.crew.model.dto.CrewCommentReq;
@@ -20,202 +11,29 @@ import com.crude.travelcrew.domain.crew.model.dto.CrewCommentRes;
 import com.crude.travelcrew.domain.crew.model.dto.CrewListRes;
 import com.crude.travelcrew.domain.crew.model.dto.CrewReq;
 import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
-import com.crude.travelcrew.domain.crew.model.entity.Crew;
-import com.crude.travelcrew.domain.crew.model.entity.CrewComment;
-import com.crude.travelcrew.domain.crew.model.entity.CrewMember;
-import com.crude.travelcrew.domain.crew.model.entity.CrewMemberId;
-import com.crude.travelcrew.domain.crew.repository.CrewCommentRepository;
-import com.crude.travelcrew.domain.crew.repository.CrewRepository;
-import com.crude.travelcrew.domain.crew.repository.ProposalRepository;
-import com.crude.travelcrew.domain.crew.repository.custom.CrewMemberRepository;
-import com.crude.travelcrew.domain.member.model.entity.Member;
-import com.crude.travelcrew.domain.member.repository.MemberRepository;
-import com.crude.travelcrew.global.awss3.service.AwsS3Service;
-import com.crude.travelcrew.global.error.exception.CrewException;
-import com.crude.travelcrew.global.error.exception.MemberException;
-import com.crude.travelcrew.global.error.type.CrewErrorCode;
+import com.crude.travelcrew.domain.crew.model.entity.CrewMessage;
 
-import lombok.AllArgsConstructor;
+public interface CrewService {
 
-@Service
-@AllArgsConstructor
-public class CrewService {
+	CrewRes createCrew(CrewReq requestDto, MultipartFile image, String email);
 
-	private final static String DIR = "crew";
+	CrewRes updateCrew(Long crewId, CrewReq request, String email);
 
-	private final CrewRepository crewRepository;
-	private final CrewCommentRepository crewCommentRepository;
-	private final MemberRepository memberRepository;
-	private final ProposalRepository proposalRepository;
-	private final AwsS3Service awsS3Service;
-	private final CrewMemberRepository crewMemberRepository;
+	Map<String, String> deleteCrew(Long crewId, String email);
 
-	@Transactional
-	public CrewRes createCrew(CrewReq requestDto, MultipartFile image, String email) {
+	CrewRes crewView(Long id);
 
-		Member member = memberRepository.findByEmail(email)
-			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+	void enterCrewChat(Long crewId, String token);
 
-		Crew crew = Crew.builder()
-			.title(requestDto.getTitle())
-			.crewPlace(requestDto.getCrewPlace())
-			.crewStatus(requestDto.getCrewStatus())
-			.maxCrew(requestDto.getMaxCrew())
-			.travelStart(requestDto.getTravelStart())
-			.travelEnd(requestDto.getTravelEnd())
-			.latitude(requestDto.getLatitude())
-			.longitude(requestDto.getLongitude())
-			.crewContent(requestDto.getCrewContent())
-			.build();
+	List<CrewMessage> getChatHistory(Long crewId, int page, int size);
 
-		crew.setMember(member);
-		crewRepository.save(crew);
+	List<CrewListRes> getCrewList(String keyword, Pageable pageable);
 
-		// 작성자가 크루 멤버에 Owner로 저장
-		CrewMemberId crewMemberId = new CrewMemberId(member.getId(), crew.getCrewId());
+	List<CrewCommentRes> getCommentList(long crewId, Pageable pageable);
 
-		CrewMember crewMember = CrewMember.builder()
-			.id(crewMemberId)
-			.isOwner(true)
-			.build();
+	void createComment(long crewId, CrewCommentReq commentReq);
+  
+	void modifyComment(long commentId, CrewCommentReq commentReq);
 
-		crewMemberRepository.save(crewMember);
-
-		String imageUrl = awsS3Service.uploadImageFile(image, DIR);
-
-		crew.setThumbnailImgUrl(imageUrl);
-
-		return CrewRes.fromEntity(crew);
-	}
-
-	//수정
-	@Transactional
-	public CrewRes updateCrew(Long crewId, CrewReq request, String email) {
-		// 게시물 없을때
-		Crew crew = crewRepository.findById(crewId)
-			.orElseThrow(() -> new CrewException(CREW_NOT_FOUND));
-
-		// 작성자가 아닐떄
-		if (!Objects.equals(crew.getMember().getEmail(), email)) {
-			throw new CrewException(FAIL_TO_UPDATE_CREW);
-		}
-
-		crew.update(request);
-		return CrewRes.fromEntity(crew);
-	}
-
-	//삭제
-	@Transactional
-	public Map<String, String> deleteCrew(Long crewId, String email) {
-
-		//해당하는 동행글이 존재하지 않습니다.
-		Crew crew = crewRepository.findById(crewId)
-			.orElseThrow(() -> new CrewException(CREW_NOT_FOUND));
-
-		//동행글 삭제는 작성자만 가능합니다.
-		if (!Objects.equals(crew.getMember().getEmail(), email)) {
-			throw new CrewException(FAIL_TO_DELETE_CREW);
-		}
-
-		// Thumbnail 삭제
-		String crewImageUrl = crew.getThumbnailImgUrl();
-		if (crewImageUrl != null) {
-			awsS3Service.deleteImageFile(crewImageUrl, DIR);
-		}
-
-		// 동행 신청 멤버 삭제
-		proposalRepository.deleteAllByProposalId(crewId);
-
-		// 게시물 댓글 삭제
-		crewCommentRepository.deleteAllByCrewId(crewId);
-
-		// 동행 기록 삭제
-		crewRepository.deleteById(crewId);
-
-		return getMessage("동행 기록이 삭제되었습니다.");
-
-	}
-
-	// 동행 게시글 상세조회
-	@Transactional
-	public CrewRes crewView(Long id) {
-		Crew crew = crewRepository.findById(id)
-			.orElseThrow(() -> new CrewException(CREW_NOT_FOUND));
-		return crew.toCrewDTO();
-	}
-
-	// 전체 조회
-	@Transactional
-	public List<CrewListRes> getCrewList(String keyword, Pageable pageable) {
-		List<Crew> list = crewRepository.findByKeyword(keyword, pageable);
-		return list.stream()
-			.map(CrewListRes::getEntity)
-			.collect(Collectors.collectingAndThen(
-				Collectors.toList(),
-				reversedList -> {
-					Collections.reverse(reversedList);
-					return reversedList;
-				}
-			));
-	}
-
-	// 댓글 조회
-	public List<CrewCommentRes> getCommentList(long crewId, Pageable pageable) {
-		// 무한 스크롤 추가 예정
-		List<CrewComment> list = crewCommentRepository.findByCrewId(crewId, pageable);
-		return list.stream().map(CrewCommentRes::fromEntity).collect(Collectors.collectingAndThen(
-			Collectors.toList(),
-			reversedList -> {
-				Collections.reverse(reversedList);
-				return reversedList;
-			}
-		));
-	}
-
-	// 댓글 등록
-	public void createComment(long crewId, String email, CrewCommentReq commentReq) {
-		Member member = memberRepository.findByEmail(email)
-			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
-
-		CrewComment comment = CrewComment.builder()
-			.crewId(crewId)
-			.memberId(member.getId())
-			.content(commentReq.getContent())
-			.build();
-		crewCommentRepository.save(comment);
-	}
-
-	// 댓글 수정
-	public void modifyComment(long commentId, String email, CrewCommentReq commentReq) {
-		Member member = memberRepository.findByEmail(email)
-			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
-
-		CrewComment comment = crewCommentRepository.findById(commentId)
-			.orElseThrow(() -> new CrewException(CrewErrorCode.COMMENT_NOT_FOUND));
-		if (!Objects.equals(member.getId(), comment.getMemberId())) {
-			throw new CrewException(CrewErrorCode.FAIL_TO_MODIFY_CREW_COMMENT);
-		}
-		comment.setContent(commentReq.getContent());
-		crewCommentRepository.save(comment);
-	}
-
-	// 댓글 삭제
-	public void deleteComment(long commentId, String email) {
-		Member member = memberRepository.findByEmail(email)
-			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
-
-		CrewComment comment = crewCommentRepository.findById(commentId)
-			.orElseThrow(() -> new CrewException(CrewErrorCode.COMMENT_NOT_FOUND));
-		if (!Objects.equals(member.getId(), comment.getMemberId())) {
-			throw new CrewException(CrewErrorCode.FAIL_TO_DELETE_CREW_COMMENT);
-		}
-		crewCommentRepository.delete(comment);
-	}
-
-	private static Map<String, String> getMessage(String message) {
-		Map<String, String> result = new HashMap<>();
-		result.put("result", message);
-		return result;
-	}
-
+	void deleteComment(long commentId);
 }

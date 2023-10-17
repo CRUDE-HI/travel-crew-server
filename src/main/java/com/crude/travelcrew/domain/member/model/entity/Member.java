@@ -69,11 +69,6 @@ public class Member extends BaseTime {
 		this.nickname = signUpReq.getNickname();
 	}
 
-	// 동행 게시판 참가자
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "crew_id", updatable = false)
-	private Crew crew;
-
 	public Member(String nickname) {
 		this.nickname = nickname;
 	}
