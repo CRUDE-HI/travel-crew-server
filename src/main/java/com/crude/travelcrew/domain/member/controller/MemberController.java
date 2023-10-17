@@ -2,6 +2,8 @@ package com.crude.travelcrew.domain.member.controller;
 
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,7 +54,7 @@ public class MemberController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<LoginRes> login(@RequestBody LoginReq request) {
+	public ResponseEntity<LoginRes> login(@RequestBody @Valid LoginReq request) {
 		LoginRes response = memberService.login(request);
 		return ResponseEntity.ok(response);
 	}
@@ -70,7 +72,7 @@ public class MemberController {
 	}
 
 	@PostMapping("/sign-up")
-	public ResponseEntity<?> signUp(@RequestBody SignUpReq signUpReq) {
+	public ResponseEntity<?> signUp(@RequestBody @Valid SignUpReq signUpReq) {
 		try {
 			Member memberEntity = new Member(signUpReq);
 			MemberProfile memberProfileEntity = new MemberProfile(signUpReq);
