@@ -36,12 +36,7 @@ import com.crude.travelcrew.domain.administer.service.AdminGetReportService;
 import com.crude.travelcrew.domain.administer.service.AdminMemberService;
 import com.crude.travelcrew.domain.crew.model.dto.CrewCommentRes;
 import com.crude.travelcrew.domain.crew.service.CrewService;
-import com.crude.travelcrew.domain.member.model.dto.LoginReq;
-import com.crude.travelcrew.domain.member.model.dto.LoginRes;
-import com.crude.travelcrew.domain.member.model.dto.SignUpReq;
-import com.crude.travelcrew.domain.member.model.dto.SignUpRes;
 import com.crude.travelcrew.domain.member.model.entity.Member;
-import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
 import com.crude.travelcrew.domain.record.model.dto.RecordCommentListRes;
 import com.crude.travelcrew.domain.record.service.RecordCommentService;
 
@@ -109,7 +104,7 @@ public class AdminController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@GetMapping("/reported-members")
+	@GetMapping("/member/report")
 	public ResponseEntity<Page<Member>> getReportedMembers(
 		@RequestParam(value = "page", defaultValue = "0") int page,
 		@RequestParam(value = "size", defaultValue = "10") int size,
@@ -131,7 +126,7 @@ public class AdminController {
 		@RequestParam(value = "size", defaultValue = "10") int size,
 		@RequestParam(value = "search", required = false) String search,
 		@PathVariable Long memberId
-	)  {
+	) {
 
 		ADReportListReq ADReportListReq = new ADReportListReq();
 		ADReportListReq.setPage(page);
@@ -144,7 +139,7 @@ public class AdminController {
 		return ResponseEntity.ok(ADReportListRes);
 	}
 
-	@GetMapping("/report/{reportId}")
+	@GetMapping("/reported-members/{memberId}/{reportId}")
 	public ResponseEntity<ADGetReportRes> getReport(@PathVariable Long reportId) {
 		ADGetReportRes reportRes = adminGetReportService.getReport(reportId);
 		return ResponseEntity.ok(reportRes);

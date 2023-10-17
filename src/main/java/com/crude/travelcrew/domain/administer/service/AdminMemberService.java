@@ -3,12 +3,7 @@ package com.crude.travelcrew.domain.administer.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import com.crude.travelcrew.domain.member.repository.MemberProfileRepository;
-import com.crude.travelcrew.domain.member.repository.MemberRepository;
-import com.crude.travelcrew.global.security.jwt.JwtProvider;
 
 @Service
 public class AdminMemberService {
