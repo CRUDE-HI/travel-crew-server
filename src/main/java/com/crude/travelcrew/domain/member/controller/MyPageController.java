@@ -60,8 +60,8 @@ public class MyPageController {
 
 	// 프로필이미지 삭제
 	@DeleteMapping("/profile")
-	public ResponseEntity<Void> deleteProfile(String profileImgUrl, Principal principal) {
-		myPageService.deleteImg(profileImgUrl, principal.getName());
+	public ResponseEntity<Void> deleteProfile(Principal principal) {
+		myPageService.deleteImg(principal.getName());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

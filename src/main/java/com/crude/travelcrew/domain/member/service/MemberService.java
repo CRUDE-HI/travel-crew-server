@@ -2,6 +2,8 @@ package com.crude.travelcrew.domain.member.service;
 
 import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -14,6 +16,7 @@ import com.crude.travelcrew.domain.member.model.constants.ProviderType;
 import com.crude.travelcrew.domain.member.model.dto.LoginReq;
 import com.crude.travelcrew.domain.member.model.dto.LoginRes;
 import com.crude.travelcrew.domain.member.model.dto.MemberRes;
+import com.crude.travelcrew.domain.member.model.dto.ProfileRes;
 import com.crude.travelcrew.domain.member.model.dto.ReissueRes;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
@@ -44,6 +47,20 @@ public class MemberService {
 	public Member getByCredential(String email) {
 		return memberRepository.findByEmail(email)
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+	}
+
+	public Map<String, String> checkDuplicatedEmail(String email) {
+		if(memberRepository.existsByEmail(email)) { // 이미 존재하는 이메일인 경우
+			throw new MemberException(DUPLICATED_EMAIL);
+		}
+		return getMessage("사용 가능한 이메일입니다.");
+	}
+
+	public Map<String, String> checkDuplicatedNickname(String nickname) {
+		if(memberRepository.existsByNickname(nickname)) { // 이미 존재하는 닉네임인 경우
+			throw new MemberException(DUPLICATED_NICKNAME);
+		}
+		return getMessage("사용 가능한 닉네임입니다.");
 	}
 
 	public LoginRes login(LoginReq request) {
@@ -122,6 +139,16 @@ public class MemberService {
 		Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
 
 		return optionalMember.map(Member::toMemberDTO)
-			.orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+	}
+
+	public ProfileRes getMyProfile(Member member) {
+		return ProfileRes.fromEntity(member);
+	}
+
+	private static Map<String, String> getMessage(String message) {
+		Map<String, String> result = new HashMap<>();
+		result.put("result", message);
+		return result;
 	}
 }

@@ -18,7 +18,6 @@ public enum CrewErrorCode {
 	ALREADY_APPLIED_MEMBER(HttpStatus.BAD_REQUEST, "E305", "이미 동행을 신청한 회원입니다."),
 	FAIL_TO_APPLY_CREW(HttpStatus.BAD_REQUEST, "E306", "작성자 본인은 신청할 수 없습니다."),
 	PROPOSAL_MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "E307", "해당 동행을 신청한 회원이 없습니다."),
-	FAIL_TO_CANCEL_PROPOSAL(HttpStatus.UNAUTHORIZED, "E304", "신청자 본인만 취소할 수 있습니다."),
 	CREW_NOT_FOUND(HttpStatus.BAD_REQUEST, "E308", "동행 글이 존재하지 않습니다."),
 	FAIL_TO_DELETE_CREW(HttpStatus.UNAUTHORIZED, "E309", "동행글 삭제는 작성자만 가능합니다. "),
 	FAIL_TO_UPDATE_CREW(HttpStatus.UNAUTHORIZED, "E310", "동행글 수정은 작성자만 가능합니다. "),
@@ -30,7 +29,9 @@ public enum CrewErrorCode {
 	IMPOSSIBLE_TO_REJECT_MEMBER(HttpStatus.BAD_REQUEST, "E316", "동행 신청 거절이 불가능합니다."),
 	CREW_EXCEEDED_MAX(HttpStatus.BAD_REQUEST, "E317", "동행 인원이 가득 찼습니다."),
 	ALREADY_APPROVE(HttpStatus.BAD_REQUEST, "E318", "이미 승인된 회원 입니다."),
-	FAIL_ENTER(HttpStatus.BAD_REQUEST, "E319", "해당 동행멤버가 아닙니다.");
+	FAIL_ENTER(HttpStatus.BAD_REQUEST, "E319", "해당 동행멤버가 아닙니다."),
+	CREW_SCRAP_NOT_FOUND(HttpStatus.BAD_REQUEST, "E320", "동행 스크랩이 존재하지 않습니다."),
+	ALREADY_SCRAP_CREW(HttpStatus.BAD_REQUEST, "E321", "이미 스크랩 한 동행 글입이니다.");
 
 	private final HttpStatus status;
 	private final String code;

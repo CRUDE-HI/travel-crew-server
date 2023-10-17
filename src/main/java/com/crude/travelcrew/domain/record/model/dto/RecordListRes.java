@@ -21,6 +21,7 @@ public class RecordListRes {
 	private String memberNick;
 	private String title;
 	private String content;
+	private Long heartsCount;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 

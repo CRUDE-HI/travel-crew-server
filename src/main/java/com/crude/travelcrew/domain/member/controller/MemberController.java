@@ -1,5 +1,7 @@
 package com.crude.travelcrew.domain.member.controller;
 
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.crude.travelcrew.domain.member.model.dto.LoginReq;
 import com.crude.travelcrew.domain.member.model.dto.LoginRes;
+import com.crude.travelcrew.domain.member.model.dto.ProfileRes;
 import com.crude.travelcrew.domain.member.model.dto.ReissueRes;
 import com.crude.travelcrew.domain.member.model.dto.MemberRes;
 
@@ -20,6 +23,8 @@ import com.crude.travelcrew.domain.member.model.dto.SignUpRes;
 import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
 import com.crude.travelcrew.domain.member.service.MemberService;
+import com.crude.travelcrew.global.security.CustomUserDetails;
+import com.crude.travelcrew.global.util.AuthUser;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +36,20 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberController {
 
 	private final MemberService memberService;
+
+	@GetMapping("/duplicate/email/{email}")
+	public ResponseEntity<Map<String, String>> checkDuplicatedEmail(@PathVariable String email) {
+
+		Map<String, String> response = memberService.checkDuplicatedEmail(email);
+		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping("/duplicate/nickname/{nickname}")
+	public ResponseEntity<Map<String, String>> checkDuplicatedNickname(@PathVariable String nickname) {
+
+		Map<String, String> response = memberService.checkDuplicatedNickname(nickname);
+		return ResponseEntity.ok(response);
+	}
 
 	@PostMapping("/login")
 	public ResponseEntity<LoginRes> login(@RequestBody LoginReq request) {
@@ -55,7 +74,6 @@ public class MemberController {
 		try {
 			Member memberEntity = new Member(signUpReq);
 			MemberProfile memberProfileEntity = new MemberProfile(signUpReq);
-			log.info("/api/member/sign-up request... userInfo : {}", memberEntity);
 			Member member = memberService.signUp(memberEntity);
 
 			memberService.setProfile(memberProfileEntity,
@@ -71,5 +89,12 @@ public class MemberController {
 	@GetMapping("/info/{nickname}")
 	public ResponseEntity<MemberRes> opInfo(@PathVariable String nickname) {
 		return ResponseEntity.ok(memberService.opInfo(nickname));
+	}
+
+	@GetMapping("/profile")
+	public ResponseEntity<ProfileRes> getMyProfile(@AuthUser CustomUserDetails userDetails) {
+
+		ProfileRes response = memberService.getMyProfile(userDetails.getMember());
+		return ResponseEntity.ok(response);
 	}
 }

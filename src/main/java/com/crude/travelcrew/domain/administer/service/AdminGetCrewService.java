@@ -1,5 +1,7 @@
 package com.crude.travelcrew.domain.administer.service;
 
+import static com.crude.travelcrew.global.error.type.CrewErrorCode.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,7 @@ import com.crude.travelcrew.domain.crew.model.entity.CrewComment;
 import com.crude.travelcrew.domain.crew.repository.CrewCommentRepository;
 import com.crude.travelcrew.domain.crew.repository.CrewRepository;
 import com.crude.travelcrew.domain.member.model.entity.Member;
+import com.crude.travelcrew.global.error.exception.CrewException;
 
 @Service
 public class AdminGetCrewService {
@@ -55,7 +58,7 @@ public class AdminGetCrewService {
 	@Transactional
 	public ADGetCrewRes getCrew(Long crewId) {
 		Crew crew = crewRepository.findById(crewId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 글을 찾을 수 없습니다."));
+			.orElseThrow(() -> new CrewException(CREW_NOT_FOUND));
 
 		Member member = crew.getMember();
 
@@ -79,7 +82,7 @@ public class AdminGetCrewService {
 	@Transactional
 	public void blockAndDeleteImages(Long crewId) {
 		Crew crew = crewRepository.findById(crewId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 글을 찾을 수 없습니다."));
+			.orElseThrow(() -> new CrewException(CREW_NOT_FOUND));
 
 		crew.blockContent();
 
@@ -89,7 +92,7 @@ public class AdminGetCrewService {
 	@Transactional
 	public void blockComment(long commentId) {
 		CrewComment crewComment = crewCommentRepository.findById(commentId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 댓글을 찾을 수 없습니다."));
+			.orElseThrow(() -> new CrewException(COMMENT_NOT_FOUND));
 
 		crewComment.blockContent();
 

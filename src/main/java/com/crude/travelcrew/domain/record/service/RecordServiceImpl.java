@@ -25,6 +25,7 @@ import com.crude.travelcrew.domain.record.model.dto.RecordListRes;
 import com.crude.travelcrew.domain.record.model.entity.Record;
 import com.crude.travelcrew.domain.record.model.entity.RecordImage;
 import com.crude.travelcrew.domain.record.repository.RecordCommentRepository;
+import com.crude.travelcrew.domain.record.repository.RecordHeartRepository;
 import com.crude.travelcrew.domain.record.repository.RecordImageRepository;
 import com.crude.travelcrew.domain.record.repository.RecordRepository;
 import com.crude.travelcrew.global.awss3.service.AwsS3Service;
@@ -44,16 +45,19 @@ public class RecordServiceImpl implements RecordService {
 	private final RecordImageRepository recordImageRepository;
 	private final RecordCommentRepository recordCommentRepository;
 	private final AwsS3Service awsS3Service;
+	private final RecordHeartRepository recordHeartRepository;
 
 	@Override
 	@Transactional
 	public GetRecordRes getRecord(Long recordId) {
 		Record record = recordRepository.findById(recordId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+			.orElseThrow(() -> new RecordException(TRAVEL_RECORD_NOT_FOUND));
 
 		List<String> imageUrls = record.getRecordImages().stream()
 			.map(RecordImage::getImageUrl)
 			.collect(Collectors.toList());
+
+		long heartsCount = recordRepository.countHeartsForRecord(recordId);
 
 		return new GetRecordRes(
 			record.getId(),
@@ -61,6 +65,7 @@ public class RecordServiceImpl implements RecordService {
 			record.getTitle(),
 			record.getContent(),
 			imageUrls,
+			heartsCount,
 			record.getCreatedAt(),
 			record.getUpdatedAt()
 		);
@@ -70,7 +75,16 @@ public class RecordServiceImpl implements RecordService {
 	@Transactional
 	public List<RecordListRes> listRecord(String keyword, Pageable pageable) {
 		List<Record> list = recordRepository.findByKeyword(keyword, pageable);
-		return list.stream().map(RecordListRes::getEntity).collect(Collectors.toList());
+		List<RecordListRes> recordList = list.stream()
+			.map(record -> {
+				long heartsCount = recordHeartRepository.countHeartsForRecord(record.getId());
+				RecordListRes recordRes = RecordListRes.getEntity(record);
+				recordRes.setHeartsCount(heartsCount);
+				return recordRes;
+			})
+			.collect(Collectors.toList());
+
+		return recordList;
 	}
 
 	@Override

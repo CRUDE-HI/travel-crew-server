@@ -3,7 +3,6 @@ package com.crude.travelcrew.domain.crew.service;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,7 +32,7 @@ public interface CrewService {
 	List<CrewCommentRes> getCommentList(long crewId, Pageable pageable);
 
 	void createComment(long crewId, CrewCommentReq commentReq);
-
+  
 	void modifyComment(long commentId, CrewCommentReq commentReq);
 
 	void deleteComment(long commentId);

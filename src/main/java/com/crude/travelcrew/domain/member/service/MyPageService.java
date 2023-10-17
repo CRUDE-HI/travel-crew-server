@@ -3,6 +3,7 @@ package com.crude.travelcrew.domain.member.service;
 import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -71,7 +72,7 @@ public class MyPageService {
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		if (Objects.isNull(member)) {
-			throw new IllegalArgumentException("해당 사용자를 찾을수 없습니다.");
+			throw new MemberException(MEMBER_NOT_FOUND);
 		}
 
 		member.setNickname(updateNickReq.getNickname());
@@ -86,10 +87,10 @@ public class MyPageService {
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		if (!encoder.matches(updatePWReq.getCurrentPassword(), member.getPassword())) {
-			throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+			throw new MemberException(WRONG_MEMBER_PASSWORD);
 		} else {
 			if (!updatePWReq.getNewPassword().equals(updatePWReq.getValidPassword())) {
-				throw new IllegalArgumentException("새로운 비밀번호가 일치하지 않습니다.");
+				throw new MemberException(WRONG_MEMBER_PASSWORD);
 			} else {
 				member.setPassword(encoder.encode(updatePWReq.getNewPassword()));
 				memberRepository.save(member);
@@ -111,13 +112,10 @@ public class MyPageService {
 
 	// 프로필 이미지 삭제
 	@Transactional
-	public void deleteImg(String profileImgUrl, String email) {
+	public void deleteImg(String email) {
 
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
-
-		memberRepository.findByProfileImgUrl(member.getProfileImgUrl())
-			.orElseThrow(() -> new IllegalArgumentException("이미지 파일이 존재하지 않습니다."));
 
 		try {
 			awsS3Service.deleteImageFile(member.getProfileImgUrl(), DIR);
@@ -135,7 +133,13 @@ public class MyPageService {
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		List<Crew> crewList = crewRepository.findAllByMember(member);
-		return crewList.stream().map(Crew::toCrewDTO).collect(Collectors.toList());
+		return crewList.stream().map(Crew::toCrewDTO).collect(Collectors.collectingAndThen(
+			Collectors.toList(),
+			reversedList -> {
+				Collections.reverse(reversedList);
+				return reversedList;
+			}
+		));
 	}
 
 	// 내가 쓴 여행기록 글 조회
@@ -145,7 +149,13 @@ public class MyPageService {
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		List<Record> recordList = recordRepository.findAllByMember(member);
-		return recordList.stream().map(Record::toMyRecordDTO).collect(Collectors.toList());
+		return recordList.stream().map(Record::toMyRecordDTO).collect(Collectors.collectingAndThen(
+			Collectors.toList(),
+			reversedList -> {
+				Collections.reverse(reversedList);
+				return reversedList;
+			}
+		));
 	}
 
 	// 내가 스크랩한 동행글 조회
@@ -158,7 +168,13 @@ public class MyPageService {
 		return scrapList
 			.stream()
 			.map(scraps -> scraps.getCrew().toCrewDTO())
-			.collect(Collectors.toList());
+			.collect(Collectors.collectingAndThen(
+				Collectors.toList(),
+				reversedList -> {
+					Collections.reverse(reversedList);
+					return reversedList;
+				}
+			));
 	}
 
 	// 회원 비활성화
@@ -169,7 +185,7 @@ public class MyPageService {
 			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 
 		if (!encoder.matches(withDrawPW.getCurrentPassword(), member.getPassword())) {
-			throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+			throw new MemberException(WRONG_MEMBER_PASSWORD);
 		} else {
 			member.setMemberStatus(MemberStatus.DROP);
 			member.setRole(MemberRole.DROP);
@@ -195,7 +211,13 @@ public class MyPageService {
 		return crewList
 			.stream()
 			.map(gg -> gg.getCrew().toCrewDTO())
-			.collect(Collectors.toList());
+			.collect(Collectors.collectingAndThen(
+				Collectors.toList(),
+				reversedList -> {
+					Collections.reverse(reversedList);
+					return reversedList;
+				}
+			));
 	}
 
 	// 내가 좋아요 한 여행 기록 조회

@@ -19,4 +19,6 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
 
 	List<Record> findAllByMember(Member member);
 
+	@Query(value = "SELECT COUNT(*) FROM RECORD_HEART WHERE record_id = :recordId", nativeQuery = true)
+	long countHeartsForRecord(Long recordId);
 }
