@@ -36,12 +36,7 @@ import com.crude.travelcrew.domain.administer.service.AdminGetReportService;
 import com.crude.travelcrew.domain.administer.service.AdminMemberService;
 import com.crude.travelcrew.domain.crew.model.dto.CrewCommentRes;
 import com.crude.travelcrew.domain.crew.service.CrewService;
-import com.crude.travelcrew.domain.member.model.dto.LoginReq;
-import com.crude.travelcrew.domain.member.model.dto.LoginRes;
-import com.crude.travelcrew.domain.member.model.dto.SignUpReq;
-import com.crude.travelcrew.domain.member.model.dto.SignUpRes;
 import com.crude.travelcrew.domain.member.model.entity.Member;
-import com.crude.travelcrew.domain.member.model.entity.MemberProfile;
 import com.crude.travelcrew.domain.record.model.dto.RecordCommentListRes;
 import com.crude.travelcrew.domain.record.service.RecordCommentService;
 
@@ -72,29 +67,6 @@ public class AdminController {
 
 	@Autowired
 	RecordCommentService recordCommentService;
-
-	@PostMapping("/sign-up")
-	public ResponseEntity<?> signUp(@RequestBody SignUpReq signUpReq) {
-		try {
-			Member memberEntity = new Member(signUpReq);
-			MemberProfile memberProfileEntity = new MemberProfile(signUpReq);
-			log.info("/api/admin/sign-up request... userInfo : {}", memberEntity);
-			Member member = adminMemberService.signUp(memberEntity);
-
-			MemberProfile memberProfile = adminMemberService.setProfile(memberProfileEntity,
-				adminMemberService.getByCredential(member.getEmail()));
-			return ResponseEntity.ok().body(new SignUpRes(member));
-		} catch (Exception e) {
-			log.info(e.getMessage());
-			return ResponseEntity.badRequest().body(e.getMessage());
-		}
-	}
-
-	@PostMapping("/login")
-	public ResponseEntity<LoginRes> login(@RequestBody LoginReq request) {
-		LoginRes response = adminMemberService.login(request);
-		return ResponseEntity.ok(response);
-	}
 
 	@PostMapping("/logout")
 	public ResponseEntity<String> logout() throws Exception {
@@ -132,7 +104,7 @@ public class AdminController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@GetMapping("/reported-members")
+	@GetMapping("/member/report")
 	public ResponseEntity<Page<Member>> getReportedMembers(
 		@RequestParam(value = "page", defaultValue = "0") int page,
 		@RequestParam(value = "size", defaultValue = "10") int size,
@@ -154,7 +126,7 @@ public class AdminController {
 		@RequestParam(value = "size", defaultValue = "10") int size,
 		@RequestParam(value = "search", required = false) String search,
 		@PathVariable Long memberId
-	)  {
+	) {
 
 		ADReportListReq ADReportListReq = new ADReportListReq();
 		ADReportListReq.setPage(page);
@@ -167,7 +139,7 @@ public class AdminController {
 		return ResponseEntity.ok(ADReportListRes);
 	}
 
-	@GetMapping("/report/{reportId}")
+	@GetMapping("/reported-members/{memberId}/{reportId}")
 	public ResponseEntity<ADGetReportRes> getReport(@PathVariable Long reportId) {
 		ADGetReportRes reportRes = adminGetReportService.getReport(reportId);
 		return ResponseEntity.ok(reportRes);
