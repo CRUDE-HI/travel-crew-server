@@ -66,7 +66,7 @@ public class CrewController {
 
 	// 글 조회
 	@GetMapping
-	public ResponseEntity<List<CrewListRes>> getAllCrewList(
+	public ResponseEntity<Map<String, Object>> getAllCrewList(
 		@RequestParam(value = "keyword", defaultValue = "") String keyword,
 		Pageable pageable) {
 		return ResponseEntity.ok(crewService.getCrewList(keyword, pageable));
@@ -74,8 +74,8 @@ public class CrewController {
 
 	// 동행 게시글 상세조회
 	@GetMapping("/{crewId}")
-	public ResponseEntity<CrewRes> crewView(@PathVariable Long crewId){
-		return ResponseEntity.ok(crewService.crewView(crewId));
+	public ResponseEntity<CrewRes> crewView(@PathVariable Long crewId, Principal principal){
+		return ResponseEntity.ok(crewService.crewView(crewId, principal.getName()));
 	}
 
 	// 글 등록

@@ -19,6 +19,7 @@ public class RecordListRes {
 
 	private Long recordId;
 	private String memberNick;
+	private double heartBeat;
 	private String title;
 	private String content;
 	private Long heartsCount;
@@ -29,6 +30,7 @@ public class RecordListRes {
 		return RecordListRes.builder()
 			.recordId(record.getId())
 			.memberNick(record.getMember().getNickname())
+			.heartBeat(record.getMember().getMemberProfile().getHeartBeat())
 			.title(record.getTitle())
 			.content(record.getContent())
 			.createdAt(record.getCreatedAt())

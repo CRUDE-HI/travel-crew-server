@@ -41,8 +41,8 @@ public class RecordController {
 	 * 여행 기록 상세 조회
 	 */
 	@GetMapping("/{recordId}")
-	public ResponseEntity<GetRecordRes> getRecord(@PathVariable Long recordId) {
-		GetRecordRes getRecordRes = recordService.getRecord(recordId);
+	public ResponseEntity<GetRecordRes> getRecord(@PathVariable Long recordId, Principal principal) {
+		GetRecordRes getRecordRes = recordService.getRecord(recordId, principal.getName());
 		return ResponseEntity.ok(getRecordRes);
 	}
 
@@ -51,7 +51,7 @@ public class RecordController {
 	 */
 	// 글 조회
 	@GetMapping
-	public ResponseEntity<List<RecordListRes>> listAllCrew(
+	public ResponseEntity<Map<String, Object>> listAllCrew(
 		@RequestParam(value = "keyword", defaultValue = "") String keyword,
 		Pageable pageable) {
 		return ResponseEntity.ok(recordService.listRecord(keyword, pageable));

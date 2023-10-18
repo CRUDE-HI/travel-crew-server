@@ -2,6 +2,7 @@ package com.crude.travelcrew.domain.crew.model.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.crude.travelcrew.domain.crew.model.constants.CrewPlace;
 import com.crude.travelcrew.domain.crew.model.constants.CrewStatus;
@@ -23,12 +24,16 @@ public class CrewRes {
 	private Long id;
 	private String title;
 	private Long memberId;
+	private String nickName;
 	private String thumbnailImgUrl;
 	private CrewPlace crewPlace;
 	private CrewStatus crewStatus;
 	private Integer maxCrew;
 	private LocalDate travelStart;
 	private LocalDate travelEnd;
+	private String profileImgUrl;
+	private double heartBeat;
+	private List<ProposalRes> proposalList;
 
 	private LocalDateTime updateAt;
 
@@ -36,6 +41,8 @@ public class CrewRes {
 	private Double latitude;
 	private Double longitude;
 	private String crewContent;
+
+	private boolean isAuthor;
 
 	public static CrewRes fromEntity(Crew crew) {
 		return CrewRes.builder()
@@ -48,6 +55,7 @@ public class CrewRes {
 			.maxCrew(crew.getMaxCrew())
 			.travelStart(crew.getTravelStart())
 			.travelEnd(crew.getTravelEnd())
+			.profileImgUrl(crew.getMember().getProfileImgUrl())
 			.longitude(crew.getLatitude())
 			.latitude(crew.getLatitude())
 			.crewContent(crew.getCrewContent())

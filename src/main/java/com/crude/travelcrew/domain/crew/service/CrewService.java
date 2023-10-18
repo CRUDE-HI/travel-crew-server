@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.crude.travelcrew.domain.crew.model.dto.CrewCommentReq;
 import com.crude.travelcrew.domain.crew.model.dto.CrewCommentRes;
-import com.crude.travelcrew.domain.crew.model.dto.CrewListRes;
 import com.crude.travelcrew.domain.crew.model.dto.CrewReq;
 import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
 import com.crude.travelcrew.domain.crew.model.entity.CrewMessage;
@@ -21,13 +20,13 @@ public interface CrewService {
 
 	Map<String, String> deleteCrew(Long crewId, String email);
 
-	CrewRes crewView(Long id);
+	CrewRes crewView(Long id, String email);
 
 	void enterCrewChat(Long crewId, String token);
 
 	List<CrewMessage> getChatHistory(Long crewId, int page, int size);
 
-	List<CrewListRes> getCrewList(String keyword, Pageable pageable);
+	Map<String, Object> getCrewList(String keyword, Pageable pageable);
 
 	List<CrewCommentRes> getCommentList(long crewId, Pageable pageable);
 

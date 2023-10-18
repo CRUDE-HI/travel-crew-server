@@ -22,6 +22,10 @@ public class ProposalRes {
 
 	private ProposalStatus status;
 
+	private double heartBeat;
+
+	private int reportCnt;
+
 	public static ProposalRes fromEntity(Proposal proposal) {
 		return ProposalRes.builder()
 			.nickname(proposal.getMember().getNickname())
