@@ -75,6 +75,7 @@ public class Member extends BaseTime {
 
 	public MemberRes toMemberDTO() {
 		MemberRes toMemberDTO = new MemberRes();
+		toMemberDTO.setMemberId(this.getId());
 		toMemberDTO.setEmail(this.getEmail());
 		toMemberDTO.setNickname(this.getNickname());
 		toMemberDTO.setProfileImgUrl(this.getProfileImgUrl());
@@ -82,6 +83,7 @@ public class Member extends BaseTime {
 		toMemberDTO.setProviderType(this.getProviderType());
 		MemberProfile memberProfile = this.getMemberProfile();
 		toMemberDTO.setBirth(memberProfile.getBirth());
+		toMemberDTO.setName(memberProfile.getName());
 		toMemberDTO.setGender(memberProfile.getGender());
 		toMemberDTO.setHeartBeat(memberProfile.getHeartBeat());
 		toMemberDTO.setReportCnt(memberProfile.getReportCnt());
