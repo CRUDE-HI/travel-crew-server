@@ -43,10 +43,10 @@ public class SecurityConfig {
 			.and()
 			.authorizeRequests()
 			.antMatchers("/api/member/sign-up", "/api/member/login", "/api/member/duplicate/email/**",
-				"/api/crew", "/api/record", "/api/member/duplicate/nickname/**", "/api/member/email/send",
+				"/api/member/duplicate/nickname/**", "/api/member/email/send",
 				"/api/member/email/verify", "/h2-console/**").permitAll()
 
-			.antMatchers("/api/admin/**").hasAuthority(MemberRole.ADMIN.getValue())
+			.antMatchers("/api/admin/**").hasAnyAuthority(MemberRole.ADMIN.getValue(), MemberRole.MANAGER.getValue())
 			.anyRequest().authenticated()
 
 			.and()
