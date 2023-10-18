@@ -161,14 +161,18 @@ public class CrewServiceImpl implements CrewService {
 	// 동행 게시글 상세조회
 	@Override
 	@Transactional
-	public CrewRes crewView(Long id) {
+	public CrewRes crewView(Long id, String email) {
 		Crew crew = crewRepository.findById(id)
 			.orElseThrow(() -> new CrewException(CREW_NOT_FOUND));
 		List<ProposalRes> proposalList = proposalRepository.findAllByCrewId(crew.getCrewId());
+		Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+
 		CrewRes crewDTO = crew.toCrewDTO();
+		crewDTO.setNickName(crew.getMember().getNickname());
 		crewDTO.setProposalList(proposalList);
 		crewDTO.setHeartBeat(crew.getMember().getMemberProfile().getHeartBeat());
 		crewDTO.setUpdateAt(LocalDateTime.now());
+		crewDTO.setAuthor(crew.getMember().getId() == member.getId());
 		return crewDTO;
 	}
 

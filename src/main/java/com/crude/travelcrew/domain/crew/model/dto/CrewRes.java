@@ -24,6 +24,7 @@ public class CrewRes {
 	private Long id;
 	private String title;
 	private Long memberId;
+	private String nickName;
 	private String thumbnailImgUrl;
 	private CrewPlace crewPlace;
 	private CrewStatus crewStatus;
@@ -41,6 +42,8 @@ public class CrewRes {
 	private Double longitude;
 	private String crewContent;
 
+	private boolean isAuthor;
+
 	public static CrewRes fromEntity(Crew crew) {
 		return CrewRes.builder()
 			.id(crew.getCrewId())
@@ -52,6 +55,7 @@ public class CrewRes {
 			.maxCrew(crew.getMaxCrew())
 			.travelStart(crew.getTravelStart())
 			.travelEnd(crew.getTravelEnd())
+			.profileImgUrl(crew.getMember().getProfileImgUrl())
 			.longitude(crew.getLatitude())
 			.latitude(crew.getLatitude())
 			.crewContent(crew.getCrewContent())

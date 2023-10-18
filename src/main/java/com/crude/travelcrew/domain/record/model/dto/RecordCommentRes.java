@@ -17,6 +17,8 @@ public class RecordCommentRes {
 
 	private Long id;
 
+	private String nickName;
+
 	private String profileImgUrl;
 
 	private double heartBeat;
@@ -30,6 +32,7 @@ public class RecordCommentRes {
 	public static RecordCommentRes fromEntity(RecordComment recordComment) {
 		return RecordCommentRes.builder()
 			.id(recordComment.getId())
+			.nickName(recordComment.getMember().getNickname())
 			.profileImgUrl(recordComment.getMember().getProfileImgUrl())
 			.heartBeat(recordComment.getMember().getMemberProfile().getHeartBeat())
 			.reportCnt(recordComment.getMember().getMemberProfile().getReportCnt())

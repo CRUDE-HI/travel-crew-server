@@ -21,6 +21,7 @@ public class CrewCommentRes {
 	private long commentId;
 	private long crewId;
 	private long memberId;
+	private String nickName;
 	private String content;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
@@ -32,6 +33,7 @@ public class CrewCommentRes {
 			.commentId(crewComment.getCommentId())
 			.crewId(crewComment.getCrewId())
 			.memberId(crewComment.getMember().getId())
+			.nickName(crewComment.getMember().getNickname())
 			.content(crewComment.getContent())
 			.createdAt(crewComment.getCreatedAt())
 			.updatedAt(crewComment.getUpdatedAt())
