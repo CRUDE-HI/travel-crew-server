@@ -24,15 +24,20 @@ public class CrewCommentRes {
 	private String content;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
-
+	private String profileImgUrl;
+	private double heartBeat;
+	private int reportCnt;
 	public static CrewCommentRes fromEntity(CrewComment crewComment) {
 		return CrewCommentRes.builder()
 			.commentId(crewComment.getCommentId())
 			.crewId(crewComment.getCrewId())
-			.memberId(crewComment.getMemberId())
+			.memberId(crewComment.getMember().getId())
 			.content(crewComment.getContent())
 			.createdAt(crewComment.getCreatedAt())
 			.updatedAt(crewComment.getUpdatedAt())
+			.profileImgUrl(crewComment.getMember().getProfileImgUrl())
+			.heartBeat(crewComment.getMember().getMemberProfile().getHeartBeat())
+			.reportCnt(crewComment.getMember().getMemberProfile().getReportCnt())
 			.build();
 	}
 }
