@@ -20,6 +20,10 @@ public class GetRecordRes {
 
 	private String memberNick;
 
+	private String profileImgUrl;
+
+	private double heartBeat;
+
 	private String title;
 
 	private String content;
@@ -31,4 +35,6 @@ public class GetRecordRes {
 	private LocalDateTime createdAt;
 
 	private LocalDateTime updatedAt;
+
+	private boolean isAuthor;
 }

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +50,7 @@ public class RecordServiceImpl implements RecordService {
 
 	@Override
 	@Transactional
-	public GetRecordRes getRecord(Long recordId) {
+	public GetRecordRes getRecord(Long recordId, String email) {
 		Record record = recordRepository.findById(recordId)
 			.orElseThrow(() -> new RecordException(TRAVEL_RECORD_NOT_FOUND));
 
@@ -59,23 +60,28 @@ public class RecordServiceImpl implements RecordService {
 
 		long heartsCount = recordRepository.countHeartsForRecord(recordId);
 
+		Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
 		return new GetRecordRes(
 			record.getId(),
 			record.getMember().getNickname(),
+			record.getMember().getProfileImgUrl(),
+			record.getMember().getMemberProfile().getHeartBeat(),
 			record.getTitle(),
 			record.getContent(),
 			imageUrls,
 			heartsCount,
 			record.getCreatedAt(),
-			record.getUpdatedAt()
+			record.getUpdatedAt(),
+			record.getMember().getId() == member.getId()
 		);
 	}
 
 	@Override
 	@Transactional
-	public List<RecordListRes> listRecord(String keyword, Pageable pageable) {
-		List<Record> list = recordRepository.findByKeyword(keyword, pageable);
-		List<RecordListRes> recordList = list.stream()
+	public Map<String, Object> listRecord(String keyword, Pageable pageable) {
+		Page<Record> page = recordRepository.findByKeyword(keyword, pageable);
+		List<Record> content = page.getContent();
+		List<RecordListRes> recordList = content.stream()
 			.map(record -> {
 				long heartsCount = recordHeartRepository.countHeartsForRecord(record.getId());
 				RecordListRes recordRes = RecordListRes.getEntity(record);
@@ -83,8 +89,10 @@ public class RecordServiceImpl implements RecordService {
 				return recordRes;
 			})
 			.collect(Collectors.toList());
-
-		return recordList;
+		Map<String, Object> result = new HashMap<>();
+		result.put("content", recordList);
+		result.put("totalPages", page.getTotalPages());
+		return result;
 	}
 
 	@Override

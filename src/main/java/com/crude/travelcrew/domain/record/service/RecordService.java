@@ -17,12 +17,12 @@ public interface RecordService {
 	/**
 	 * 여행 기록 상세 조회
 	 */
-	GetRecordRes getRecord(Long recordId);
+	GetRecordRes getRecord(Long recordId, String email);
   
 	/**
 	 * 여행 기록 전체글 조회
 	 */
-	List<RecordListRes> listRecord(String keyword, Pageable pageable);
+	Map<String, Object> listRecord(String keyword, Pageable pageable);
 
 	/**
 	 * 여행 기록 작성
