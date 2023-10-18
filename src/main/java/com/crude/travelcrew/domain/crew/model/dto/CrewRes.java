@@ -2,6 +2,7 @@ package com.crude.travelcrew.domain.crew.model.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.crude.travelcrew.domain.crew.model.constants.CrewPlace;
 import com.crude.travelcrew.domain.crew.model.constants.CrewStatus;
@@ -29,6 +30,9 @@ public class CrewRes {
 	private Integer maxCrew;
 	private LocalDate travelStart;
 	private LocalDate travelEnd;
+	private String profileImgUrl;
+	private double heartBeat;
+	private List<ProposalRes> proposalList;
 
 	private LocalDateTime updateAt;
 

@@ -3,6 +3,7 @@ package com.crude.travelcrew.domain.crew.service;
 import static com.crude.travelcrew.global.error.type.CrewErrorCode.*;
 import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import com.crude.travelcrew.domain.crew.model.dto.CrewCommentRes;
 import com.crude.travelcrew.domain.crew.model.dto.CrewListRes;
 import com.crude.travelcrew.domain.crew.model.dto.CrewReq;
 import com.crude.travelcrew.domain.crew.model.dto.CrewRes;
+import com.crude.travelcrew.domain.crew.model.dto.ProposalRes;
 import com.crude.travelcrew.domain.crew.model.entity.Crew;
 import com.crude.travelcrew.domain.crew.model.entity.CrewComment;
 import com.crude.travelcrew.domain.crew.model.entity.CrewMember;
@@ -161,23 +164,25 @@ public class CrewServiceImpl implements CrewService {
 	public CrewRes crewView(Long id) {
 		Crew crew = crewRepository.findById(id)
 			.orElseThrow(() -> new CrewException(CREW_NOT_FOUND));
-		return crew.toCrewDTO();
+		List<ProposalRes> proposalList = proposalRepository.findAllByCrewId(crew.getCrewId());
+		CrewRes crewDTO = crew.toCrewDTO();
+		crewDTO.setProposalList(proposalList);
+		crewDTO.setHeartBeat(crew.getMember().getMemberProfile().getHeartBeat());
+		crewDTO.setUpdateAt(LocalDateTime.now());
+		return crewDTO;
 	}
 
 	// 전체 조회
 	@Override
 	@Transactional
-	public List<CrewListRes> getCrewList(String keyword, Pageable pageable) {
-		List<Crew> list = crewRepository.findByKeyword(keyword, pageable);
-		return list.stream()
-			.map(CrewListRes::getEntity)
-			.collect(Collectors.collectingAndThen(
-				Collectors.toList(),
-				reversedList -> {
-					Collections.reverse(reversedList);
-					return reversedList;
-				}
-			));
+	public Map<String, Object> getCrewList(String keyword, Pageable pageable) {
+		Page<Crew> page = crewRepository.findByKeyword(keyword, pageable);
+		List<CrewListRes> content = page.getContent().stream().map(CrewListRes::getEntity).collect(Collectors.toList());
+		Map<String, Object> result = new HashMap<>();
+		result.put("content", content);
+		result.put("totalPages", page.getTotalPages());
+		result.put("totalElements", page.getTotalElements());
+		return result;
 	}
 
 	public long validateToken() {
@@ -195,7 +200,6 @@ public class CrewServiceImpl implements CrewService {
 	@Override
 	@Transactional
 	public List<CrewCommentRes> getCommentList(long crewId, Pageable pageable) {
-		// 무한 스크롤 추가 예정
 		List<CrewComment> list = crewCommentRepository.findByCrewId(crewId, pageable);
 		return list.stream().map(CrewCommentRes::fromEntity).collect(Collectors.collectingAndThen(
 			Collectors.toList(),
@@ -215,7 +219,7 @@ public class CrewServiceImpl implements CrewService {
 
 		CrewComment comment = CrewComment.builder()
 			.crewId(crewId)
-			.memberId(member.getId())
+			.member(member)
 			.content(commentReq.getContent())
 			.build();
 		crewCommentRepository.save(comment);
@@ -230,7 +234,7 @@ public class CrewServiceImpl implements CrewService {
 
 		CrewComment comment = crewCommentRepository.findById(commentId)
 			.orElseThrow(() -> new CrewException(CrewErrorCode.COMMENT_NOT_FOUND));
-		if (!Objects.equals(member.getId(), comment.getMemberId())) {
+		if (!Objects.equals(member.getId(), comment.getMember().getId())) {
 			throw new CrewException(CrewErrorCode.FAIL_TO_MODIFY_CREW_COMMENT);
 		}
 		comment.setContent(commentReq.getContent());
@@ -246,7 +250,7 @@ public class CrewServiceImpl implements CrewService {
 
 		CrewComment comment = crewCommentRepository.findById(commentId)
 			.orElseThrow(() -> new CrewException(CrewErrorCode.COMMENT_NOT_FOUND));
-		if (!Objects.equals(member.getId(), comment.getMemberId())) {
+		if (!Objects.equals(member.getId(), comment.getMember().getId())) {
 			throw new CrewException(CrewErrorCode.FAIL_TO_DELETE_CREW_COMMENT);
 		}
 		crewCommentRepository.delete(comment);

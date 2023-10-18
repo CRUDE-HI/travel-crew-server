@@ -66,7 +66,7 @@ public class CrewController {
 
 	// 글 조회
 	@GetMapping
-	public ResponseEntity<List<CrewListRes>> getAllCrewList(
+	public ResponseEntity<Map<String, Object>> getAllCrewList(
 		@RequestParam(value = "keyword", defaultValue = "") String keyword,
 		Pageable pageable) {
 		return ResponseEntity.ok(crewService.getCrewList(keyword, pageable));

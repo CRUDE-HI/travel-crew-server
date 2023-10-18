@@ -27,7 +27,7 @@ public interface CrewService {
 
 	List<CrewMessage> getChatHistory(Long crewId, int page, int size);
 
-	List<CrewListRes> getCrewList(String keyword, Pageable pageable);
+	Map<String, Object> getCrewList(String keyword, Pageable pageable);
 
 	List<CrewCommentRes> getCommentList(long crewId, Pageable pageable);
 
