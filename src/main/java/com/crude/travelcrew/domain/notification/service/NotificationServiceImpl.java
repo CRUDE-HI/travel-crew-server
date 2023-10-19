@@ -4,6 +4,7 @@ import static com.crude.travelcrew.global.error.type.MemberErrorCode.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -14,8 +15,11 @@ import com.crude.travelcrew.domain.member.model.entity.Member;
 import com.crude.travelcrew.domain.member.repository.MemberRepository;
 import com.crude.travelcrew.domain.notification.model.dto.Message;
 import com.crude.travelcrew.domain.notification.model.dto.NotificationInfoRes;
+import com.crude.travelcrew.domain.notification.model.dto.NotificationRes;
 import com.crude.travelcrew.domain.notification.model.entity.Notification;
 import com.crude.travelcrew.domain.notification.repository.NotificationRepository;
+import com.crude.travelcrew.domain.notification.sse.SseConnection;
+import com.crude.travelcrew.domain.notification.sse.repository.SseConnectionRepository;
 import com.crude.travelcrew.global.error.exception.MemberException;
 
 import lombok.RequiredArgsConstructor;
@@ -24,8 +28,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
 
+	private static final String NAME = "notification";
+
 	private final NotificationRepository notificationRepository;
 	private final MemberRepository memberRepository;
+	private final SseConnectionRepository sseConnectionRepository;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -68,13 +75,22 @@ public class NotificationServiceImpl implements NotificationService {
 
 		Notification notification = Notification.builder()
 			.notificationType(message.getType())
-			.content(receiver + message.getType().getText())
+			.content(receiver+"님 " + message.getType().getText())
 			.isRead(false)
 			.relatedUrl(String.format("/crew/%d", message.getTargetId()))
 			.member(member)
 			.build();
 
 		notificationRepository.save(notification);
+
+		SseConnection sseConnection
+			= sseConnectionRepository.get(receiver);
+
+		NotificationRes response
+			= NotificationRes.fromEntity(notification);
+
+		Optional.ofNullable(sseConnection)
+			.ifPresent((it) -> it.sendMessage(NAME, response));
 	}
 
 	private static Map<String, String> getMessage(String message) {
