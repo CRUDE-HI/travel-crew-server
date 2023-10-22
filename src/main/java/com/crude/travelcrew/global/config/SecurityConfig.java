@@ -35,6 +35,9 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain filerChain(HttpSecurity http) throws Exception {
 		return http
+			.cors()
+
+			.and()
 			.httpBasic().disable()
 			.csrf().disable()
 			.formLogin().disable()
@@ -46,6 +49,7 @@ public class SecurityConfig {
 				"/api/member/duplicate/nickname/**", "/api/member/email/send",
 				"/api/member/email/verify", "/h2-console/**").permitAll()
 
+			// ADMIN, MANAGER 권한이 있는 사람만 관리자 페이지 접근가능
 			.antMatchers("/api/admin/**").hasAnyAuthority(MemberRole.ADMIN.getValue(), MemberRole.MANAGER.getValue())
 			.anyRequest().authenticated()
 
