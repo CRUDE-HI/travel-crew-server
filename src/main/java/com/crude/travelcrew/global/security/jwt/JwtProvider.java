@@ -150,4 +150,12 @@ public class JwtProvider {
 			.build();
 		refreshTokenRepository.save(refreshToken);
 	}
+
+	public static String getAuthorizationHeader() {
+		return AUTHORIZATION_HEADER;
+	}
+
+	public static String getBearerPrefix() {
+		return BEARER_PREFIX;
+	}
 }

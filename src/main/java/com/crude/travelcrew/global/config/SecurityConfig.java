@@ -1,5 +1,7 @@
 package com.crude.travelcrew.global.config;
 
+import java.net.http.HttpClient;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -14,6 +16,7 @@ import com.crude.travelcrew.domain.member.model.constants.MemberRole;
 import com.crude.travelcrew.global.security.handler.CustomAccessDeniedHandler;
 import com.crude.travelcrew.global.security.handler.CustomAuthenticationEntryPoint;
 import com.crude.travelcrew.global.security.jwt.JwtAuthFilter;
+import com.crude.travelcrew.global.security.oauth2.OAuth2Filter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 	private final JwtAuthFilter jwtAuthFilter;
+	private final OAuth2Filter oAuth2Filter;
 	private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 	private final CustomAccessDeniedHandler accessDeniedHandler;
 
@@ -62,7 +66,13 @@ public class SecurityConfig {
 			.accessDeniedHandler(accessDeniedHandler)
 
 			.and()
+			.addFilterAfter(oAuth2Filter, JwtAuthFilter.class)
 			.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
 			.build();
+	}
+
+	@Bean
+	public HttpClient httpClient() {
+		return HttpClient.newHttpClient();
 	}
 }
