@@ -1,7 +1,5 @@
 package com.crude.travelcrew.global.config;
 
-import java.net.http.HttpClient;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -38,6 +36,7 @@ public class SecurityConfig {
 
 	@Bean
 	SecurityFilterChain filerChain(HttpSecurity http) throws Exception {
+		JwtAuthFilter localJwtAuthFilter = jwtAuthFilter;
 		return http
 			.cors()
 
@@ -51,7 +50,7 @@ public class SecurityConfig {
 			.authorizeRequests()
 			.antMatchers("/api/member/sign-up", "/api/member/login", "/api/member/duplicate/email/**",
 				"/api/member/duplicate/nickname/**", "/api/member/email/send",
-				"/api/member/email/verify", "/h2-console/**").permitAll()
+				"/api/member/email/verify", "/h2-console/**", "/api/oauth2/**").permitAll()
 
 			// ADMIN, MANAGER 권한이 있는 사람만 관리자 페이지 접근가능
 			.antMatchers("/api/admin/**").hasAnyAuthority(MemberRole.ADMIN.getValue(), MemberRole.MANAGER.getValue())
@@ -66,13 +65,13 @@ public class SecurityConfig {
 			.accessDeniedHandler(accessDeniedHandler)
 
 			.and()
+			.addFilterBefore(localJwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
 			.addFilterAfter(oAuth2Filter, JwtAuthFilter.class)
-			.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+			.oauth2Login()
+			.defaultSuccessUrl("/oauth2/login", true)
+
+			.and()
 			.build();
 	}
 
-	@Bean
-	public HttpClient httpClient() {
-		return HttpClient.newHttpClient();
-	}
 }

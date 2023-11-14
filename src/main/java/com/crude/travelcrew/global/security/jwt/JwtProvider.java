@@ -115,6 +115,9 @@ public class JwtProvider {
 			log.error("Unsupported JWT token");
 		} catch (IllegalArgumentException e) {
 			log.error("JWT claims is empty");
+		}catch (Exception e) {
+			log.error("Error validating token", e);
+			return false;
 		}
 		return false;
 	}

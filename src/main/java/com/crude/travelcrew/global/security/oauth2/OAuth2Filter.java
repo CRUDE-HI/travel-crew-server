@@ -29,15 +29,30 @@ public class OAuth2Filter extends OncePerRequestFilter {
 
 	private final JwtProvider jwtProvider;
 	private final HttpClient httpClient;
+	private final AuthProvider authProvider;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 		throws ServletException, IOException {
-		String token = jwtProvider.resolveToken(request);
 
-		if (token != null && jwtProvider.validateToken(token)) {
-			Authentication auth = jwtProvider.getAuthentication(token);
-			SecurityContextHolder.getContext().setAuthentication(auth);
+		try {
+			authProvider.setCodeFromRequest(request);
+			String token = jwtProvider.resolveToken(request);
+
+			if (token != null && jwtProvider.validateToken(token)) {
+				Authentication auth = jwtProvider.getAuthentication(token);
+				SecurityContextHolder.getContext().setAuthentication(auth);
+			} else {
+				// Token이 없거나 유효하지 않을 경우, OAuth2를 이용하여 token을 가져옵니다.
+				JSONObject tokenResponse = getToken(authProvider);
+				if(tokenResponse.has("access_token")) {
+					String accessToken = tokenResponse.getString("access_token");
+					JSONObject userInfo = getUserInfo(authProvider, accessToken);
+
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		filterChain.doFilter(request, response);
