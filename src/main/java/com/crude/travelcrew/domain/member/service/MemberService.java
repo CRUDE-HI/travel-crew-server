@@ -28,6 +28,7 @@ import com.crude.travelcrew.global.security.jwt.model.BlockAccessToken;
 import com.crude.travelcrew.global.security.jwt.model.RefreshToken;
 import com.crude.travelcrew.global.security.jwt.repository.BlockAccessTokenRepository;
 import com.crude.travelcrew.global.security.jwt.repository.RefreshTokenRepository;
+import com.crude.travelcrew.global.security.oauth2.AuthProvider;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberService {
 
 	private final JwtProvider jwtProvider;
+	private final AuthProvider authProvider;
 	private final MemberRepository memberRepository;
 	private final MemberProfileRepository memberProfileRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
@@ -50,14 +52,14 @@ public class MemberService {
 	}
 
 	public Map<String, String> checkDuplicatedEmail(String email) {
-		if(memberRepository.existsByEmail(email)) { // 이미 존재하는 이메일인 경우
+		if (memberRepository.existsByEmail(email)) { // 이미 존재하는 이메일인 경우
 			throw new MemberException(DUPLICATED_EMAIL);
 		}
 		return getMessage("사용 가능한 이메일입니다.");
 	}
 
 	public Map<String, String> checkDuplicatedNickname(String nickname) {
-		if(memberRepository.existsByNickname(nickname)) { // 이미 존재하는 닉네임인 경우
+		if (memberRepository.existsByNickname(nickname)) { // 이미 존재하는 닉네임인 경우
 			throw new MemberException(DUPLICATED_NICKNAME);
 		}
 		return getMessage("사용 가능한 닉네임입니다.");
@@ -151,4 +153,47 @@ public class MemberService {
 		result.put("result", message);
 		return result;
 	}
+
+	public LoginRes naverLogin(Map<String, Object> naverResponse) {
+		String email = (String) naverResponse.get("email");
+		String nickname = (String) naverResponse.get("nickname");
+		String profilePic = (String) naverResponse.get("profile_image");
+
+		Member member = memberRepository.findByEmail(email).orElse(null);
+
+		// 사용자가 없다면 새로 등록
+		if (member == null) {
+			member = new Member();
+			member.setEmail(email);
+			member.setNickname(nickname);
+			member.setProfileImgUrl(profilePic);
+			member.setProviderType(ProviderType.NAVER);
+			member.setRole(MemberRole.USER);
+			member.setMemberStatus(MemberStatus.DEFAULT);
+			member = memberRepository.save(member);
+
+			// naverResponse를 이용하여 MemberProfile 생성
+			MemberProfile memberProfile = new MemberProfile(naverResponse);
+			memberProfile.setMember(member);
+			memberProfileRepository.save(memberProfile);
+		} else {
+			// 사용자는 있지만 MemberProfile이 없는 경우 처리
+			MemberProfile memberProfile = memberProfileRepository.findById(member.getId()).orElse(null);
+			if (memberProfile == null) {
+				memberProfile = new MemberProfile(naverResponse);
+				memberProfile.setMember(member);
+				memberProfileRepository.save(memberProfile);
+			}
+		}
+
+		// 토큰 생성 및 반환
+		String accessToken = jwtProvider.createAccessToken(member.getEmail());
+		String refreshToken = jwtProvider.createRefreshToken(member.getEmail());
+
+		return LoginRes.builder()
+			.accessToken(accessToken)
+			.refreshToken(refreshToken)
+			.build();
+	}
+
 }

@@ -1,6 +1,7 @@
 package com.crude.travelcrew.domain.member.model.entity;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -53,6 +54,30 @@ public class MemberProfile {
 		this.birth = signUpReq.getBirth();
 		this.name = signUpReq.getName();
 		this.gender = signUpReq.getGender();
+	}
+
+	public MemberProfile(Map<String, Object> naverResponse) {
+		this.name = (String)naverResponse.get("name");
+
+		// 날짜 변환
+		String birthday = (String)naverResponse.get("birthday");
+		String birthyear = (String)naverResponse.get("birthyear");
+		this.birth = LocalDate.parse(birthyear + "-" + birthday);
+
+		// 성별 변환
+		String genderStr = (String)naverResponse.get("gender");
+		switch (genderStr) {
+			case "M":
+				this.gender = Gender.MALE;
+				break;
+			case "F":
+				this.gender = Gender.FEMALE;
+				break;
+
+			default:
+				this.gender = Gender.UNKNOWN;
+				break;
+		}
 	}
 
 	public void increaseReportCnt() {

@@ -115,6 +115,9 @@ public class JwtProvider {
 			log.error("Unsupported JWT token");
 		} catch (IllegalArgumentException e) {
 			log.error("JWT claims is empty");
+		}catch (Exception e) {
+			log.error("Error validating token", e);
+			return false;
 		}
 		return false;
 	}
@@ -149,5 +152,13 @@ public class JwtProvider {
 			.expiration(REFRESH_TOKEN_EXPIRE_TIME)
 			.build();
 		refreshTokenRepository.save(refreshToken);
+	}
+
+	public static String getAuthorizationHeader() {
+		return AUTHORIZATION_HEADER;
+	}
+
+	public static String getBearerPrefix() {
+		return BEARER_PREFIX;
 	}
 }

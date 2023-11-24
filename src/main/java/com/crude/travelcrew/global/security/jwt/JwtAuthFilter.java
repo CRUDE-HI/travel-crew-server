@@ -53,17 +53,24 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 			// header에서 access token 추출
 			log.info("resolve access token from header");
 			token = jwtProvider.resolveToken(request);
+
+			log.info("Extracted Token: " + token);
 		}
 
 		// token 유효성 검증
-		if (!Objects.isNull(token) && jwtProvider.validateToken(token)) {
-			log.info("token is valid");
-
-			Authentication authentication = jwtProvider.getAuthentication(token);
-
-			log.info("save authentication object in SecurityContext");
-			SecurityContextHolder.getContext().setAuthentication(authentication);
+		if (!Objects.isNull(token)) {
+			if (jwtProvider.validateToken(token)) {
+				log.info("token is valid");
+				Authentication authentication = jwtProvider.getAuthentication(token);
+				log.info("save authentication object in SecurityContext");
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+			} else {
+				log.error("token is invalid");
+			}
+		} else {
+			log.error("token is null");
 		}
+
 		chain.doFilter(request, response);
 	}
 }

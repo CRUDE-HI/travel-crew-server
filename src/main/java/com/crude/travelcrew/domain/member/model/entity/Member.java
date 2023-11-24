@@ -22,6 +22,8 @@ import com.crude.travelcrew.domain.member.model.dto.SignUpReq;
 import com.crude.travelcrew.global.entity.BaseTime;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,7 +34,9 @@ import lombok.ToString;
 @Setter
 @Table(name = "member")
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
+@Builder
 public class Member extends BaseTime {
 
 	@Id

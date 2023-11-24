@@ -14,6 +14,7 @@ import com.crude.travelcrew.domain.member.model.constants.MemberRole;
 import com.crude.travelcrew.global.security.handler.CustomAccessDeniedHandler;
 import com.crude.travelcrew.global.security.handler.CustomAuthenticationEntryPoint;
 import com.crude.travelcrew.global.security.jwt.JwtAuthFilter;
+import com.crude.travelcrew.global.security.oauth2.OAuth2Filter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 	private final JwtAuthFilter jwtAuthFilter;
+	private final OAuth2Filter oAuth2Filter;
 	private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 	private final CustomAccessDeniedHandler accessDeniedHandler;
 
@@ -34,7 +36,11 @@ public class SecurityConfig {
 
 	@Bean
 	SecurityFilterChain filerChain(HttpSecurity http) throws Exception {
+		JwtAuthFilter localJwtAuthFilter = jwtAuthFilter;
 		return http
+			.cors()
+
+			.and()
 			.httpBasic().disable()
 			.csrf().disable()
 			.formLogin().disable()
@@ -44,8 +50,9 @@ public class SecurityConfig {
 			.authorizeRequests()
 			.antMatchers("/api/member/sign-up", "/api/member/login", "/api/member/duplicate/email/**",
 				"/api/member/duplicate/nickname/**", "/api/member/email/send",
-				"/api/member/email/verify", "/h2-console/**").permitAll()
+				"/api/member/email/verify", "/h2-console/**", "/api/oauth2/**").permitAll()
 
+			// ADMIN, MANAGER 권한이 있는 사람만 관리자 페이지 접근가능
 			.antMatchers("/api/admin/**").hasAnyAuthority(MemberRole.ADMIN.getValue(), MemberRole.MANAGER.getValue())
 			.anyRequest().authenticated()
 
@@ -58,7 +65,13 @@ public class SecurityConfig {
 			.accessDeniedHandler(accessDeniedHandler)
 
 			.and()
-			.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+			.addFilterBefore(localJwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+			.addFilterAfter(oAuth2Filter, JwtAuthFilter.class)
+			.oauth2Login()
+			.defaultSuccessUrl("/oauth2/login", true)
+
+			.and()
 			.build();
 	}
+
 }
